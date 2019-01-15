@@ -131,9 +131,7 @@ function newMember($bdd) {
                 $reponse3 = $bdd->query('SELECT mot_passe FROM contacts');
                 while ($donnees3 = $reponse3->fetch()) {
                     $isPasswordExist = password_verify($_POST['mot_passe'], $donnees3['mot_passe']);
-                    if (!$isPasswordExist) {
-                        // si ok => Hachage du mot de passe
-                        $pass_hache = password_hash($_POST['mot_passe'], PASSWORD_DEFAULT);             
+                    if (!$isPasswordExist) {   
                     } else {
                         $account_error .= '<p class="alert">' . 'Désolé ce mot de passe existe déjà !' . '</p>';
                     }
@@ -150,6 +148,8 @@ function newMember($bdd) {
             
         if ($account_error == '') {
             memberCreate($bdd); //  on appelle la fonction de création d'un nouveau membre    
+            $account_error = '<p class="success">' . 'Bonjour ' . $_POST['prenom'] . ' ' . $_POST['nom'] . ', votre compte est bien créé !' . '<br>' . 'Accédez au site en vous connectant ci-dessus.' . '</p>';
+            return $account_error;
         } else {
             return $account_error;
         }
@@ -167,11 +167,9 @@ function memberCreate($bdd) {
         'prenom' => htmlspecialchars($_POST['prenom']),
         'pseudo' => htmlspecialchars($_POST['pseudo']),
         'email' => htmlspecialchars($_POST['email']),
-        'mot_passe' => $pass_hache
+        'mot_passe' => password_hash($_POST['mot_passe'], PASSWORD_DEFAULT)
     ));
     $req->closeCursor(); // Termine le traitement de la requête
-    $account_error = '<p class="success">' . 'Bonjour ' . $_POST['prenom'] . ' ' . $_POST['nom'] . ', votre compte est bien créé !' . '<br>' . 'Accédez au site en vous connectant ci-dessus.' . '</p>';
-    return $account_error;
 } 
 
 ?>
