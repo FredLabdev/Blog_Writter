@@ -107,7 +107,7 @@ session_start(); // On démarre la session AVANT toute chose
                     echo 'Prénom : ' . $donnees['prenom'] . '<br>';  
                     echo 'Pseudo : ' . $donnees['pseudo'] . '<br>';  
                     echo 'Mail : ' . $donnees['email'] . '<br>';  
-                    echo 'Mot de passe : ' . $donnees['mot_passe'] . '<br>';  
+                    echo 'Mot de passe : ' . $donnees['password'] . '<br>';  
                 }
                 $req->closeCursor(); // Termine le traitement de la requête
             }
@@ -195,9 +195,9 @@ session_start(); // On démarre la session AVANT toute chose
                     echo '<br>'.'La modification de l\'email du contact a bien été enrégistrée !';
                     $req->closeCursor(); // Termine le traitement de la requête
                 } else if ($_POST['champ'] == 5) { // si modif mot de passe
-                    $req = $bdd->prepare('UPDATE contacts SET mot_passe = :nvmot_passe WHERE id = :idnum');
+                    $req = $bdd->prepare('UPDATE contacts SET password = :newpassword WHERE id = :idnum');
                     $req->execute(array(
-                        'nvmot_passe' => $_POST['modif_champ'],
+                        'newpassword' => $_POST['modif_champ'],
                         'idnum' => $_POST['contact-modif']
                     ));
                     echo '<br>'.'La modification du mot de passe du contact a bien été enrégistrée !';

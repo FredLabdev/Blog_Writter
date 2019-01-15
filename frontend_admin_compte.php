@@ -93,9 +93,9 @@
             $_POST['modif_champ_confirm'] = htmlspecialchars($_POST['modif_champ_confirm']);
             if (preg_match("#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#", $_POST['modif_champ'])) {
                 if ($_POST['modif_champ_confirm'] == $_POST['modif_champ']) { 
-                    $reponse3 = $bdd->query('SELECT mot_passe FROM contacts');
+                    $reponse3 = $bdd->query('SELECT password FROM contacts');
                     while ($donnees3 = $reponse3->fetch()) {
-                        $isPasswordExist = password_verify($_POST['modif_champ'], $donnees3['mot_passe']);
+                        $isPasswordExist = password_verify($_POST['modif_champ'], $donnees3['password']);
                         if (!$isPasswordExist) {  
                             $pass_hache = password_hash($_POST['modif_champ'], PASSWORD_DEFAULT); // si ok => Hachage du mot de passe
                         } else {

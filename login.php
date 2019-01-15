@@ -34,7 +34,7 @@
     <form method="post" action="index.php">
         <p>
             <label>Votre pseudo : <input type="text" name="pseudo_connect" /></label><br>
-            <label>Votre mot de passe : <input type="password" name="mot_passe_connect" /></label><br>
+            <label>Votre mot de passe : <input type="password" name="password_connect" /></label><br>
             <label>Prochaine connexion automatique ?<input type="checkbox" name="login_auto" /></label><br>
         </p>
         <input type="submit" value="valider" name="login" /><br>
@@ -58,8 +58,8 @@
             <label>Votre pseudo : <input type="text" name="pseudo"></label><br>
             <label>Votre e-mail : <input type="text" name="email" /></label><br>
             <label>Confirmez votre e-mail : <input type="text" name="email_confirm" /></label><br>
-            <label>Créez un mot de passe : <input type="password" name="mot_passe" /></label><br>
-            <label>Confirmez votre mot de passe : <input type="password" name="mot_passe_confirm" /></label><br>
+            <label>Créez un mot de passe : <input type="password" name="password" /></label><br>
+            <label>Confirmez votre mot de passe : <input type="password" name="password_confirm" /></label><br>
         </p>
         <input type="submit" value="valider" name="newMember" /><br>
     </form>
