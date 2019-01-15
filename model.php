@@ -161,7 +161,7 @@ function newMember($db) {
 //**************************************************************************************
 
 function memberCreate($db) {
-    $req = $db->prepare('INSERT INTO contacts(nom, prenom, pseudo, email, password, date_creation) VALUES(:nom, :prenom, :pseudo, :email, :mot_passe, NOW())');
+    $req = $db->prepare('INSERT INTO contacts(nom, prenom, pseudo, email, password, date_creation) VALUES(:nom, :prenom, :pseudo, :email, :password, NOW())');
     $req->execute(array(
         'nom' => htmlspecialchars($_POST['nom']),
         'prenom' => htmlspecialchars($_POST['prenom']),
