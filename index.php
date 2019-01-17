@@ -33,5 +33,3 @@ if (isset($_POST['newMember'])) {
 
 // Sinon on affiche la page de connexion
     require('login.php');
-
-?>

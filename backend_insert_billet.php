@@ -59,18 +59,18 @@ session_start(); // On démarre la session AVANT toute chose
     <ul>
         <?php
             try { // connexion à la base de données 
-                $bdd = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+                $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             }
             catch(Exception $e) {
                 die('Erreur : '.$e->getMessage());
             }
             do { // on édite la liste des billets au moins une fois sans cliquer sur bouton "Rafraîchir"
-                $reponse = $bdd->query('SELECT COUNT(*) AS nbre_billets FROM billets');
-                $donnees = $reponse->fetch(); // 
-                echo 'Nombre de billets publiés à ce jour: ' . $donnees['nbre_billets'];
-                $reponse = $bdd->query('SELECT * FROM billets');
-                while ($donnees = $reponse->fetch()) {
-                echo '<li style="color: red;">' . $donnees['id'] . ' : ' . $donnees['titre_episode'] . '</li>';
+                $reponse = $db->query('SELECT COUNT(*) AS nbre_billets FROM billets');
+                $data = $reponse->fetch(); // 
+                echo 'Nombre de billets publiés à ce jour: ' . $data['nbre_billets'];
+                $reponse = $db->query('SELECT * FROM billets');
+                while ($data = $reponse->fetch()) {
+                echo '<li style="color: red;">' . $data['id'] . ' : ' . $data['titre_episode'] . '</li>';
                 }
                 $reponse->closeCursor(); // Termine le traitement de la requête
             } while ($_POST['rafraichir']);  // on recommence à chaque click sur bouton "Rafraîchir"
@@ -95,13 +95,13 @@ session_start(); // On démarre la session AVANT toute chose
 
         <?php
             try {  // connexion à la base de données
-                $bdd = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+                $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             }
             catch(Exception $e) {
                 die('Erreur : '.$e->getMessage());
             }
             if(isset($_POST['titre']) AND isset($_POST['contenu'])) { // insertion nouveau billet
-                $req = $bdd->prepare('INSERT INTO billets(date_creation, titre_episode, contenu_episode) VALUES(NOW(), :titre, :contenu)');
+                $req = $db->prepare('INSERT INTO billets(date_creation, titre_episode, contenu_episode) VALUES(NOW(), :titre, :contenu)');
                 $req->execute(array('titre' => $_POST['titre'], 'contenu' => $_POST['contenu']));
                 echo 'Le nouvel épisode ' . $_POST['titre'] . ' a bien été créé !';
                 $req->closeCursor(); // Termine le traitement de la requête

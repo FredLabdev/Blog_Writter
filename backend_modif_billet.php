@@ -56,14 +56,14 @@ session_start(); // On démarre la session AVANT toute chose
         <label>Sélectionnez un billet : </label><select name="billet">
             <?php 
                 try { // connexion à la base de données
-                    $bdd = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+                    $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
                 }
                 catch(Exception $e) {
                     die('Erreur : '.$e->getMessage());
                 }
-                $reponse = $bdd->query('SELECT * FROM billets');
-                while ($donnees = $reponse->fetch()) { // Liste déroulante des titres des billets
-                echo '<option value="' . $donnees['id'] . '">' . $donnees['titre_episode'] . '</option>';
+                $reponse = $db->query('SELECT * FROM billets');
+                while ($data = $reponse->fetch()) { // Liste déroulante des titres des billets
+                echo '<option value="' . $data['id'] . '">' . $data['titre_episode'] . '</option>';
                 }
                 $reponse->closeCursor(); // Termine le traitement de la requête
             ?>
@@ -72,12 +72,12 @@ session_start(); // On démarre la session AVANT toute chose
 
         <?php // Détail du billet sélectionné //
             if (isset($_POST['billet']) AND isset($_POST['valider'])) {
-                $req = $bdd->prepare('SELECT * FROM billets WHERE id = ?');
+                $req = $db->prepare('SELECT * FROM billets WHERE id = ?');
                 $req->execute(array($_POST['billet']));
-                while ($donnees = $req->fetch()) {
-                    echo 'Date de publication : ' . $donnees['date'] . '<br>';
-                    echo 'Titre de l\'épisode : ' . $donnees['titre_episode'] . '<br>';
-                    echo 'Contenu de l\'épisode : ' . $donnees['contenu_episode'] . '<br>';  
+                while ($data = $req->fetch()) {
+                    echo 'Date de publication : ' . $data['date'] . '<br>';
+                    echo 'Titre de l\'épisode : ' . $data['titre_episode'] . '<br>';
+                    echo 'Contenu de l\'épisode : ' . $data['contenu_episode'] . '<br>';  
                 }
                 $req->closeCursor(); // Termine le traitement de la requête
             }
@@ -96,9 +96,9 @@ session_start(); // On démarre la session AVANT toute chose
     <form method="post" action="backend_modif_billet.php">
         <label>Sélectionnez un billet : </label><select name="billet-modif">
             <?php
-                $reponse = $bdd->query('SELECT * FROM billets');
-                while ($donnees = $reponse->fetch()) { // Liste déroulante des titres des billets
-                echo '<option value="' . $donnees['id'] . '">' . $donnees['titre_episode'] . '</option>';
+                $reponse = $db->query('SELECT * FROM billets');
+                while ($data = $reponse->fetch()) { // Liste déroulante des titres des billets
+                echo '<option value="' . $data['id'] . '">' . $data['titre_episode'] . '</option>';
                 }
                 $reponse->closeCursor(); // Termine le traitement de la requête
             ?>
@@ -113,7 +113,7 @@ session_start(); // On démarre la session AVANT toute chose
 
         <?php  // Modification du billet
             if(isset($_POST['champ']) AND isset($_POST['delete'])) { // si tout le billet à supprimer
-                $req = $bdd->prepare('DELETE FROM billets WHERE id = :idnum');
+                $req = $db->prepare('DELETE FROM billets WHERE id = :idnum');
                     $req->execute(array(
                         'idnum' => $_POST['billet-modif']
                     ));  
@@ -121,7 +121,7 @@ session_start(); // On démarre la session AVANT toute chose
                     $req->closeCursor(); // Termine le traitement de la requête
             } else if(isset($_POST['champ']) AND isset($_POST['billet-modif']) AND isset($_POST['modif_champ']) AND isset($_POST['remplacer'])) {
                 if ($_POST['champ'] == 1) { // si titre à modifier
-                    $req = $bdd->prepare('UPDATE billets SET titre_episode = :nvtitre WHERE id = :idnum');
+                    $req = $db->prepare('UPDATE billets SET titre_episode = :nvtitre WHERE id = :idnum');
                     $req->execute(array(
                         'nvtitre' => $_POST['modif_champ'],
                         'idnum' => $_POST['billet-modif']
@@ -129,7 +129,7 @@ session_start(); // On démarre la session AVANT toute chose
                     echo '<br>'.'Le titre de l\'épisode a bien été modifié !';
                     $req->closeCursor(); // Termine le traitement de la requête
                 } else if ($_POST['champ'] == 2) { // si contenu à modifier
-                    $req = $bdd->prepare('UPDATE billets SET contenu_episode = :nvcontenu WHERE id = :idnum');
+                    $req = $db->prepare('UPDATE billets SET contenu_episode = :nvcontenu WHERE id = :idnum');
                     $req->execute(array(
                         'nvcontenu' => $_POST['modif_champ'],
                         'idnum' => $_POST['billet-modif']

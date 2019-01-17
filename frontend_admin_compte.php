@@ -9,7 +9,7 @@
     // connexion à la base de données   
 
     try { // connexion à la base de données 
-        $bdd = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
     }
     catch(Exception $e) {
         die('Erreur : '.$e->getMessage());
@@ -44,15 +44,15 @@
                 
         // Si modif du champ email
         if ($_POST['champ'] == 1) {
-            // Adresse email: vérification format, 2 saisies idem, et pas déjà existante dans la bdd 
+            // Adresse email: vérification format, 2 saisies idem, et pas déjà existante dans la db 
             $_POST['modif_champ'] = htmlspecialchars($_POST['modif_champ']);
             $_POST['modif_champ_confirm'] = htmlspecialchars($_POST['modif_champ_confirm']);
             if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $_POST['modif_champ'])) {
-                $req2 = $bdd->prepare('SELECT COUNT(email) AS email_idem FROM contacts WHERE email = :email');
+                $req2 = $db->prepare('SELECT COUNT(email) AS email_idem FROM contacts WHERE email = :email');
                 $req2->execute(array('email' => htmlspecialchars($_POST['modif_champ'])));
-                $donnees2 = $req2->fetch();
+                $data2 = $req2->fetch();
                 $req2->closeCursor(); // Termine le traitement de la requête 2
-                if ($donnees2['email_idem'] == 0) {
+                if ($data2['email_idem'] == 0) {
                     if ($_POST['modif_champ_confirm'] == $_POST['modif_champ']) {
                     } else {
                         $message_mails_diff = 'Attention vos 2 adresses mail sont différentes !';
@@ -67,7 +67,7 @@
                 $invalid += 1;
             }
                     
-            // Fin, si tout ok (variable d'erreurs restée à 0): Insertion du nouveau mail dans la bdd    
+            // Fin, si tout ok (variable d'erreurs restée à 0): Insertion du nouveau mail dans la db    
             if ($invalid == 0) {  
                 echo
                     '<script>
@@ -88,14 +88,14 @@
         
         // Si modif du champ mot de passe            
         } else if ($_POST['champ'] == 2) {
-            // Mot de passe: vérification format, 2 saisies idem, et pas déjà existant dans la bdd 
+            // Mot de passe: vérification format, 2 saisies idem, et pas déjà existant dans la db 
             $_POST['modif_champ'] = htmlspecialchars($_POST['modif_champ']);
             $_POST['modif_champ_confirm'] = htmlspecialchars($_POST['modif_champ_confirm']);
             if (preg_match("#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#", $_POST['modif_champ'])) {
                 if ($_POST['modif_champ_confirm'] == $_POST['modif_champ']) { 
-                    $reponse3 = $bdd->query('SELECT password FROM contacts');
-                    while ($donnees3 = $reponse3->fetch()) {
-                        $isPasswordExist = password_verify($_POST['modif_champ'], $donnees3['password']);
+                    $reponse3 = $db->query('SELECT password FROM contacts');
+                    while ($data3 = $reponse3->fetch()) {
+                        $isPasswordExist = password_verify($_POST['modif_champ'], $data3['password']);
                         if (!$isPasswordExist) {  
                             $pass_hache = password_hash($_POST['modif_champ'], PASSWORD_DEFAULT); // si ok => Hachage du mot de passe
                         } else {
@@ -113,7 +113,7 @@
                 $invalid += 1;
             }  
                     
-            // Fin, si tout ok (variable d'erreurs restée à 0): Insertion du nouveau mot de passe dans la bdd    
+            // Fin, si tout ok (variable d'erreurs restée à 0): Insertion du nouveau mot de passe dans la db    
             if ($invalid == 0) {
                 echo
                     '<script>
@@ -139,16 +139,16 @@
 //******************************************************************************************************************//
 
     if (isset($_SESSION['pseudo'])) {
-        $req = $bdd->prepare('SELECT * FROM contacts WHERE pseudo = :monpseudo');
+        $req = $db->prepare('SELECT * FROM contacts WHERE pseudo = :monpseudo');
         $req->execute(array(
             'monpseudo' => $_SESSION['pseudo']     
         ));  
-        $donnees = $req->fetch();
-            $date = '<p>' . 'Date de création : ' . $donnees['date_creation'] . '<br>';
-            $nom = '<p>' . 'Nom : ' . $donnees['nom'] . '<br>';
-            $prenom = '<p>' . 'Prénom : ' . $donnees['prenom'] . '<br>';  
-            $pseudo = '<p>' . 'Pseudo : ' . $donnees['pseudo'] . '<br>';  
-            $mail = '<p>' . 'Mail : ' . $donnees['email'] . '<br>';  
+        $data = $req->fetch();
+            $date = '<p>' . 'Date de création : ' . $data['date_creation'] . '<br>';
+            $nom = '<p>' . 'Nom : ' . $data['nom'] . '<br>';
+            $prenom = '<p>' . 'Prénom : ' . $data['prenom'] . '<br>';  
+            $pseudo = '<p>' . 'Pseudo : ' . $data['pseudo'] . '<br>';  
+            $mail = '<p>' . 'Mail : ' . $data['email'] . '<br>';  
         $req->closeCursor(); // Termine le traitement de la requête
     }
 

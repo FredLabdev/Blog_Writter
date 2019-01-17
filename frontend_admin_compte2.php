@@ -5,14 +5,14 @@
     // connexion à la base de données   
 
     try { // connexion à la base de données 
-        $bdd = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
     }
     catch(Exception $e) {
         die('Erreur : '.$e->getMessage());
     }
     
     if ($_GET['delete']) {
-        $req = $bdd->prepare('DELETE FROM contacts WHERE pseudo = :monpseudo');
+        $req = $db->prepare('DELETE FROM contacts WHERE pseudo = :monpseudo');
             $req->execute(array(
                 'monpseudo' => $_SESSION['pseudo']
             ));  
@@ -21,7 +21,7 @@
     }
 
     if ($_GET['nv_email']) {
-        $req = $bdd->prepare('UPDATE contacts SET email = :nvemail WHERE pseudo = :monpseudo');
+        $req = $db->prepare('UPDATE contacts SET email = :nvemail WHERE pseudo = :monpseudo');
         $req->execute(array(
             'nvemail' => $_GET['nv_email'],
             'monpseudo' => $_SESSION['pseudo']
@@ -31,7 +31,7 @@
     } 
     
     else if ($_GET['nv_mp']) {
-        $req = $bdd->prepare('UPDATE contacts SET password = :newpassword WHERE pseudo = :monpseudo');
+        $req = $db->prepare('UPDATE contacts SET password = :newpassword WHERE pseudo = :monpseudo');
         $req->execute(array(
             'newpassword' => $_GET['nv_mp'],
             'monpseudo' => $_SESSION['pseudo'] 
