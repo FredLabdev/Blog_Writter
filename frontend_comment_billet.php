@@ -32,7 +32,7 @@ session_start(); // On démarre la session AVANT toute chose
         Nous sommes le :
         <?php echo date('d/m/Y') . '<br>';
         	if(isset($_SESSION['pseudo'])) {
-            	echo ' Bonjour ' . $_SESSION['prenom'];
+            	echo ' Bonjour ' . $_SESSION['first_name'];
         	} else {
             	echo 'Erreur nom ou prénom visiteur';
         	}
@@ -40,7 +40,7 @@ session_start(); // On démarre la session AVANT toute chose
     </p>
 
     <p>=======================================================================================</p>
-    <!-- Affichage Billet sélectionné sur page d'accueil et les commentaires associés -->
+    <!-- Affichage Billet sélectionné sur page d'accueil et les comments associés -->
 
     <?php     // connexion à la base de données
         try { 
@@ -50,7 +50,7 @@ session_start(); // On démarre la session AVANT toute chose
             die('Erreur : '.$e->getMessage());
         }
         do { 
-            $req = $db->prepare('SELECT id, titre_episode, contenu_episode, DATE_FORMAT(date_creation, \'%d/%m/%Y à %Hh%imin%ss\') AS date_creation_fr FROM billets WHERE id = ?'); // récupération du billet séléctionné sur la page accueil_frontend
+            $req = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr FROM posts WHERE id = ?'); // récupération du billet séléctionné sur la page accueil_frontend
             $req->execute(array($_COOKIE['billet_select'])); // grâce à son id envoyée en paramètre via le lien URL 
             $data = $req->fetch();
             if ($_COOKIE['billet_select'] AND !$data) {
@@ -61,43 +61,43 @@ session_start(); // On démarre la session AVANT toute chose
 
     <div class="news">
         <h3>
-            <?php echo htmlspecialchars($data['titre_episode']); ?>
+            <?php echo htmlspecialchars($data['chapter_title']); ?>
             <em> publié le
-                <?php echo $data['date_creation_fr']; ?>
+                <?php echo $data['creation_date_fr']; ?>
             </em>
         </h3>
         <p>
-            <?php echo nl2br(htmlspecialchars($data['contenu_episode'])); ?>
+            <?php echo nl2br(htmlspecialchars($data['chapter_content'])); ?>
         </p>
     </div>
-    <h2>Commentaires</h2>
+    <h2>comments</h2>
 
     <form method="post" action="frontend_comment_billet.php">
         <input name="rafraichir" type="hidden" />
-        <input type="submit" value="Rafraîchir les commentaires" /> <!-- Bouton "Rafraichir qui reactualise les commentaires si nouveau -->
+        <input type="submit" value="Rafraîchir les comments" /> <!-- Bouton "Rafraichir qui reactualise les comments si nouveau -->
     </form>
 
     <?php
         $req->closeCursor(); // Termine le traitement de la requête
-        $req = $db->prepare('SELECT id, auteur, commentaire, DATE_FORMAT(date_commentaire, \'%d/%m/%Y à %Hh%imin%ss\') AS date_commentaire_fr FROM commentaires WHERE id_billet = ? ORDER BY date_commentaire LIMIT 0, 5');
+        $req = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\') AS comment_date_fr FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');
         $req->execute(array($_COOKIE['billet_select']));    
         while ($data = $req->fetch()) {
     ?>
-    <!-- BOUCLE POUR CHAQUE COMMENTAIRE TROUVE : -->
+    <!-- BOUCLE POUR CHAQUE comment TROUVE : -->
 
-    <!-- Détail du commentaire -->
+    <!-- Détail du comment -->
     <p>le
-        <?php echo $data['date_commentaire_fr'] . ' '; ?>
+        <?php echo $data['comment_date_fr'] . ' '; ?>
         <strong>
-            <?php echo htmlspecialchars($data['auteur']); ?>
+            <?php echo htmlspecialchars($data['author']); ?>
         </strong>
         à écrit
     </p>
     <p style="font-style: italic;">
-        <?php echo nl2br(htmlspecialchars($data['commentaire'])); ?>
+        <?php echo nl2br(htmlspecialchars($data['comment'])); ?>
     </p>
 
-    <!-- Bouton de Suppression du commentaire -->
+    <!-- Bouton de Suppression du comment -->
 
     <p>.......................................................................................</p>
 
@@ -106,37 +106,37 @@ session_start(); // On démarre la session AVANT toute chose
         $req->closeCursor();  // Termine le traitement de la requête SELECT après fermeture de la boucle 
      ?>
 
-    <!-- RAJOUT D'UN COMMENTAIRE A LA SUITE : -->
+    <!-- RAJOUT D'UN comment A LA SUITE : -->
 
-    <h3>Ajouter un commentaire :</h3>
+    <h3>Ajouter un comment :</h3>
     <form method="post" action="frontend_comment_billet.php">
         <p>
             <label>Votre message :</label><br>
-            <textarea name="nv_commentaire" rows="8" cols="45">
+            <textarea name="nv_comment" rows="8" cols="45">
             </textarea>
         </p>
         <input name="billet_id" type="hidden" />
-        <input type="submit" value="Envoyer votre commentaire" />
+        <input type="submit" value="Envoyer votre comment" />
     </form>
 
     <?php   // Contrôle si contact autorisé à commenter
     
-        $req1 = $db->prepare('SELECT bloq_comment FROM contacts WHERE pseudo = ?');
+        $req1 = $db->prepare('SELECT block_comment FROM contacts WHERE pseudo = ?');
         $req1->execute(array($_SESSION['pseudo']));
         $data1 = $req1->fetch();
-        if ($data1['bloq_comment'] == 1) {
-            echo '<p class="alert">Désolé vous n\'êtes pas autorisé à poster des commentaires</p>';
+        if ($data1['block_comment'] == 1) {
+            echo '<p class="alert">Désolé vous n\'êtes pas autorisé à poster des comments</p>';
             
-            // Si contact autorisé insertion de son nouveau commentaire
+            // Si contact autorisé insertion de son nouveau comment
             
-        } else if(isset($_POST['nv_commentaire'])) {
-            $req = $db->prepare('INSERT INTO commentaires(id_billet, auteur, commentaire, date_commentaire) VALUES(:id_billet, :auteur, :commentaire, NOW())');
+        } else if(isset($_POST['nv_comment'])) {
+            $req = $db->prepare('INSERT INTO comments(post_id, author, comment, comment_date) VALUES(:post_id, :author, :comment, NOW())');
             $req->execute(array(
-                'id_billet' => $_COOKIE['billet_select'],
-                'auteur' => $_SESSION['pseudo'],
-                'commentaire' => $_POST['nv_commentaire']
+                'post_id' => $_COOKIE['billet_select'],
+                'author' => $_SESSION['pseudo'],
+                'comment' => $_POST['nv_comment']
             ));
-                echo 'Merci pour votre commentaire ' . htmlspecialchars($_SESSION['prenom']) . ' ' . htmlspecialchars($_SESSION['nom']) .   '<br>';
+                echo 'Merci pour votre comment ' . htmlspecialchars($_SESSION['first_name']) . ' ' . htmlspecialchars($_SESSION['name']) .   '<br>';
                 echo 'il sera publié sous votre pseudo :' . $_SESSION['pseudo'];
         $req->closeCursor(); // Termine le traitement de la requête INSERT INTO
         }

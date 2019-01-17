@@ -53,8 +53,8 @@
 
     <form method="post" action="index.php">
         <p>
-            <label>Votre nom : <input type="text" name="nom" /></label><br>
-            <label>Votre prenom : <input type="text" name="prenom" /></label><br>
+            <label>Votre nom : <input type="text" name="name" /></label><br>
+            <label>Votre prenom : <input type="text" name="first_name" /></label><br>
             <label>Votre pseudo : <input type="text" name="pseudo"></label><br>
             <label>Votre e-mail : <input type="text" name="email" /></label><br>
             <label>Confirmez votre e-mail : <input type="text" name="email_confirm" /></label><br>

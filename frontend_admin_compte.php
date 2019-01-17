@@ -93,8 +93,8 @@
             $_POST['modif_champ_confirm'] = htmlspecialchars($_POST['modif_champ_confirm']);
             if (preg_match("#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#", $_POST['modif_champ'])) {
                 if ($_POST['modif_champ_confirm'] == $_POST['modif_champ']) { 
-                    $reponse3 = $db->query('SELECT password FROM contacts');
-                    while ($data3 = $reponse3->fetch()) {
+                    $req3 = $db->query('SELECT password FROM contacts');
+                    while ($data3 = $req3->fetch()) {
                         $isPasswordExist = password_verify($_POST['modif_champ'], $data3['password']);
                         if (!$isPasswordExist) {  
                             $pass_hache = password_hash($_POST['modif_champ'], PASSWORD_DEFAULT); // si ok => Hachage du mot de passe
@@ -103,7 +103,7 @@
                             $invalid += 1;
                         }
                     }
-                    $reponse3->closeCursor(); // Termine le traitement de la requête 3
+                    $req3->closeCursor(); // Termine le traitement de la requête 3
                 } else {
                     $message_mp_diff = ' Désolé vos mots de passes ne sont pas identiques !';
                     $invalid += 1;
@@ -144,9 +144,9 @@
             'monpseudo' => $_SESSION['pseudo']     
         ));  
         $data = $req->fetch();
-            $date = '<p>' . 'Date de création : ' . $data['date_creation'] . '<br>';
-            $nom = '<p>' . 'Nom : ' . $data['nom'] . '<br>';
-            $prenom = '<p>' . 'Prénom : ' . $data['prenom'] . '<br>';  
+            $date = '<p>' . 'Date de création : ' . $data['creation_date'] . '<br>';
+            $name = '<p>' . 'Nom : ' . $data['name'] . '<br>';
+            $first_name = '<p>' . 'Prénom : ' . $data['first_name'] . '<br>';  
             $pseudo = '<p>' . 'Pseudo : ' . $data['pseudo'] . '<br>';  
             $mail = '<p>' . 'Mail : ' . $data['email'] . '<br>';  
         $req->closeCursor(); // Termine le traitement de la requête
@@ -192,7 +192,7 @@
         Nous sommes le :
         <?php echo date('d/m/Y') . '<br>';
         	if(isset($_SESSION['pseudo'])) {
-            	echo ' Bonjour ' . $_SESSION['prenom'];
+            	echo ' Bonjour ' . $_SESSION['first_name'];
         	} else {
             	echo 'Erreur nom ou prénom visiteur';
         	}
@@ -202,15 +202,15 @@
     <br />
     <p>===========================================================</p>
 
-    <!-- Liste des billets -->
+    <!-- Liste des posts -->
 
     <h3>
         Les données de votre compte :
     </h3>
     <?php
         echo $date;
-        echo $nom;
-        echo $prenom;  
+        echo $name;
+        echo $first_name;  
         echo $pseudo;  
         echo $mail;  
         echo $mot_passe;  

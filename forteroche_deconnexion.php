@@ -2,7 +2,7 @@
     session_start();
 
     echo 'Vous êtes bien déconnecté.' . '<br>';
-    echo 'A bientôt ' . $_SESSION['prenom'] . '<br>';
+    echo 'A bientôt ' . $_SESSION['first_name'] . '<br>';
     echo '<a href="index.php">Retour à l\'accueil</a>'   ;
 
     // Suppression des variables de session et de la session

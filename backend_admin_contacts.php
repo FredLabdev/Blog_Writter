@@ -36,7 +36,7 @@ session_start(); // On démarre la session AVANT toute chose
         Nous sommes le :
         <?php echo date('d/m/Y') . '<br>';
         	if(isset($_SESSION['pseudo'])) {
-            	echo ' Bonjour ' . $_SESSION['prenom'];
+            	echo ' Bonjour ' . $_SESSION['first_name'];
         	} else {
             	echo 'Erreur nom ou prénom visiteur';
         	}
@@ -62,18 +62,18 @@ session_start(); // On démarre la session AVANT toute chose
         }
             // Nombre totale de contacts
     
-        $reponse = $db->query('SELECT COUNT(*) AS nbre_contacts FROM contacts');
-        $data = $reponse->fetch();
+        $req = $db->query('SELECT COUNT(*) AS nbre_contacts FROM contacts');
+        $data = $req->fetch();
         echo '<p>Nombre d\'abonnés à votre blog à ce jour: ' . $data['nbre_contacts'] . '</p>';
-        $reponse->closeCursor(); // Termine le traitement de la requête
+        $req->closeCursor(); // Termine le traitement de la requête
     
             // Classement par groupe puis nom
     
-        $reponse = $db->query('SELECT c.nom AS nom_contact, c.prenom AS prenom_contact, g.categorie AS categorie_groupe FROM groupes AS g INNER JOIN contacts AS c ON c.id_groupe = g.id ORDER BY id_groupe, nom');
-        while ($data = $reponse->fetch()) {
-        echo $data['categorie_groupe'] . ' : ' . $data['nom_contact'] . ' ' . $data['prenom_contact'] . '<br>';
+        $req = $db->query('SELECT c.name AS name_contact, c.first_name AS first_name_contact, g.grade AS grade_groupe FROM groups AS g INNER JOIN contacts AS c ON c.group_id = g.id ORDER BY group_id, name');
+        while ($data = $req->fetch()) {
+        echo $data['grade_groupe'] . ' : ' . $data['name_contact'] . ' ' . $data['first_name_contact'] . '<br>';
         }
-        $reponse->closeCursor(); // Termine le traitement de la requête
+        $req->closeCursor(); // Termine le traitement de la requête
     ?>
 
     <br />
@@ -88,11 +88,11 @@ session_start(); // On démarre la session AVANT toute chose
     <form method="post" action="backend_admin_contacts.php">
         <label>Sélectionnez un contact : </label><select name="contact">
             <?php
-                $reponse = $db->query('SELECT *, UPPER(nom) AS nom_maj, LOWER(prenom) AS prenom_min FROM contacts');
-                while ($data = $reponse->fetch()) { // liste déroulante des contacts
-                echo '<option value="' . $data['id'] . '">' . $data['nom_maj'] . ' ' . $data['prenom_min'] . '</option>';
+                $req = $db->query('SELECT *, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM contacts');
+                while ($data = $req->fetch()) { // liste déroulante des contacts
+                echo '<option value="' . $data['id'] . '">' . $data['name_maj'] . ' ' . $data['first_name_min'] . '</option>';
                 }
-                $reponse->closeCursor(); // Termine le traitement de la requête
+                $req->closeCursor(); // Termine le traitement de la requête
             ?>
         </select>
         <input type="submit" value="valider" name="valider" /><br>
@@ -102,9 +102,9 @@ session_start(); // On démarre la session AVANT toute chose
                 $req = $db->prepare('SELECT * FROM contacts WHERE id = ?');
                 $req->execute(array($_POST['contact']));
                 while ($data = $req->fetch()) {  // Détail du contact sélectionné
-                    echo 'Date de création : ' . $data['date_creation'] . '<br>';
-                    echo 'Nom : ' . $data['nom'] . '<br>';
-                    echo 'Prénom : ' . $data['prenom'] . '<br>';  
+                    echo 'Date de création : ' . $data['creation_date'] . '<br>';
+                    echo 'Nom : ' . $data['name'] . '<br>';
+                    echo 'Prénom : ' . $data['first_name'] . '<br>';  
                     echo 'Pseudo : ' . $data['pseudo'] . '<br>';  
                     echo 'Mail : ' . $data['email'] . '<br>';  
                     echo 'Mot de passe : ' . $data['password'] . '<br>';  
@@ -126,15 +126,15 @@ session_start(); // On démarre la session AVANT toute chose
     <form method="post" action="backend_admin_contacts.php">
         <label>Sélectionnez un contact : </label><select name="contact-modif">
             <?php
-                $reponse = $db->query('SELECT * FROM contacts');
-                while ($data = $reponse->fetch()) { // liste déroulante des contacts
-                echo '<option value="' . $data['id'] . '">' . $data['nom'] . '</option>';
+                $req = $db->query('SELECT * FROM contacts');
+                while ($data = $req->fetch()) { // liste déroulante des contacts
+                echo '<option value="' . $data['id'] . '">' . $data['name'] . '</option>';
                 }
-                $reponse->closeCursor(); // Termine le traitement de la requête
+                $req->closeCursor(); // Termine le traitement de la requête
             ?>
         </select><br> <!-- Sélection du champ à modifier -->
         <label>Supprimer tout le contact ?</label><input type="checkbox" name="delete" /><br>
-        <label>Bloquer ses commentaires</label><input type="checkbox" name="bloquage" /><br>
+        <label>Bloquer ses comments</label><input type="checkbox" name="bloquage" /><br>
         <label>Sélectionnez le champ à modifier : </label><select name="champ">
             <option value="1">Nom</option>
             <option value="2">Prénom</option>
@@ -155,25 +155,25 @@ session_start(); // On démarre la session AVANT toute chose
                 $req->closeCursor(); // Termine le traitement de la requête
              // Sinon si modification d'un champ seulement    
             } else if(isset($_POST['bloquage']) AND isset($_POST['contact-modif']) AND isset($_POST['remplacer'])) {
-                    $req = $db->prepare('UPDATE contacts SET bloq_comment = 1 WHERE id = :idnum');
+                    $req = $db->prepare('UPDATE contacts SET block_comment = 1 WHERE id = :idnum');
                     $req->execute(array(
                         'idnum' => $_POST['contact-modif']
                     ));  
-                    echo '<br>'.'Ce contact ne pourra plus poster de commentaires !';
+                    echo '<br>'.'Ce contact ne pourra plus poster de comments !';
                     $req->closeCursor(); // Termine le traitement de la requête
                 } else if(isset($_POST['champ']) AND isset($_POST['contact-modif']) AND isset($_POST['modif_champ']) AND isset($_POST['remplacer'])) {
                 if ($_POST['champ'] == 1) { // si modif nom
-                    $req = $db->prepare('UPDATE contacts SET nom = :nvnom WHERE id = :idnum');
+                    $req = $db->prepare('UPDATE contacts SET name = :nvname WHERE id = :idnum');
                     $req->execute(array(
-                        'nvnom' => $_POST['modif_champ'],
+                        'nvname' => $_POST['modif_champ'],
                         'idnum' => $_POST['contact-modif']
                     ));  
                     echo '<br>'.'La modification du nom du contact a bien été enrégistrée !';
                     $req->closeCursor(); // Termine le traitement de la requête
                 } else if ($_POST['champ'] == 2) { // si modif prénom
-                    $req = $db->prepare('UPDATE contacts SET prenom = :nvprenom WHERE id = :idnum');
+                    $req = $db->prepare('UPDATE contacts SET first_name = :nvfirst_name WHERE id = :idnum');
                     $req->execute(array(
-                        'nvprenom' => $_POST['modif_champ'],
+                        'nvfirst_name' => $_POST['modif_champ'],
                         'idnum' => $_POST['contact-modif']
                     ));
                     echo '<br>'.'La modification du prénom du contact a bien été enrégistrée !';

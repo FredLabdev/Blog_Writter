@@ -67,16 +67,16 @@ function cookieControl($db, $password) {
 function sessionStart($data) {
     // on démarre la session, et on stocke les paramètres utiles aux autres pages
     session_start();
-    $_SESSION['nom'] = $data['nom'];
-    $_SESSION['prenom'] = $data['prenom'];
+    $_SESSION['name'] = $data['name'];
+    $_SESSION['first_name'] = $data['first_name'];
     $_SESSION['pseudo'] = $data['pseudo'];
     $_SESSION['password'] = $data['password'];     
     // Si son pseudo est "admin", on le dirige vers l'accueil backend,
-    if ((htmlspecialchars($data['pseudo']) == 'admin') AND ($data['id_groupe'] == 1)) {
+    if ((htmlspecialchars($data['pseudo']) == 'admin') AND ($data['group_id'] == 1)) {
         header('Location: backend_accueil.php');
     }
     // sinon on le dirige vers l'accueil frontend.   
-    else if ($data['id_groupe'] !== 1) {  // sinon => on dirigera vers l'interface client front-end accueil
+    else if ($data['group_id'] !== 1) {  // sinon => on dirigera vers l'interface client front-end accueil
         header('Location: frontend_accueil.php');
     }  
 } 
@@ -86,7 +86,7 @@ function sessionStart($data) {
 //**************************************************************************************
 
 function newMember($db) {
-    if(isset($_POST['nom']) AND isset($_POST['prenom']) AND isset($_POST['pseudo']) AND isset($_POST['email']) AND isset($_POST['password']) AND isset($_POST['password_confirm'])) {
+    if(isset($_POST['name']) AND isset($_POST['first_name']) AND isset($_POST['pseudo']) AND isset($_POST['email']) AND isset($_POST['password']) AND isset($_POST['password_confirm'])) {
     
         $account_error = ''; // On défini une variable regroupant les erreurs
     
@@ -128,15 +128,15 @@ function newMember($db) {
         $_POST['password_confirm'] = htmlspecialchars($_POST['password_confirm']);
         if (preg_match("#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#", $_POST['password'])) {
             if ($_POST['password_confirm'] == $_POST['password']) { 
-                $reponse3 = $db->query('SELECT password FROM contacts');
-                while ($data3 = $reponse3->fetch()) {
+                $req3 = $db->query('SELECT password FROM contacts');
+                while ($data3 = $req3->fetch()) {
                     $isPasswordExist = password_verify($_POST['password'], $data3['password']);
                     if (!$isPasswordExist) {   
                     } else {
                         $account_error .= '<p class="alert">' . 'Désolé ce mot de passe existe déjà !' . '</p>';
                     }
                 }
-                $reponse3->closeCursor(); // Termine le traitement de la requête 3
+                $req3->closeCursor(); // Termine le traitement de la requête 3
             } else {
                 $account_error .= '<p class="alert">' . 'Attention vos mots de passes ne sont pas identiques !' . '</p>';
             }   
@@ -148,7 +148,7 @@ function newMember($db) {
             
         if ($account_error == '') {
             memberCreate($db); //  on appelle la fonction de création d'un nouveau membre    
-            $account_error = '<p class="success">' . 'Bonjour ' . $_POST['prenom'] . ' ' . $_POST['nom'] . ', votre compte est bien créé !' . '<br>' . 'Accédez au site en vous connectant ci-dessus.' . '</p>';
+            $account_error = '<p class="success">' . 'Bonjour ' . $_POST['first_name'] . ' ' . $_POST['name'] . ', votre compte est bien créé !' . '<br>' . 'Accédez au site en vous connectant ci-dessus.' . '</p>';
             return $account_error;
         } else {
             return $account_error;
@@ -161,10 +161,10 @@ function newMember($db) {
 //**************************************************************************************
 
 function memberCreate($db) {
-    $req = $db->prepare('INSERT INTO contacts(nom, prenom, pseudo, email, password, date_creation) VALUES(:nom, :prenom, :pseudo, :email, :password, NOW())');
+    $req = $db->prepare('INSERT INTO contacts(name, first_name, pseudo, email, password, creation_date) VALUES(:name, :first_name, :pseudo, :email, :password, NOW())');
     $req->execute(array(
-        'nom' => htmlspecialchars($_POST['nom']),
-        'prenom' => htmlspecialchars($_POST['prenom']),
+        'name' => htmlspecialchars($_POST['name']),
+        'first_name' => htmlspecialchars($_POST['first_name']),
         'pseudo' => htmlspecialchars($_POST['pseudo']),
         'email' => htmlspecialchars($_POST['email']),
         'password' => password_hash($_POST['password'], PASSWORD_DEFAULT)

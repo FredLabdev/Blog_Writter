@@ -36,7 +36,7 @@ session_start(); // On démarre la session AVANT toute chose
         Nous sommes le :
         <?php echo date('d/m/Y') . '<br>';
         	if(isset($_SESSION['pseudo'])) {
-            	echo ' Bonjour ' . $_SESSION['prenom'];
+            	echo ' Bonjour ' . $_SESSION['first_name'];
         	} else {
             	echo 'Erreur nom ou prénom visiteur';
         	}
@@ -45,10 +45,10 @@ session_start(); // On démarre la session AVANT toute chose
 
     <br />
     <p>===========================================================</p>
-    <!-- Liste des billets -->
+    <!-- Liste des posts -->
 
     <h3>
-        Liste des billets :
+        Liste des posts :
     </h3>
 
     <form method="post" action="backend_insert_billet.php">
@@ -64,15 +64,15 @@ session_start(); // On démarre la session AVANT toute chose
             catch(Exception $e) {
                 die('Erreur : '.$e->getMessage());
             }
-            do { // on édite la liste des billets au moins une fois sans cliquer sur bouton "Rafraîchir"
-                $reponse = $db->query('SELECT COUNT(*) AS nbre_billets FROM billets');
-                $data = $reponse->fetch(); // 
-                echo 'Nombre de billets publiés à ce jour: ' . $data['nbre_billets'];
-                $reponse = $db->query('SELECT * FROM billets');
-                while ($data = $reponse->fetch()) {
-                echo '<li style="color: red;">' . $data['id'] . ' : ' . $data['titre_episode'] . '</li>';
+            do { // on édite la liste des posts au moins une fois sans cliquer sur bouton "Rafraîchir"
+                $req = $db->query('SELECT COUNT(*) AS nbre_posts FROM posts');
+                $data = $req->fetch(); // 
+                echo 'Nombre de posts publiés à ce jour: ' . $data['nbre_posts'];
+                $req = $db->query('SELECT * FROM posts');
+                while ($data = $req->fetch()) {
+                echo '<li style="color: red;">' . $data['id'] . ' : ' . $data['chapter_title'] . '</li>';
                 }
-                $reponse->closeCursor(); // Termine le traitement de la requête
+                $req->closeCursor(); // Termine le traitement de la requête
             } while ($_POST['rafraichir']);  // on recommence à chaque click sur bouton "Rafraîchir"
         ?>
     </ul>
@@ -101,7 +101,7 @@ session_start(); // On démarre la session AVANT toute chose
                 die('Erreur : '.$e->getMessage());
             }
             if(isset($_POST['titre']) AND isset($_POST['contenu'])) { // insertion nouveau billet
-                $req = $db->prepare('INSERT INTO billets(date_creation, titre_episode, contenu_episode) VALUES(NOW(), :titre, :contenu)');
+                $req = $db->prepare('INSERT INTO posts(creation_date, chapter_title, chapter_content) VALUES(NOW(), :titre, :contenu)');
                 $req->execute(array('titre' => $_POST['titre'], 'contenu' => $_POST['contenu']));
                 echo 'Le nouvel épisode ' . $_POST['titre'] . ' a bien été créé !';
                 $req->closeCursor(); // Termine le traitement de la requête

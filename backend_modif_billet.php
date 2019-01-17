@@ -36,7 +36,7 @@ session_start(); // On démarre la session AVANT toute chose
         Nous sommes le :
         <?php echo date('d/m/Y') . '<br>';
         	if(isset($_SESSION['pseudo'])) {
-            	echo ' Bonjour ' . $_SESSION['prenom'];
+            	echo ' Bonjour ' . $_SESSION['first_name'];
         	} else {
             	echo 'Erreur nom ou prénom visiteur';
         	}
@@ -46,10 +46,10 @@ session_start(); // On démarre la session AVANT toute chose
     <br />
     <p>===========================================================</p>
 
-    <!-- Liste des billets -->
+    <!-- Liste des posts -->
 
     <h3>
-        Voir les billets :
+        Voir les posts :
     </h3>
 
     <form method="post" action="backend_modif_billet.php">
@@ -61,23 +61,23 @@ session_start(); // On démarre la session AVANT toute chose
                 catch(Exception $e) {
                     die('Erreur : '.$e->getMessage());
                 }
-                $reponse = $db->query('SELECT * FROM billets');
-                while ($data = $reponse->fetch()) { // Liste déroulante des titres des billets
-                echo '<option value="' . $data['id'] . '">' . $data['titre_episode'] . '</option>';
+                $req = $db->query('SELECT * FROM posts');
+                while ($data = $req->fetch()) { // Liste déroulante des titres des posts
+                echo '<option value="' . $data['id'] . '">' . $data['chapter_title'] . '</option>';
                 }
-                $reponse->closeCursor(); // Termine le traitement de la requête
+                $req->closeCursor(); // Termine le traitement de la requête
             ?>
         </select>
         <input type="submit" value="valider" name="valider" /><br>
 
         <?php // Détail du billet sélectionné //
             if (isset($_POST['billet']) AND isset($_POST['valider'])) {
-                $req = $db->prepare('SELECT * FROM billets WHERE id = ?');
+                $req = $db->prepare('SELECT * FROM posts WHERE id = ?');
                 $req->execute(array($_POST['billet']));
                 while ($data = $req->fetch()) {
                     echo 'Date de publication : ' . $data['date'] . '<br>';
-                    echo 'Titre de l\'épisode : ' . $data['titre_episode'] . '<br>';
-                    echo 'Contenu de l\'épisode : ' . $data['contenu_episode'] . '<br>';  
+                    echo 'Titre de l\'épisode : ' . $data['chapter_title'] . '<br>';
+                    echo 'Contenu de l\'épisode : ' . $data['chapter_content'] . '<br>';  
                 }
                 $req->closeCursor(); // Termine le traitement de la requête
             }
@@ -96,11 +96,11 @@ session_start(); // On démarre la session AVANT toute chose
     <form method="post" action="backend_modif_billet.php">
         <label>Sélectionnez un billet : </label><select name="billet-modif">
             <?php
-                $reponse = $db->query('SELECT * FROM billets');
-                while ($data = $reponse->fetch()) { // Liste déroulante des titres des billets
-                echo '<option value="' . $data['id'] . '">' . $data['titre_episode'] . '</option>';
+                $req = $db->query('SELECT * FROM posts');
+                while ($data = $req->fetch()) { // Liste déroulante des titres des posts
+                echo '<option value="' . $data['id'] . '">' . $data['chapter_title'] . '</option>';
                 }
-                $reponse->closeCursor(); // Termine le traitement de la requête
+                $req->closeCursor(); // Termine le traitement de la requête
             ?>
         </select><br>
         <label>Supprimer tout le billet ?</label><input type="checkbox" name="delete" /><br>
@@ -113,7 +113,7 @@ session_start(); // On démarre la session AVANT toute chose
 
         <?php  // Modification du billet
             if(isset($_POST['champ']) AND isset($_POST['delete'])) { // si tout le billet à supprimer
-                $req = $db->prepare('DELETE FROM billets WHERE id = :idnum');
+                $req = $db->prepare('DELETE FROM posts WHERE id = :idnum');
                     $req->execute(array(
                         'idnum' => $_POST['billet-modif']
                     ));  
@@ -121,7 +121,7 @@ session_start(); // On démarre la session AVANT toute chose
                     $req->closeCursor(); // Termine le traitement de la requête
             } else if(isset($_POST['champ']) AND isset($_POST['billet-modif']) AND isset($_POST['modif_champ']) AND isset($_POST['remplacer'])) {
                 if ($_POST['champ'] == 1) { // si titre à modifier
-                    $req = $db->prepare('UPDATE billets SET titre_episode = :nvtitre WHERE id = :idnum');
+                    $req = $db->prepare('UPDATE posts SET chapter_title = :nvtitre WHERE id = :idnum');
                     $req->execute(array(
                         'nvtitre' => $_POST['modif_champ'],
                         'idnum' => $_POST['billet-modif']
@@ -129,7 +129,7 @@ session_start(); // On démarre la session AVANT toute chose
                     echo '<br>'.'Le titre de l\'épisode a bien été modifié !';
                     $req->closeCursor(); // Termine le traitement de la requête
                 } else if ($_POST['champ'] == 2) { // si contenu à modifier
-                    $req = $db->prepare('UPDATE billets SET contenu_episode = :nvcontenu WHERE id = :idnum');
+                    $req = $db->prepare('UPDATE posts SET chapter_content = :nvcontenu WHERE id = :idnum');
                     $req->execute(array(
                         'nvcontenu' => $_POST['modif_champ'],
                         'idnum' => $_POST['billet-modif']
