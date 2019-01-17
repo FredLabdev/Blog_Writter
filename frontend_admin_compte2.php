@@ -31,9 +31,9 @@
     } 
     
     else if ($_GET['nv_mp']) {
-        $req = $bdd->prepare('UPDATE contacts SET mot_passe = :nvmot_passe WHERE pseudo = :monpseudo');
+        $req = $bdd->prepare('UPDATE contacts SET password = :newpassword WHERE pseudo = :monpseudo');
         $req->execute(array(
-            'nvmot_passe' => $_GET['nv_mp'],
+            'newpassword' => $_GET['nv_mp'],
             'monpseudo' => $_SESSION['pseudo'] 
         ));
         $req->closeCursor(); // Termine le traitement de la requête

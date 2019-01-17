@@ -11,7 +11,7 @@
 
     // Suppression des cookies de connexion automatique
     setcookie('pseudo', '');
-    setcookie('mot_passe', '');
+    setcookie('password', '');
 
 ?>
 
