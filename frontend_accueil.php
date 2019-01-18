@@ -1,46 +1,24 @@
-<?php
-session_start(); // On démarre la session AVANT toute chose
-?>
+<?php session_start(); ?>
+<?php $title = 'Accueil'; ?>
+<?php $template = 'frontend'; ?>
+<?php ob_start(); ?>
 
-<!DOCTYPE html>
-<html>
+<br />
+<p>===========================================================</p>
+<!-- Confirm connect -->
 
-<head>
-    <meta charset="utf-8" />
-    <title>Jean Forteroche</title>
-    <!-- Feuille de style css et Bibliothèque d'icones FontAwesome -->
-    <link rel="stylesheet" href="frontend_style.css" />
-
-</head>
-
-<body>
-
-    <!-- Header -->
-
-    <?php include("forteroche_header.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Menu -->
-
-    <?php include("forteroche_menu.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Confirm connect -->
-
-    <h3>
-        Bienvenue
-        <?php 
+<h3>
+    Bienvenue
+    <?php 
             echo $_SESSION['first_name'] . ' !';
         ?>
-    </h3>
+</h3>
 
-    <p>===========================================================</p>
-    <!-- Liste des posts -->
+<p>===========================================================</p>
+<!-- Liste des posts -->
 
-    <ul>
-        <?php   // connexion à la base de données 
+<ul>
+    <?php   // connexion à la base de données 
             try { 
                 $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             }
@@ -61,13 +39,13 @@ session_start(); // On démarre la session AVANT toute chose
             }
             $req->closeCursor(); // Termine le traitement de la requête
         ?>
-    </ul>
+</ul>
 
-    <p>===========================================================</p>
-    <!-- Les détails par groupe de 5 posts -->
+<p>===========================================================</p>
+<!-- Les détails par groupe de 5 posts -->
 
-    <p>Page
-        <?php // Boucle affichant le bon nombre de liens vers d'autres pages, par groupe de 5 posts 
+<p>Page
+    <?php // Boucle affichant le bon nombre de liens vers d'autres pages, par groupe de 5 posts 
         
             $req = $db->query('SELECT COUNT(id) AS nb_posts FROM posts');
             $data = $req->fetch();
@@ -76,9 +54,9 @@ session_start(); // On démarre la session AVANT toute chose
                 $req->closeCursor(); // Termine le traitement de la requête
             }
         ?>
-    </p>
+</p>
 
-    <?php    // Récupération des indices de posts max et min de chaque page 
+<?php    // Récupération des indices de posts max et min de chaque page 
     
         if ($_GET['page']) {
             $id_max_page = ($_GET['page']-1)*5;  
@@ -136,11 +114,6 @@ session_start(); // On démarre la session AVANT toute chose
         $req->closeCursor(); // Termine le traitement de la requête
     ?>
 
-    <!-- Footer -->
-    <br />
-    <p>===========================================================</p>
-    <?php include("forteroche_footer.php"); ?>
+<?php $content = ob_get_clean(); ?>
 
-</body>
-
-</html>
+<?php require('template.php'); ?>

@@ -1,6 +1,6 @@
 <?php 
 
-    session_start(); // On démarre la session AVANT toute chose
+session_start();
 
     // connexion à la base de données   
 
@@ -39,29 +39,3 @@
         $req->closeCursor(); // Termine le traitement de la requête
         header('Location: frontend_admin_compte.php');
     }
-?>
-
-<!--****************************************************************************************************************-->
-<!--                                                  HTML                                                          -->
-<!--****************************************************************************************************************-->
-
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8" />
-    <title>Jean Forteroche</title>
-    <!-- Feuille de style css et Bibliothèque d'icones FontAwesome -->
-    <link rel="stylesheet" href="frontend_style.css" />
-</head>
-
-<body>
-
-    <!-- Footer -->
-    <br />
-    <p>===========================================================</p>
-    <?php include("forteroche_footer.php"); ?>
-
-</body>
-
-</html>

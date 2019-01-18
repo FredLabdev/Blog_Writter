@@ -1,8 +1,10 @@
-<?php
-session_start(); // On démarre la session AVANT toute chose
-?>
+<?php 
 
-<?php
+session_start();
+$title = 'Envoie_fichier';
+$template = 'frontend';
+ob_start();
+
 // Testons si le fichier a bien été envoyé et s'il n'y a pas d'erreur
 if (isset($_FILES['monfichier']) AND $_FILES['monfichier']['error'] == 0) {
     // Testons si le fichier n'est pas trop gros
@@ -22,4 +24,7 @@ if (isset($_FILES['monfichier']) AND $_FILES['monfichier']['error'] == 0) {
         echo "Fichier trop volumineux !";
     }
 }
-?>
+
+$content = ob_get_clean();
+
+require('template.php');

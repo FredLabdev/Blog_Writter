@@ -1,63 +1,42 @@
-<?php
-session_start(); // On démarre la session AVANT toute chose
-?>
+<?php session_start(); ?>
+<?php $title='nv_billet' ; ?>
+<?php $template = 'backend'; ?>
+<?php ob_start(); ?>
 
-<!DOCTYPE html>
-<html>
+<br />
+<p>===========================================================</p>
+<!-- Confirm connect -->
 
-<head>
-    <meta charset="utf-8" />
-    <title>Jean Forteroche</title>
-    <!-- Feuille de style css et Bibliothèque d'icones FontAwesome -->
-    <link rel="stylesheet" href="backend_style.css" />
-</head>
+<h3>
+    Bienvenue sur l' administration de votre blog !
+</h3>
 
-<body>
-
-    <!-- Header -->
-
-    <?php include("forteroche_header.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Menu -->
-
-    <?php include("forteroche_menu_admin.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Confirm connect -->
-
-    <h3>
-        Bienvenue sur l' administration de votre blog !
-    </h3>
-
-    <p>
-        Nous sommes le :
-        <?php echo date('d/m/Y') . '<br>';
+<p>
+    Nous sommes le :
+    <?php echo date('d/m/Y') . '<br>';
         	if(isset($_SESSION['pseudo'])) {
             	echo ' Bonjour ' . $_SESSION['first_name'];
         	} else {
             	echo 'Erreur nom ou prénom visiteur';
         	}
         ?>
-    </p>
+</p>
 
-    <br />
-    <p>===========================================================</p>
-    <!-- Liste des posts -->
+<br />
+<p>===========================================================</p>
+<!-- Liste des posts -->
 
-    <h3>
-        Liste des posts :
-    </h3>
+<h3>
+    Liste des posts :
+</h3>
 
-    <form method="post" action="backend_insert_billet.php">
-        <input name="rafraichir" type="hidden" />
-        <input type="submit" value="rafraîchir" />
-    </form>
+<form method="post" action="backend_insert_billet.php">
+    <input name="rafraichir" type="hidden" />
+    <input type="submit" value="rafraîchir" />
+</form>
 
-    <ul>
-        <?php
+<ul>
+    <?php
             try { // connexion à la base de données 
                 $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             }
@@ -75,25 +54,25 @@ session_start(); // On démarre la session AVANT toute chose
                 $req->closeCursor(); // Termine le traitement de la requête
             } while ($_POST['rafraichir']);  // on recommence à chaque click sur bouton "Rafraîchir"
         ?>
-    </ul>
+</ul>
 
-    <br />
-    <p>===========================================================</p>
+<br />
+<p>===========================================================</p>
 
-    <!-- Ajouter un billet -->
+<!-- Ajouter un billet -->
 
-    <h3>
-        Ajouter un nouveau billet :
-    </h3>
+<h3>
+    Ajouter un nouveau billet :
+</h3>
 
-    <form method="post" action="backend_insert_billet.php">
-        <p>
-            <label>Titre du billet : <input type="text" name="titre" /></label><br>
-            <label>Contenu du billet : <input type="text" name="contenu" /></label><br>
-        </p>
-        <input type="submit" value="envoyer" /><br>
+<form method="post" action="backend_insert_billet.php">
+    <p>
+        <label>Titre du billet : <input type="text" name="titre" /></label><br>
+        <label>Contenu du billet : <input type="text" name="contenu" /></label><br>
+    </p>
+    <input type="submit" value="envoyer" /><br>
 
-        <?php
+    <?php
             try {  // connexion à la base de données
                 $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             }
@@ -107,15 +86,8 @@ session_start(); // On démarre la session AVANT toute chose
                 $req->closeCursor(); // Termine le traitement de la requête
             }  
         ?>
-    </form>
+</form>
 
+<?php $content = ob_get_clean(); ?>
 
-
-    <!-- Footer -->
-    <br />
-    <p>===========================================================</p>
-    <?php include("forteroche_footer.php"); ?>
-
-</body>
-
-</html>
+<?php require('template.php'); ?>

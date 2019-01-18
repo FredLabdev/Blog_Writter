@@ -1,9 +1,13 @@
 <?php 
-    session_start();
+session_start();
+$title = 'Deconnexion';
+$template = 'frontend';
+$menu = 'no_menu';
+ob_start();
 
     echo 'Vous êtes bien déconnecté.' . '<br>';
     echo 'A bientôt ' . $_SESSION['first_name'] . '<br>';
-    echo '<a href="index.php">Retour à l\'accueil</a>'   ;
+    echo '<a href="index.php">Retour à l\'accueil</a>';
 
     // Suppression des variables de session et de la session
     $_SESSION = array();
@@ -13,30 +17,6 @@
     setcookie('pseudo', '');
     setcookie('password', '');
 
-?>
+$content = ob_get_clean();
 
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8" />
-    <title>Jean Forteroche</title>
-    <!-- Feuille de style css et Bibliothèque d'icones FontAwesome -->
-    <link rel="stylesheet" href="frontend_style.css" />
-</head>
-
-<body>
-
-    <!-- Header -->
-
-    <?php include("forteroche_header.php"); ?>
-
-
-    <!-- Footer -->
-    <br />
-    <p>===========================================================</p>
-    <?php include("forteroche_footer.php"); ?>
-
-</body>
-
-</html>
+require('template.php');

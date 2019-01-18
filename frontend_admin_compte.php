@@ -1,10 +1,9 @@
-<!--****************************************************************************************************************-->
-<!--                                                  PHP                                                          -->
-<!--****************************************************************************************************************-->
+<?php session_start(); ?>
+<?php $title = 'Mon_compte'; ?>
+<?php $template = 'frontend'; ?>
+<?php ob_start(); ?>
 
 <?php   
-
-    session_start(); // On démarre la session AVANT toute chose
 
     // connexion à la base de données   
 
@@ -15,9 +14,9 @@
         die('Erreur : '.$e->getMessage());
     }
 
-//******************************************************************************************************************//
-//                                 Récupère-t-on un formulaire de  modification ?                                   //
-//******************************************************************************************************************//
+//*******************************************************************************//
+//                Récupère-t-on un formulaire de  modification ?                                   
+//*******************************************************************************//
 
     // si tout le contact à supprimer
     if(isset($_POST['delete'])) {
@@ -134,9 +133,9 @@
         }
     };
 
-//******************************************************************************************************************//
-//                                 Détail du compte selon pseudo session                                            //
-//******************************************************************************************************************//
+//*******************************************************************************//
+//                  Détail du compte selon pseudo session                                   
+//*******************************************************************************//
 
     if (isset($_SESSION['pseudo'])) {
         $req = $db->prepare('SELECT * FROM contacts WHERE pseudo = :monpseudo');
@@ -154,60 +153,34 @@
 
 ?>
 
-<!--****************************************************************************************************************-->
-<!--                                                  HTML                                                          -->
-<!--****************************************************************************************************************-->
+<br />
+<p>===========================================================</p>
+<!-- Confirm connect -->
 
-<!DOCTYPE html>
-<html>
+<h3>
+    Bienvenue sur l' administration de votre compte !
+</h3>
 
-<head>
-    <meta charset="utf-8" />
-    <title>Jean Forteroche</title>
-    <!-- Feuille de style css et Bibliothèque d'icones FontAwesome -->
-    <link rel="stylesheet" href="frontend_style.css" />
-</head>
-
-<body>
-
-    <!-- Header -->
-
-    <?php include("forteroche_header.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Menu -->
-
-    <?php include("forteroche_menu.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Confirm connect -->
-
-    <h3>
-        Bienvenue sur l' administration de votre compte !
-    </h3>
-
-    <p>
-        Nous sommes le :
-        <?php echo date('d/m/Y') . '<br>';
+<p>
+    Nous sommes le :
+    <?php echo date('d/m/Y') . '<br>';
         	if(isset($_SESSION['pseudo'])) {
             	echo ' Bonjour ' . $_SESSION['first_name'];
         	} else {
             	echo 'Erreur nom ou prénom visiteur';
         	}
         ?>
-    </p>
+</p>
 
-    <br />
-    <p>===========================================================</p>
+<br />
+<p>===========================================================</p>
 
-    <!-- Liste des posts -->
+<!-- Liste des posts -->
 
-    <h3>
-        Les données de votre compte :
-    </h3>
-    <?php
+<h3>
+    Les données de votre compte :
+</h3>
+<?php
         echo $date;
         echo $name;
         echo $first_name;  
@@ -216,26 +189,26 @@
         echo $mot_passe;  
     ?>
 
-    <br />
-    <p>===========================================================</p>
+<br />
+<p>===========================================================</p>
 
-    <!-- Modification d'un champ -->
+<!-- Modification d'un champ -->
 
-    <h3>
-        Modifier votre adresse mail, votre mot de passe, ou vous décsincrire :
-    </h3>
+<h3>
+    Modifier votre adresse mail, votre mot de passe, ou vous décsincrire :
+</h3>
 
-    <form novalidate method="post" action="frontend_admin_compte.php" id="form_modif">
-        <p>
-            <label>Sélectionnez le champ à modifier : </label>
-            <select id="champ" name="champ">
-                <option value="1">e-mail</option>
-                <option value="2">Mot de passe</option>
-            </select><br>
-            <label for="modif_champ">Nouveau contenu du champ : </label>
-            <input id="modif_champ" type="email" name="modif_champ" />
-            <span class="error" id="error1" aria-live="polite">
-                <?php
+<form novalidate method="post" action="frontend_admin_compte.php" id="form_modif">
+    <p>
+        <label>Sélectionnez le champ à modifier : </label>
+        <select id="champ" name="champ">
+            <option value="1">e-mail</option>
+            <option value="2">Mot de passe</option>
+        </select><br>
+        <label for="modif_champ">Nouveau contenu du champ : </label>
+        <input id="modif_champ" type="email" name="modif_champ" />
+        <span class="error" id="error1" aria-live="polite">
+            <?php
                     if($message_mail_invalid) {
                         echo $message_mail_invalid;
                     }
@@ -255,28 +228,23 @@
                         echo $message_mp_exist;
                     }
                 ?>
-            </span><br>
-            <label for="modif_champ_confirm">Confirmez ce nouveau contenu : </label>
-            <input id="modif_champ_confirm" type="email" name="modif_champ_confirm" />
-            <span class="error" id="error2" aria-live="polite">
-                <?php
+        </span><br>
+        <label for="modif_champ_confirm">Confirmez ce nouveau contenu : </label>
+        <input id="modif_champ_confirm" type="email" name="modif_champ_confirm" />
+        <span class="error" id="error2" aria-live="polite">
+            <?php
                     if ($message_mails_diff) {
                         echo $message_mails_diff;
                     }
                 ?>
-            </span><br>
-            <label>Vous désinscrire et supprimer votre profil ?</label>
-            <input type="checkbox" name="delete" /><br>
-            <input type="hidden" id="variableAPasser" value="<?php echo $invalid ?>" />
-            <input id="bouton_envoi" type="submit" value="Appliquer" name="remplacer" />
-        </p>
-    </form>
+        </span><br>
+        <label>Vous désinscrire et supprimer votre profil ?</label>
+        <input type="checkbox" name="delete" /><br>
+        <input type="hidden" id="variableAPasser" value="<?php echo $invalid ?>" />
+        <input id="bouton_envoi" type="submit" value="Appliquer" name="remplacer" />
+    </p>
+</form>
 
-    <!-- Footer -->
-    <br />
-    <p>===========================================================</p>
-    <?php include("forteroche_footer.php"); ?>
+<?php $content = ob_get_clean(); ?>
 
-</body>
-
-</html>
+<?php require('template.php'); ?>

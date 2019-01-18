@@ -1,48 +1,28 @@
-<?php
-session_start(); // On démarre la session AVANT toute chose
-?>
+<?php session_start(); ?>
+<?php $title = 'Commentaire'; ?>
+<?php $template = 'frontend'; ?>
+<?php $onload = 'refresh_comments'; ?>
+<?php ob_start(); ?>
 
-<!DOCTYPE html>
-<html onload="document.getElementById('recup_billet_id').submit();">
+<br />
+<p>===========================================================</p>
+<!-- Confirm connect -->
 
-<head>
-    <meta charset="utf-8" />
-    <title>Jean Forteroche</title>
-    <!-- Feuille de style css et Bibliothèque d'icones FontAwesome -->
-    <link rel="stylesheet" href="frontend_style.css" />
-</head>
-
-<body>
-
-    <!-- Header -->
-
-    <?php include("forteroche_header.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Menu -->
-
-    <?php include("forteroche_menu.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Confirm connect -->
-
-    <p>
-        Nous sommes le :
-        <?php echo date('d/m/Y') . '<br>';
+<p>
+    Nous sommes le :
+    <?php echo date('d/m/Y') . '<br>';
         	if(isset($_SESSION['pseudo'])) {
             	echo ' Bonjour ' . $_SESSION['first_name'];
         	} else {
             	echo 'Erreur nom ou prénom visiteur';
         	}
         ?>
-    </p>
+</p>
 
-    <p>=======================================================================================</p>
-    <!-- Affichage Billet sélectionné sur page d'accueil et les comments associés -->
+<p>=======================================================================================</p>
+<!-- Affichage Billet sélectionné sur page d'accueil et les comments associés -->
 
-    <?php     // connexion à la base de données
+<?php     // connexion à la base de données
         try { 
             $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
         }
@@ -59,67 +39,67 @@ session_start(); // On démarre la session AVANT toute chose
         } while ($_POST['rafraichir']);  // on recommence à chaque click sur bouton "Rafraîchir")
     ?>
 
-    <div class="news">
-        <h3>
-            <?php echo htmlspecialchars($data['chapter_title']); ?>
-            <em> publié le
-                <?php echo $data['creation_date_fr']; ?>
-            </em>
-        </h3>
-        <p>
-            <?php echo nl2br(htmlspecialchars($data['chapter_content'])); ?>
-        </p>
-    </div>
-    <h2>comments</h2>
+<div class="news">
+    <h3>
+        <?php echo htmlspecialchars($data['chapter_title']); ?>
+        <em> publié le
+            <?php echo $data['creation_date_fr']; ?>
+        </em>
+    </h3>
+    <p>
+        <?php echo nl2br(htmlspecialchars($data['chapter_content'])); ?>
+    </p>
+</div>
+<h2>comments</h2>
 
-    <form method="post" action="frontend_comment_billet.php">
-        <input name="rafraichir" type="hidden" />
-        <input type="submit" value="Rafraîchir les comments" /> <!-- Bouton "Rafraichir qui reactualise les comments si nouveau -->
-    </form>
+<form method="post" action="frontend_comment_billet.php">
+    <input name="rafraichir" type="hidden" />
+    <input type="submit" value="Rafraîchir les comments" /> <!-- Bouton "Rafraichir qui reactualise les comments si nouveau -->
+</form>
 
-    <?php
+<?php
         $req->closeCursor(); // Termine le traitement de la requête
         $req = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\') AS comment_date_fr FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');
         $req->execute(array($_COOKIE['billet_select']));    
         while ($data = $req->fetch()) {
     ?>
-    <!-- BOUCLE POUR CHAQUE comment TROUVE : -->
+<!-- BOUCLE POUR CHAQUE comment TROUVE : -->
 
-    <!-- Détail du comment -->
-    <p>le
-        <?php echo $data['comment_date_fr'] . ' '; ?>
-        <strong>
-            <?php echo htmlspecialchars($data['author']); ?>
-        </strong>
-        à écrit
-    </p>
-    <p style="font-style: italic;">
-        <?php echo nl2br(htmlspecialchars($data['comment'])); ?>
-    </p>
+<!-- Détail du comment -->
+<p>le
+    <?php echo $data['comment_date_fr'] . ' '; ?>
+    <strong>
+        <?php echo htmlspecialchars($data['author']); ?>
+    </strong>
+    à écrit
+</p>
+<p style="font-style: italic;">
+    <?php echo nl2br(htmlspecialchars($data['comment'])); ?>
+</p>
 
-    <!-- Bouton de Suppression du comment -->
+<!-- Bouton de Suppression du comment -->
 
-    <p>.......................................................................................</p>
+<p>.......................................................................................</p>
 
-    <?php
+<?php
         }
         $req->closeCursor();  // Termine le traitement de la requête SELECT après fermeture de la boucle 
      ?>
 
-    <!-- RAJOUT D'UN comment A LA SUITE : -->
+<!-- RAJOUT D'UN comment A LA SUITE : -->
 
-    <h3>Ajouter un comment :</h3>
-    <form method="post" action="frontend_comment_billet.php">
-        <p>
-            <label>Votre message :</label><br>
-            <textarea name="nv_comment" rows="8" cols="45">
+<h3>Ajouter un comment :</h3>
+<form method="post" action="frontend_comment_billet.php">
+    <p>
+        <label>Votre message :</label><br>
+        <textarea name="nv_comment" rows="8" cols="45">
             </textarea>
-        </p>
-        <input name="billet_id" type="hidden" />
-        <input type="submit" value="Envoyer votre comment" />
-    </form>
+    </p>
+    <input name="billet_id" type="hidden" />
+    <input type="submit" value="Envoyer votre comment" />
+</form>
 
-    <?php   // Contrôle si contact autorisé à commenter
+<?php   // Contrôle si contact autorisé à commenter
     
         $req1 = $db->prepare('SELECT block_comment FROM contacts WHERE pseudo = ?');
         $req1->execute(array($_SESSION['pseudo']));
@@ -142,11 +122,6 @@ session_start(); // On démarre la session AVANT toute chose
         }
     ?>
 
-    <!-- Footer -->
-    <br />
-    <p>===========================================================</p>
-    <?php include("forteroche_footer.php"); ?>
+<?php $content = ob_get_clean(); ?>
 
-</body>
-
-</html>
+<?php require('template.php'); ?>

@@ -1,52 +1,32 @@
-<?php
-session_start(); // On démarre la session AVANT toute chose
-?>
+<?php session_start(); ?>
+<?php $title = 'Contact'; ?>
+<?php $template = 'frontend'; ?>
+<?php ob_start(); ?>
 
-<!DOCTYPE html>
-<html>
+<p>
+    Page contact :
+</p>
+<p>Aujourd'hui nous sommes le
+    <?php echo date('d/m/Y h:i:s'); ?>.
+</p>
 
-<head>
-    <meta charset="utf-8" />
-    <title>Jean Forteroche</title>
-    <!-- Feuille de style css et Bibliothèque d'icones FontAwesome -->
-    <link rel="stylesheet" href="frontend_style.css" />
-</head>
+<br />
+<p>===========================================================</p>
+<!-- envoie Fichier en méthode POST -->
 
-<body>
+<h3>
+    Envoyer un fichier :
+</h3>
 
-    <?php include("forteroche_header.php"); ?>
 
-    <?php include("forteroche_menu.php"); ?>
-
+<form action="forteroche_fichier.php" method="post" enctype="multipart/form-data">
     <p>
-        Page contact :
+        Formulaire d'envoi de fichier (taille maxi 1Mo) :<br />
+        <input type="file" name="monfichier" /><br />
+        <input type="submit" value="Envoyer le fichier" />
     </p>
-    <p>Aujourd'hui nous sommes le
-        <?php echo date('d/m/Y h:i:s'); ?>.
-    </p>
+</form>
 
-    <br />
-    <p>===========================================================</p>
-    <!-- envoie Fichier en méthode POST -->
+<?php $content = ob_get_clean(); ?>
 
-    <h3>
-        Envoyer un fichier :
-    </h3>
-
-
-    <form action="forteroche_fichier.php" method="post" enctype="multipart/form-data">
-        <p>
-            Formulaire d'envoi de fichier (taille maxi 1Mo) :<br />
-            <input type="file" name="monfichier" /><br />
-            <input type="submit" value="Envoyer le fichier" />
-        </p>
-    </form>
-
-    <!-- Footer -->
-    <br />
-    <p>===========================================================</p>
-    <?php include("forteroche_footer.php"); ?>
-
-</body>
-
-</html>
+<?php require('template.php'); ?>

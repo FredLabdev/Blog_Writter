@@ -3,6 +3,11 @@ body {
     color: black;
 }
 
+.backend {
+    background-color: darkseagreen;
+    color: darkblue;
+}
+
 .alert {
     color: red;
 }

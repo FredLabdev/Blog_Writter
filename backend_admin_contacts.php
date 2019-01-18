@@ -1,59 +1,38 @@
-<?php
-session_start(); // On démarre la session AVANT toute chose
-?>
+<?php session_start(); ?>
+<?php $title = 'Membres'; ?>
+<?php $template = 'backend'; ?>
+<?php ob_start(); ?>
 
-<!DOCTYPE html>
-<html>
+<br />
+<p>===========================================================</p>
+<!-- Confirm connect -->
 
-<head>
-    <meta charset="utf-8" />
-    <title>Jean Forteroche</title>
-    <!-- Feuille de style css et Bibliothèque d'icones FontAwesome -->
-    <link rel="stylesheet" href="backend_style.css" />
-</head>
+<h3>
+    Bienvenue sur l' administration de vos contacts !
+</h3>
 
-<body>
-
-    <!-- Header -->
-
-    <?php include("forteroche_header.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Menu -->
-
-    <?php include("forteroche_menu_admin.php"); ?>
-
-    <br />
-    <p>===========================================================</p>
-    <!-- Confirm connect -->
-
-    <h3>
-        Bienvenue sur l' administration de vos contacts !
-    </h3>
-
-    <p>
-        Nous sommes le :
-        <?php echo date('d/m/Y') . '<br>';
+<p>
+    Nous sommes le :
+    <?php echo date('d/m/Y') . '<br>';
         	if(isset($_SESSION['pseudo'])) {
             	echo ' Bonjour ' . $_SESSION['first_name'];
         	} else {
             	echo 'Erreur nom ou prénom visiteur';
         	}
         ?>
-    </p>
+</p>
 
 
-    <br />
-    <p>===========================================================</p>
+<br />
+<p>===========================================================</p>
 
-    <!-- Liste des contacts par catégorie -->
+<!-- Liste des contacts par catégorie -->
 
-    <h3>
-        Liste des contacts classés par catégorie :
-    </h3>
+<h3>
+    Liste des contacts classés par catégorie :
+</h3>
 
-    <?php   // connexion à la base de données
+<?php   // connexion à la base de données
         try {  
             $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
         }
@@ -76,28 +55,28 @@ session_start(); // On démarre la session AVANT toute chose
         $req->closeCursor(); // Termine le traitement de la requête
     ?>
 
-    <br />
-    <p>===========================================================</p>
+<br />
+<p>===========================================================</p>
 
-    <!-- Voir les champs d'un contact -->
+<!-- Voir les champs d'un contact -->
 
-    <h3>
-        Voir les champs d'un contact :
-    </h3>
+<h3>
+    Voir les champs d'un contact :
+</h3>
 
-    <form method="post" action="backend_admin_contacts.php">
-        <label>Sélectionnez un contact : </label><select name="contact">
-            <?php
+<form method="post" action="backend_admin_contacts.php">
+    <label>Sélectionnez un contact : </label><select name="contact">
+        <?php
                 $req = $db->query('SELECT *, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM contacts');
                 while ($data = $req->fetch()) { // liste déroulante des contacts
                 echo '<option value="' . $data['id'] . '">' . $data['name_maj'] . ' ' . $data['first_name_min'] . '</option>';
                 }
                 $req->closeCursor(); // Termine le traitement de la requête
             ?>
-        </select>
-        <input type="submit" value="valider" name="valider" /><br>
+    </select>
+    <input type="submit" value="valider" name="valider" /><br>
 
-        <?php
+    <?php
             if (isset($_POST['contact']) AND isset($_POST['valider'])) {
                 $req = $db->prepare('SELECT * FROM contacts WHERE id = ?');
                 $req->execute(array($_POST['contact']));
@@ -112,40 +91,40 @@ session_start(); // On démarre la session AVANT toute chose
                 $req->closeCursor(); // Termine le traitement de la requête
             }
         ?>
-    </form>
+</form>
 
-    <br />
-    <p>===========================================================</p>
+<br />
+<p>===========================================================</p>
 
-    <!-- Modification du champs d'un contact -->
+<!-- Modification du champs d'un contact -->
 
-    <h3>
-        Modifier le champ d'un contact :
-    </h3>
+<h3>
+    Modifier le champ d'un contact :
+</h3>
 
-    <form method="post" action="backend_admin_contacts.php">
-        <label>Sélectionnez un contact : </label><select name="contact-modif">
-            <?php
+<form method="post" action="backend_admin_contacts.php">
+    <label>Sélectionnez un contact : </label><select name="contact-modif">
+        <?php
                 $req = $db->query('SELECT * FROM contacts');
                 while ($data = $req->fetch()) { // liste déroulante des contacts
                 echo '<option value="' . $data['id'] . '">' . $data['name'] . '</option>';
                 }
                 $req->closeCursor(); // Termine le traitement de la requête
             ?>
-        </select><br> <!-- Sélection du champ à modifier -->
-        <label>Supprimer tout le contact ?</label><input type="checkbox" name="delete" /><br>
-        <label>Bloquer ses comments</label><input type="checkbox" name="bloquage" /><br>
-        <label>Sélectionnez le champ à modifier : </label><select name="champ">
-            <option value="1">Nom</option>
-            <option value="2">Prénom</option>
-            <option value="3">Pseudo</option>
-            <option value="4">e-mail</option>
-            <option value="5">Mot de passe</option>
-        </select><br>
-        <label>Nouveau contenu du champ : </label><input type="text" name="modif_champ" />
-        <input type="submit" value="Appliquer" name="remplacer" />
+    </select><br> <!-- Sélection du champ à modifier -->
+    <label>Supprimer tout le contact ?</label><input type="checkbox" name="delete" /><br>
+    <label>Bloquer ses comments</label><input type="checkbox" name="bloquage" /><br>
+    <label>Sélectionnez le champ à modifier : </label><select name="champ">
+        <option value="1">Nom</option>
+        <option value="2">Prénom</option>
+        <option value="3">Pseudo</option>
+        <option value="4">e-mail</option>
+        <option value="5">Mot de passe</option>
+    </select><br>
+    <label>Nouveau contenu du champ : </label><input type="text" name="modif_champ" />
+    <input type="submit" value="Appliquer" name="remplacer" />
 
-        <?php 
+    <?php 
             if(isset($_POST['champ']) AND isset($_POST['delete'])) {  // si tout le contact à supprimer
                 $req = $db->prepare('DELETE FROM contacts WHERE id = :idnum');
                 $req->execute(array(
@@ -205,14 +184,8 @@ session_start(); // On démarre la session AVANT toute chose
                 }
             };
         ?>
-    </form>
+</form>
 
+<?php $content = ob_get_clean(); ?>
 
-    <!-- Footer -->
-    <br />
-    <p>===========================================================</p>
-    <?php include("forteroche_footer.php"); ?>
-
-</body>
-
-</html>
+<?php require('template.php'); ?>
