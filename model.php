@@ -37,33 +37,10 @@ function pseudoControl($pseudo) {
     $db = dbConnect();
     $req = $db->prepare('SELECT password FROM contacts WHERE pseudo = ?');
     $req->execute(array($pseudo));
-    $dbPassword = $req->fetch();
-    return $dbPassword;
+    $pseudoValid = $req->fetch();
+    return $pseudoValid;
 }
         
-//**************************************************************************************
-//                     Fonction de Login membre via formulaire            
-//**************************************************************************************
-
-function passwordControl($password, $dbPassword) {
-    // On vérifie que le mot de passe saisi est égal au mot de passe crypté de la db,
-    $isPasswordCorrect = password_verify($password, $dbPassword);
-    return $isPasswordCorrect;
-}
-
-//**************************************************************************************
-//                       Fonction d'ouverture de session                  
-//**************************************************************************************
-
-function sessionStart($memberData) {
-    // on démarre la session, et on stocke les paramètres utiles aux autres pages
-    session_start();
-    $_SESSION['name'] = $memberData['name'];
-    $_SESSION['first_name'] = $memberData['first_name'];
-    $_SESSION['pseudo'] = $memberData['pseudo'];
-    $_SESSION['password'] = $memberData['password'];    
-} 
-
 //**************************************************************************************
 //            Fonction de vérification d'un formulaire de création de compte                     
 //**************************************************************************************

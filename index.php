@@ -8,7 +8,13 @@ if ($_COOKIE['password']) {
 
 // Sinon si on récupère un formulaire de connexion,
 else if (isset($_POST['login'])) {
-    loginControl(htmlspecialchars($_POST['pseudo_login']), htmlspecialchars($_POST['password_login'])); // on appele le Contrôle de validité du login.
+    if (!empty($_POST['pseudo_connect']) && !empty($_POST['password_connect'])) {
+        loginControl(htmlspecialchars($_POST['pseudo_connect']), htmlspecialchars($_POST['password_connect'])); // on appele le Contrôle de validité du login.
+    }
+    else {
+        $login_error = '<p class="alert">' . 'Erreur : tous les champs ne sont pas remplis !' . '</p>';
+        require('login.php');
+    }
 } 
 
 // Sinon si on récupère un formulaire de création de compte,
