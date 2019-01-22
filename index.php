@@ -1,35 +1,22 @@
-<!--****************************************************************************************************************-->
-<!--                                                  PHP                                                          -->
-<!--****************************************************************************************************************-->
-
 <?php
-require('model.php');
+require('controller.php');
 
 // Si on récupère un cookie autorisé d'un précédent login_ok, 
-// on se connecte à la Base de données,
-// on les envoie en arguments à la fonction de contrôle de cookie,
-// qui appelera ou non la fonction d'ouverture de session...
 if ($_COOKIE['password']) {
-    $db = connectDataBase();
-    cookieControl($db, htmlspecialchars($_COOKIE['password']));
+    getMemberData(htmlspecialchars($_COOKIE['pseudo']), htmlspecialchars($_COOKIE['password'])); // on appele la récupération de données d'un membre.
 }
 
-// Si on récupère un formulaire de connexion,
-// on se connecte à la Base de données,
-// on l'envoie en argument à la fonction de contrôle de login,
-// qui appelera ou non la fonction d'ouverture de session...
-if (isset($_POST['login'])) {
-    $db = connectDataBase();
-    $login_error = loginControl($db);
+// Sinon si on récupère un formulaire de connexion,
+else if (isset($_POST['login'])) {
+    loginControl(htmlspecialchars($_POST['pseudo_login']), htmlspecialchars($_POST['password_login'])); // on appele le Contrôle de validité du login.
 } 
 
-// Si on récupère un formulaire de création de compte,
-// on se connecte à la Base de données,
-// on l'envoie en argument à la fonction de contrôle d'un nouveau membre,
-if (isset($_POST['newMember'])) {
-    $db = connectDataBase();
-    $account_error = newMember($db);
+// Sinon si on récupère un formulaire de création de compte,
+else if (isset($_POST['newMember'])) {
+    accountControl(); // on appele le Contrôle de validité du compte.
 } 
 
 // Sinon on affiche la page de connexion
+else {
     require('login.php');
+}

@@ -1,4 +1,5 @@
 <?php session_start(); ?>
+
 <?php $title = 'Accueil'; ?>
 <?php $template = 'frontend'; ?>
 <?php ob_start(); ?>
@@ -10,8 +11,8 @@
 <h3>
     Bienvenue
     <?php 
-            echo $_SESSION['first_name'] . ' !';
-        ?>
+        echo $_SESSION['first_name'] . ' !';
+    ?>
 </h3>
 
 <p>===========================================================</p>
@@ -86,30 +87,14 @@
         echo '<h3 class="news">' . $data['chapter_title'] . ' : ' . ' le '. $data['date'] . '</h3>';
         echo '<p>' . htmlspecialchars($data['chapter_content']) . '</p>';
             
-            // id du billet dont on veut voir les comments envoyé en url GET
-            
-        echo '<a href="frontend_accueil.php?billet=' . $data['id'] .'">' . 'Cliquer pour accéder aux comments de ce billet' . '</a>' . '<br>';
-        if ($_GET['billet'] AND $_GET['billet'] == $data['id']) {
-            
-             // on récupère l'id du billet et on créer un cookie
-            
-        setcookie('billet_select', $_GET['billet'], time() + 365*24*3600, null, null, false, true);
-            
-             // on compte le nbre de comments et l'affiche le cas échéant
-            
+            // on compte le nbre de comments et l'affiche le cas échéant
         $req1 = $db->prepare('SELECT COUNT(post_id) AS nbre_comment FROM comments WHERE post_id = ?');
-        $req1->execute(array($data['id'])); // on compte le nbre de comments et l'affiche le cas échéant
-        $data1 = $req1->fetch(); // 
-            if ($data1['nbre_comment'] >= 1) {
-                echo $data1['nbre_comment'] . ' comments' . '<br>'; 
-            } 
+        $req1->execute(array($data['id'])); 
+        $data1 = $req1->fetch(); 
+            
+            // lien vers page des comments avec id du billet envoyé en url GET
+        echo '<a href="frontend_comment_billet.php?billet=' . $data['id'] .'">' . 'Commentaires (' . $data1['nbre_comment'] . ')' . '</a>' . '<br>';
         $req1->closeCursor(); // Termine le traitement de la requête 1
-            
-            // Une fois le cookie créé on peut faire ensuite un second lien vers page des comments
-            
-        echo '<a href="frontend_comment_billet.php">' . 'Détails ou ajout d\'un nouveau comment' . '</a>' . '<br>';
-        }
-        echo '<p>.......................................................................................</p>';  
         }
         $req->closeCursor(); // Termine le traitement de la requête
     ?>

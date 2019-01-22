@@ -4,7 +4,7 @@
 //                          Connexion à la base de données                         
 //**************************************************************************************
 
-function connectDataBase() {
+function dbConnect() {
     try {
         $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
     }
@@ -15,77 +15,61 @@ function connectDataBase() {
 }
     
 //**************************************************************************************
-//                          Fonction de contrôle du login                       
+//                   Fonction de Login membre automatique via cookies                       
 //**************************************************************************************
 
-function loginControl($db) {
-    $login_error = 0; // On défini une variable comptant les erreurs
-    $req = $db->prepare('SELECT * FROM contacts WHERE pseudo = ?');
-    $req->execute(array(htmlspecialchars($_POST['pseudo_connect']))); 
-    if ($data = $req->fetch()) {
-        // On vérifie que le mot de passe saisi est égal au mot de passe crypté de la db,
-        $isPasswordCorrect = password_verify(htmlspecialchars($_POST['password_connect']), $data['password']);
-        if ($isPasswordCorrect) {
-        } else {
-            $login_error += 1;
-        }
-    } else {
-        $login_error += 1;
-    }
-    $req->closeCursor();
-
-    if ($login_error == 0) { // si aucune erreur
-        // si l'option a été cochée, on stocke des cookies pour les prochaines connexions
-        if (isset($_POST['login_auto'])) {
-            setcookie('pseudo', $data['pseudo'], time() + 365*24*3600, null, null, false, true);
-            setcookie('password', $data['password'], time() + 365*24*3600, null, null, false, true);
-        }
-        // On passe ses données en argument à la fonction de démarrage de session
-        sessionStart($data);
-    } else {
-        $login_error = '<p class="alert">' . 'pseudo et/ou mot de passe erroné(s)' . '</p>';
-        return $login_error;
-    }
+function memberConnect($pseudo, $dbPassword) {
+    $db = dbConnect();
+    $req = $db->prepare('SELECT * FROM contacts WHERE pseudo = :pseudo AND password = :password');
+    $req->execute(array(
+        'pseudo' => $pseudo,
+        'password' => $dbPassword
+    ));
+    $memberData = $req->fetch();
+    return $memberData;
 }
-
+       
 //**************************************************************************************
-//             Fonction de contrôle de cookies de conexion automatique                       
+//                   Fonction de Login membre automatique via cookies                       
 //**************************************************************************************
 
-function cookieControl($db, $password) {
-    $req = $db->prepare('SELECT * FROM contacts WHERE password = ?');
-    $req->execute(array($password));
-    if ($data = $req->fetch()) { 
-        sessionStart($data);
-    } $req->closeCursor(); // Termine le traitement de la requête
+function pseudoControl($pseudo) {
+    $db = dbConnect();
+    $req = $db->prepare('SELECT password FROM contacts WHERE pseudo = ?');
+    $req->execute(array($pseudo));
+    $dbPassword = $req->fetch();
+    return $dbPassword;
 }
         
+//**************************************************************************************
+//                     Fonction de Login membre via formulaire            
+//**************************************************************************************
+
+function passwordControl($password, $dbPassword) {
+    // On vérifie que le mot de passe saisi est égal au mot de passe crypté de la db,
+    $isPasswordCorrect = password_verify($password, $dbPassword);
+    return $isPasswordCorrect;
+}
+
 //**************************************************************************************
 //                       Fonction d'ouverture de session                  
 //**************************************************************************************
 
-function sessionStart($data) {
+function sessionStart($memberData) {
     // on démarre la session, et on stocke les paramètres utiles aux autres pages
     session_start();
-    $_SESSION['name'] = $data['name'];
-    $_SESSION['first_name'] = $data['first_name'];
-    $_SESSION['pseudo'] = $data['pseudo'];
-    $_SESSION['password'] = $data['password'];     
-    // Si son pseudo est "admin", on le dirige vers l'accueil backend,
-    if ((htmlspecialchars($data['pseudo']) == 'admin') AND ($data['group_id'] == 1)) {
-        header('Location: backend_accueil.php');
-    }
-    // sinon on le dirige vers l'accueil frontend.   
-    else if ($data['group_id'] !== 1) {  // sinon => on dirigera vers l'interface client front-end accueil
-        header('Location: frontend_accueil.php');
-    }  
+    $_SESSION['name'] = $memberData['name'];
+    $_SESSION['first_name'] = $memberData['first_name'];
+    $_SESSION['pseudo'] = $memberData['pseudo'];
+    $_SESSION['password'] = $memberData['password'];    
 } 
 
 //**************************************************************************************
 //            Fonction de vérification d'un formulaire de création de compte                     
 //**************************************************************************************
 
-function newMember($db) {
+function newMember() {
+    $db = dbConnect();
     if(isset($_POST['name']) AND isset($_POST['first_name']) AND isset($_POST['pseudo']) AND isset($_POST['email']) AND isset($_POST['password']) AND isset($_POST['password_confirm'])) {
     
         $account_error = ''; // On défini une variable regroupant les erreurs
@@ -160,7 +144,8 @@ function newMember($db) {
 //                       Fonction de création d'un nouveau membre                  
 //**************************************************************************************
 
-function memberCreate($db) {
+function memberCreate() {
+    $db = dbConnect();
     $req = $db->prepare('INSERT INTO contacts(name, first_name, pseudo, email, password, creation_date) VALUES(:name, :first_name, :pseudo, :email, :password, NOW())');
     $req->execute(array(
         'name' => htmlspecialchars($_POST['name']),
