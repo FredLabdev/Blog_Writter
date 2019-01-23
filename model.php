@@ -133,3 +133,58 @@ function memberCreate() {
     ));
     $req->closeCursor(); // Termine le traitement de la requête
 }
+
+            // Fonction d'affichage du billet sélectionné
+
+    function getPost($postId) {
+        $db = dbConnect();
+        $req = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr FROM posts WHERE id = ?');
+        $req->execute(array($postId));
+        $post = $req->fetch();
+        $req->closeCursor();
+        return $post;
+    }
+
+            // Fonction d'affichage des commentaires du billet
+
+    function getComments($postId) {
+        $db = dbConnect();
+        $comments = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\') AS comment_date_fr FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');
+        $comments->execute(array($postId));    
+        return $comments;
+    }
+
+            // Fonction de contrôle si contact autorisé à commenter
+
+    function permitComments() {
+        $db = dbConnect();
+        $req = $db->prepare('SELECT block_comment FROM contacts WHERE pseudo = ?');
+        $req->execute(array($_SESSION['pseudo']));
+        $allowComment = $req->fetch();
+        $req->closeCursor();
+        return $allowComment;
+    }
+
+            // Fonction d'insertion d'un nouveau comment
+
+    function addComment($postId, $author, $comment) {            
+        $db = dbConnect();
+        $req = $db->prepare('INSERT INTO comments(post_id, author, comment, comment_date) VALUES(:post_id, :author, :comment, NOW())');
+        $req->execute(array(
+            'post_id' => $postId,
+            'author' => $author,
+            'comment' => $comment
+        ));
+        $req->closeCursor();
+    }
+
+            // Fonction de Suppression d'un comment
+    
+    function deleteComment($postId) {  
+        $db = dbConnect();
+        $req = $db->prepare('DELETE FROM comments WHERE id = :idnum');
+        $req->execute(array(
+            'idnum' => $postId
+        ));  
+        $req->closeCursor();
+    }

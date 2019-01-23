@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html <?php if($onload='refresh_comments' ) { echo 'onload="document.getElementById(\' recup_billet_id\').submit();"'; } ?>>
+<html>
 
 <head>
     <meta charset="utf-8" />

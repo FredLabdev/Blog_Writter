@@ -70,7 +70,7 @@
         } else {
             $billet_min = $billet_max-4;
         }
-            // On affiche 5 posts max par page et on les définis en paramètrant le OFFSET à opérer 
+        // On affiche 5 posts max par page et on les définis en paramètrant le OFFSET à opérer 
     
         $req = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%Y à %Hh%imin%ss\') AS date FROM posts ORDER BY creation_date DESC LIMIT 5 OFFSET :idmax');
         $req->bindValue(':idmax', $id_max_page, PDO::PARAM_INT);
@@ -79,34 +79,21 @@
             echo '<h3>' . 'Les 5 derniers posts du n° ' . $billet_max . ' au n° ' . $billet_min . '</h3>';
         } else {
         echo '<h3>' . 'posts du n° ' . $billet_max . ' au n° ' . $billet_min . '</h3>';
-        };           
+        };   
             // On affiche le détail de chaque billet de la plage sélectionnée
     
         while ($data = $req->fetch()) {
         echo '<h3 class="news">' . $data['chapter_title'] . ' : ' . ' le '. $data['date'] . '</h3>';
         echo '<p>' . htmlspecialchars($data['chapter_content']) . '</p>';
             
-            // id du billet dont on veut voir les comments envoyé en url GET
-            
-        echo '<a href="backend_comment_billet_admin.php?billet=' . $data['id'] .'">' . 'Cliquer pour accéder aux comments de ce billet' . '</a>' . '<br>';
-            
-        if ($_GET['billet'] AND $_GET['billet'] == $data['id']) {
-            
-             // on compte le nbre de comments et l'affiche le cas échéant
-            
+            // on compte le nbre de comments et l'affiche le cas échéant
         $req1 = $db->prepare('SELECT COUNT(post_id) AS nbre_comment FROM comments WHERE post_id = ?');
-        $req1->execute(array($data['id'])); // on compte le nbre de comments et l'affiche le cas échéant
-        $data1 = $req1->fetch(); // 
-            if ($data1['nbre_comment'] >= 1) {
-                echo $data1['nbre_comment'] . ' comments' . '<br>'; 
-            } 
+        $req1->execute(array($data['id'])); 
+        $data1 = $req1->fetch(); 
+            
+            // lien vers page des comments avec id du billet envoyé en url GET
+        echo '<a href="backend_comment_billet_admin.php?billet=' . $data['id'] .'">' . 'Commentaires (' . $data1['nbre_comment'] . ')' . '</a>' . '<br>';
         $req1->closeCursor(); // Termine le traitement de la requête 1
-            
-            // Lien vers page des comments
-            
-        echo '<a href="backend_comment_billet_admin.php">' . 'Détails ou ajout d\'un nouveau comment' . '</a>' . '<br>';
-        }
-        echo '<p>.......................................................................................</p>';  
         }
         $req->closeCursor(); // Termine le traitement de la requête
     ?>

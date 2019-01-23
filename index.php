@@ -1,6 +1,10 @@
 <?php
 require('controller.php');
 
+//**************************************************************************************
+//                              Routeur pour le login                
+//**************************************************************************************
+
 // Si on récupère un cookie autorisé d'un précédent login_ok, 
 if ($_COOKIE['password']) {
     getMemberData(htmlspecialchars($_COOKIE['pseudo']), htmlspecialchars($_COOKIE['password'])); // on appele la récupération de données d'un membre.
@@ -26,3 +30,7 @@ else if (isset($_POST['newMember'])) {
 else {
     require('login.php');
 }
+
+//**************************************************************************************
+//                     Routeur pour le backend_comment_billet_admin              
+//**************************************************************************************
