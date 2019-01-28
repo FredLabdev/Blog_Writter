@@ -1,8 +1,9 @@
-<?php session_start();
-require('model.php');
-$title = 'Commentaire';
-$template = 'backend';
-ob_start(); ?>
+<?php 
+ 
+    $title = 'Commentaire';
+    $template = 'backend';
+    ob_start();
+?>
 
 <br />
 <p>===========================================================</p>
@@ -23,9 +24,6 @@ ob_start(); ?>
 
 <div class="news">
     <h3>
-        <?php
-            $post = getPost($_GET['billet']);
-        ?>
         <?php 
             if(!$post) {
                 echo '<p class="alert">' . 'Ce billet n\'existe pas !' . '</p>';
@@ -51,24 +49,15 @@ ob_start(); ?>
 <!-- RAJOUT D'UN comment A LA SUITE : -->
 
 <?php
-    if(isset($_POST['nv_comment'])) {
-        $allowComment = permitComments();
-        if($allowComment['block_comment'] == 1) {
-            echo '<p class="alert">Désolé vous n\'êtes pas autorisé à poster des comments</p>';
-        } else {
-            addComment($_GET['billet'], $_SESSION['pseudo'], $_POST['nv_comment']);     
-            echo '<p class="success">' . 'Votre commentaire a bien été publié ci-dessous' . '</p>';
-        }
-    }
-    if(isset($_POST['delete_comment'])) { 
-        deleteComment($_POST['delete_comment']);  
-        echo '<p class="success">' . 'Le comment '. $_POST['delete_comment'] . ' a bien été Supprimé !' . '</p>';
+    if ($commentError) {
+        echo $commentError;
+    } else if ($commentSuccess) {
+        echo $commentSuccess;
+    } else if ($commentErase) {
+        echo $commentErase;
     }
 ?>
 
-<?php
-    $comments = getComments($_GET['billet']);
-?>
 <?php
     while ($comment = $comments->fetch()) {
 ?>
@@ -85,7 +74,7 @@ ob_start(); ?>
 
 <!-- Bouton de Suppression du comment -->
 
-<form method="post" action="backend_comment_billet_admin.php?billet=<?php echo $_GET['billet'] ?>">
+<form action="index.php?action=deleteComment&amp;billet=<?php echo $_GET['billet']; ?>" method="post">
     <input type="hidden" name="delete_comment" value="<?php echo $comment['id'] ?>" />
     <input type="submit" value="Supprimer ce message" />
 </form>
@@ -98,7 +87,7 @@ ob_start(); ?>
 
 
 <h3>Ajouter un comment :</h3>
-<form method="post" action="backend_comment_billet_admin.php?billet=<?php echo $_GET['billet']; ?>">
+<form action="index.php?action=addComment&amp;billet=<?php echo $_GET['billet']; ?>" method="post">
     <p>
         <label>Votre message :</label><br>
         <textarea name="nv_comment" rows="8" cols="45">

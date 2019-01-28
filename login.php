@@ -16,7 +16,7 @@
         ?>
 </h3>
 
-<form method="post" action="index.php">
+<form method="post" action="index.php?action=login">
     <p>
         <label>Votre pseudo : <input type="text" name="pseudo_connect" /></label><br>
         <label>Votre mot de passe : <input type="password" name="password_connect" /></label><br>
@@ -36,7 +36,7 @@
         ?>
 </h3>
 
-<form method="post" action="index.php">
+<form method="post" action="index.php?action=newMember">
     <p>
         <label>Votre nom : <input type="text" name="name" /></label><br>
         <label>Votre prenom : <input type="text" name="first_name" /></label><br>
