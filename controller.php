@@ -46,6 +46,7 @@ function sessionStart($memberData) {
     $_SESSION['first_name'] = $memberData['first_name'];
     $_SESSION['pseudo'] = $memberData['pseudo'];
     $_SESSION['password'] = $memberData['password'];    
+    $_SESSION['group_id'] = $memberData['group_id'];    
 } 
 
             // 3 - Fonction de re-direction vers accueil front ou backend
@@ -54,8 +55,8 @@ function homePageDirect($pseudo, $group) {
     if ((htmlspecialchars($pseudo == 'admin')) AND ($group == 1)) {
         header('Location: index.php?action=listPosts'); // Soit on le dirige vers l'accueil backend,
     }  
-    else if ($group !== 1) { // soit vers l'accueil frontend. 
-        header('Location: frontend_accueil.php');
+    else if ($group !== 1) {
+        header('Location: index.php?action=listPosts'); // soit vers l'accueil frontend. 
     }  
 }
 
@@ -83,7 +84,7 @@ function listPosts($page) {
     } else {
         $billet_min = $billet_max-4;
     }
-    require('backend_accueil.php');
+    require('home_view.php');
 }
 
             // Nbre de commentaires d'un billet
@@ -100,7 +101,7 @@ function post($postId) {
         $postError = '<p class="alert">' . 'Ce billet n\'existe pas !' . '</p>';
     } 
     $comments = getComments($postId);
-    require('backend_comment_billet_admin.php');
+    require('post_view.php');
 }
 
             // Autorisation et ajout d'un commentaire

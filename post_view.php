@@ -1,7 +1,11 @@
 <?php 
- 
+    session_start();
     $title = 'Commentaire';
-    $template = 'backend';
+    if ($_SESSION['group_id'] == 1) {
+        $template = 'backend';
+    } else {
+        $template = 'frontend';
+    }
     ob_start();
 ?>
 
@@ -21,6 +25,8 @@
 </p>
 
 <p>=======================================================================================</p>
+
+<!-- Détail du billet -->
 
 <div class="news">
     <h3>
@@ -44,9 +50,7 @@
     </p>
 </div>
 
-<h2>commentaires</h2>
-
-<!-- RAJOUT D'UN comment A LA SUITE : -->
+<!-- Messages d'action sur les commentaires -->
 
 <?php
     if ($commentError) {
@@ -57,6 +61,10 @@
         echo $commentErase;
     }
 ?>
+
+<!-- Liste des commentaires -->
+
+<h2>commentaires</h2>
 
 <?php
     while ($comment = $comments->fetch()) {
@@ -72,19 +80,26 @@
     <?php echo nl2br(htmlspecialchars($comment['comment'])); ?>
 </p>
 
-<!-- Bouton de Suppression du comment -->
+<!-- Bouton de Suppression pour un commentaire (uniquement si admin, moderateur ou poste par sois-meme)-->
 
+<?php
+        if ($_SESSION['group_id'] == 1 || $_SESSION['group_id'] == 2 || $comment['author'] == $_SESSION['pseudo']) {
+    ?>
 <form action="index.php?action=deleteComment&amp;billet=<?php echo $_GET['billet']; ?>" method="post">
     <input type="hidden" name="delete_comment" value="<?php echo $comment['id'] ?>" />
     <input type="submit" value="Supprimer ce message" />
 </form>
+<?php
+        }
+    ?>
 
 <p>.......................................................................................</p>
+
 <?php
     }
 ?>
 
-
+<!-- Ajout d'un commentaire -->
 
 <h3>Ajouter un comment :</h3>
 <form action="index.php?action=addComment&amp;billet=<?php echo $_GET['billet']; ?>" method="post">

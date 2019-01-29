@@ -6,7 +6,7 @@ document.getElementById("deconnexion").addEventListener('click', function (e) {
 
 function delete_confirm() {
     if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
-        document.location.href = "forteroche_deconnexion.php";
+        document.location.href = "deconnexion.php";
         return true;
     } else {
         return false;

@@ -1,7 +1,11 @@
 <?php 
-    session_start();
+session_start();
     $title = 'Accueil';
-    $template = 'backend';
+    if ($_SESSION['group_id'] == 1) {
+        $template = 'backend';
+    } else {
+        $template = 'frontend';
+    }
     ob_start(); 
 ?>
 
@@ -12,7 +16,7 @@
 <h3>
     Bienvenue
     <?php 
-            echo $_SESSION['first_name'] . ' ! Vous êtes sur l\'administration du blog !';
+            echo $_SESSION['first_name'] . ' !';
         ?>
 </h3>
 
