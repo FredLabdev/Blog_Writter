@@ -68,6 +68,55 @@ function createAccount() {
 }
 
 //**************************************************************************************
+//                        Fonctions pour l'afichage des contacts             
+//**************************************************************************************
+
+function contactsHome($message, $contactDetail) {
+    $contactsCount = getContactsCount(); // Comptage des contacts
+    $contactsByGroup = getContactsByGroup(); // Liste des contacts par groupe puis nom
+    $contactsByName = getContactsByName(); // Liste des contacts par nom 
+    $message;
+    $contactDetail;
+    require('contacts_view.php');
+}
+
+function contactDetail($contactId) {
+    $contactDetail = getContactDetail($contactId);
+    $commentModif = 'Voici le détail de ce contact :';
+    contactsHome($commentModif, $contactDetail);
+}
+
+function contactDelete($contactId) {
+    deleteContact($contactId);
+    $commentModif = 'Le contact a bien été Supprimé !';
+    contactsHome($commentModif, "");
+}
+
+function contactBloqComment($contactId) {
+    bloqContactComment($contactId);
+    $commentModif = 'Le contact a bien été bloqué et ne pourra plus commenter !';
+    contactsHome($commentModif, "");
+}
+
+function contactModifPseudo($contactId, $contactEntryNewData) {
+    modifPseudo($contactId, $contactEntryNewData);
+    $commentModif = 'La modification du pseudo du contact a bien été enrégistrée !';
+    contactsHome($commentModif, "");
+}
+
+function contactModifMail($contactId, $contactEntryNewData) {
+    modifMail($contactId, $contactEntryNewData);
+    $commentModif = 'La modification de l\'email du contact a bien été enrégistrée !';
+    contactsHome($commentModif, "");
+}
+
+function contactModifPassword($contactId, $contactEntryNewData) {
+    modifPassword($contactId, $contactEntryNewData);
+    $commentModif = 'La modification du mot de passe du contact a bien été enrégistrée !';
+    contactsHome($commentModif, "");
+}
+
+//**************************************************************************************
 //                Fonctions pour l'afichage d'un billet et ses commentaires                  
 //**************************************************************************************
 

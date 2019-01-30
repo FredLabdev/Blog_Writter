@@ -26,7 +26,7 @@ if (isset($_GET['action'])) {
         // Formulaire de création de compte,
 
     else if ($_GET['action'] == 'newMember') {
-        accountControl();
+        createAccount();
     } 
 
     //**************************************************************************************
@@ -86,20 +86,49 @@ if (isset($_GET['action'])) {
         // Lister les contacts, 
      
     else if ($_GET['action'] == 'contacts') {
-        contactsHome();
+        contactsHome("", "");
     } 
     
         // Détailler un contact, 
      
     else if ($_GET['action'] == 'contactDetail') {
-        if (isset($_GET['billet']) && $_GET['billet'] > 0) {
-            post($_GET['billet']);
+        if (isset($_POST['contact']) AND isset($_POST['valider'])) {
+            contactDetail($_POST['contact']);
         } else {
             echo 'Erreur : aucun contact selectionné';
         }
     }
-
-} 
+    
+        // modifier un contact
+     
+    else if ($_GET['action'] == 'contactModif') {
+        if (isset($_POST['contact-modif'])) {
+            if(isset($_POST['delete'])) {
+                contactDelete($_POST['contact-modif']); // Supprimer un contact
+            } else if(isset($_POST['bloquage'])) {
+                contactBloqComment($_POST['contact-modif']); // Interdir à un contact de commenter    
+            } else if(isset($_POST['champ']) AND isset($_POST['modif_champ'])) {
+                if ($_POST['champ'] == 1) { // Modification du pseudo
+                    contactModifPseudo($_POST['contact-modif'], $_POST['modif_champ']);      
+                } else if ($_POST['champ'] == 2) { // Modification du mail    
+                    contactModifMail($_POST['contact-modif'], $_POST['modif_champ']);  
+                } else if ($_POST['champ'] == 3) { // Modification du mot de passe    
+                    contactModifPassword($_POST['modif_champ'], $_POST['contact-modif']);
+                } else {
+                    echo 'Erreur : Aucun champ à modifier';
+                }
+            } else if (!isset($_POST['champ'])) {
+                echo 'Erreur : Veuillez selectionner un champ';
+            } else if (!isset($_POST['modif_champ'])) {
+                echo 'Erreur : Veuillez rentrer une nouvelle valeure au chanmp';
+            } else {
+                echo 'Erreur : aucune modification selectionnée';
+            }
+        } else {
+        echo 'Erreur : aucun contact selectionné';
+        }
+    }
+}
 
 //**************************************************************************************
 //                        Sinon si aucune action (1ère connexion)             

@@ -132,6 +132,113 @@ function memberCreate() {
 }
 
 //**************************************************************************************
+//                       Fonctions pour l'afichage des contacts                  
+//**************************************************************************************
+
+            // Comptage des contacts
+
+function getContactsCount() {
+    $db = dbConnect();
+    $getContactsCount = $db->query('SELECT COUNT(*) AS nbre_contacts FROM contacts');
+    $contactsCount = $getContactsCount->fetch();
+    return $contactsCount;
+}
+
+
+           // Récupération des contacts par classés par catégorie puis nom
+
+function getContactsByGroup() {
+    $db = dbConnect();
+    $getContactsByGroup = $db->query('SELECT c.name AS name_contact, c.first_name AS first_name_contact, g.grade AS grade_groupe FROM groups AS g INNER JOIN contacts AS c ON c.group_id = g.id ORDER BY group_id, name');        
+    $contactsByGroup = array(); 
+    while ($contactByGroup = $getContactsByGroup->fetch()) {
+        $contactsByGroup[] = $contactByGroup; // on créer un tableau regroupant les contacts
+    }
+    return $contactsByGroup;
+}
+
+           // Récupération des contacts par classés par nom
+
+function getContactsByName() {
+    $db = dbConnect();
+    $getContactsByName = $db->query('SELECT *, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM contacts ORDER BY name'); 
+    $contactsByName = array(); 
+    while ($contactByName = $getContactsByName->fetch()) {
+        $contactsByName[] = $contactByName; // on créer un tableau regroupant les contacts
+    }
+    return $contactsByName;
+}
+
+           // Récupération des contacts par classés par nom
+
+function getContactDetail($contactId) {
+    $db = dbConnect();
+    $getContactDetail = $db->prepare('SELECT * FROM contacts WHERE id = ?');
+    $getContactDetail->execute(array($contactId));          
+    $contactDetail = array(); 
+    while ($dataContact = $getContactDetail->fetch()) {
+        $contactDetail[] = $dataContact; // on créer un tableau regroupant les donnees des contacts
+    }
+    return $contactDetail;
+}
+
+            // Suppression d'un contact
+
+function deleteContact($contactId) {
+    $db = dbConnect();
+    $deleteContact = $db->prepare('DELETE FROM contacts WHERE id = :idnum');
+    $deleteContact->execute(array(
+        'idnum' => $contactId
+    )); 
+}
+
+            // Interdiction à un contact de commenter
+
+function bloqContactComment($contactId) {
+    $db = dbConnect();
+    $bloqContactComment = $db->prepare('UPDATE contacts SET block_comment = 1 WHERE id = :idnum');
+    $bloqContactComment->execute(array(
+        'idnum' => $contactId
+    )); 
+}
+
+            // Modification du pseudo
+
+function modifPseudo($dataContact, $contactId) {
+    $db = dbConnect();
+    $modifPseudo = $db->prepare('UPDATE contacts SET pseudo = :nvpseudo WHERE id = :idnum');
+    $modifPseudo->execute(array(
+        'nvpseudo' => $dataContact,
+        'idnum' => $contactId
+    )); 
+}
+
+            // Modification du mail
+
+function modifMail($dataContact, $contactId) {
+    $db = dbConnect();
+    $modifMail = $db->prepare('UPDATE contacts SET email = :nvemail WHERE id = :idnum');
+    $modifMail->execute(array(
+        'nvemail' => $dataContact,
+        'idnum' => $contactId
+    )); 
+}
+
+            // Modification du mot de passe 
+
+function modifPassword($dataContact, $contactId) {
+    $db = dbConnect();
+    $modifPassword = $db->prepare('UPDATE contacts SET password = :newpassword WHERE id = :idnum');
+    $modifPassword->execute(array(
+        'newpassword' => $dataContact,
+        'idnum' => $contactId
+    )); 
+}
+
+
+
+
+//**************************************************************************************
 //                Fonctions pour l'afichage d'un billet et ses commentaires                  
 //**************************************************************************************
 
