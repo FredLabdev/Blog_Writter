@@ -78,6 +78,27 @@ if (isset($_GET['action'])) {
             echo 'Erreur : aucun identifiant de billet envoyé';
         }
     }
+    
+    //**************************************************************************************
+    //                     Actions pour le page Contacts (Admin)              
+    //**************************************************************************************
+     
+        // Lister les contacts, 
+     
+    else if ($_GET['action'] == 'contacts') {
+        contactsHome();
+    } 
+    
+        // Détailler un contact, 
+     
+    else if ($_GET['action'] == 'contactDetail') {
+        if (isset($_GET['billet']) && $_GET['billet'] > 0) {
+            post($_GET['billet']);
+        } else {
+            echo 'Erreur : aucun contact selectionné';
+        }
+    }
+
 } 
 
 //**************************************************************************************

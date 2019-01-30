@@ -9,10 +9,12 @@ body {
 }
 
 .alert {
+    font-size: 1.2em;
     color: red;
 }
 
 .success {
+    font-size: 1.2em;
     color: green;
 }
 

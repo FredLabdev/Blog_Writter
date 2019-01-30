@@ -1,16 +1,189 @@
-<?php session_start(); ?>
-<?php $title = 'Membres'; ?>
-<?php $template = 'backend'; ?>
-<?php ob_start(); ?>
+<?php 
+    session_start();
+    $title = 'Membres';
+    if ($_SESSION['group_id'] == 1) {
+        $template = 'backend';
+    } else {
+        $template = 'frontend';
+    }
+    
+ // ++++++++++++++++++++++ model +++++++++++++++++++++++++
 
-<br />
+            // Connexion à la dataBase
+
+        function dbConnect() {
+            try {
+                $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+            }
+            catch(Exception $e) {
+                die('Erreur : '.$e->getMessage());
+            }
+            return $db;
+        }
+
+            // Comptage des contacts
+
+        function getContactsCount() {
+            $db = dbConnect();
+            $getContactsCount = $db->query('SELECT COUNT(*) AS nbre_contacts FROM contacts');
+            $contactsCount = $getContactsCount->fetch();
+            return $contactsCount;
+        }
+
+
+           // Récupération des contacts par classés par catégorie puis nom
+
+        function getContactsByGroup() {
+            $db = dbConnect();
+            $getContactsByGroup = $db->query('SELECT c.name AS name_contact, c.first_name AS first_name_contact, g.grade AS grade_groupe FROM groups AS g INNER JOIN contacts AS c ON c.group_id = g.id ORDER BY group_id, name');        
+            $contactsByGroup = array(); 
+            while ($contactByGroup = $getContactsByGroup->fetch()) {
+                $contactsByGroup[] = $contactByGroup; // on créer un tableau regroupant les contacts
+            }
+            return $contactsByGroup;
+        }
+
+           // Récupération des contacts par classés par nom
+
+        function getContactsByName() {
+            $db = dbConnect();
+            $getContactsByName = $db->query('SELECT *, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM contacts ORDER BY name'); 
+            $contactsByName = array(); 
+            while ($contactByName = $getContactsByName->fetch()) {
+                $contactsByName[] = $contactByName; // on créer un tableau regroupant les contacts
+            }
+            return $contactsByName;
+        }
+
+           // Récupération des contacts par classés par nom
+
+        function getContactDetail($contactId) {
+            $db = dbConnect();
+            $getContactDetail = $db->prepare('SELECT * FROM contacts WHERE id = ?');
+            $getContactDetail->execute(array($contactId));
+            
+            $contactDetail = array(); 
+            while ($dataContact = $getContactDetail->fetch()) {
+                $contactDetail[] = $dataContact; // on créer un tableau regroupant les donnees des contacts
+            }
+            return $contactDetail;
+        }
+
+            // Suppression d'un contact
+
+        function deleteContact($contactId) {
+            $db = dbConnect();
+            $deleteContact = $db->prepare('DELETE FROM contacts WHERE id = :idnum');
+            $deleteContact->execute(array(
+                'idnum' => $contactId
+            )); 
+        }
+
+            // Interdiction à un contact de commenter
+
+        function bloqContactComment($contactId) {
+            $db = dbConnect();
+            $bloqContactComment = $db->prepare('UPDATE contacts SET block_comment = 1 WHERE id = :idnum');
+            $bloqContactComment->execute(array(
+                'idnum' => $contactId
+            )); 
+        }
+
+            // Modification du pseudo
+
+        function modifPseudo($dataContact, $contactId) {
+            $db = dbConnect();
+            $modifPseudo = $db->prepare('UPDATE contacts SET pseudo = :nvpseudo WHERE id = :idnum');
+            $modifPseudo->execute(array(
+                'nvpseudo' => $dataContact,
+                'idnum' => $contactId
+            )); 
+        }
+
+            // Modification du mail
+
+        function modifMail($dataContact, $contactId) {
+            $db = dbConnect();
+            $modifMail = $db->prepare('UPDATE contacts SET email = :nvemail WHERE id = :idnum');
+            $modifMail->execute(array(
+                'nvemail' => $dataContact,
+                'idnum' => $contactId
+            )); 
+        }
+
+            // Modification du mot de passe 
+
+        function modifPassword($dataContact, $contactId) {
+            $db = dbConnect();
+            $modifPassword = $db->prepare('UPDATE contacts SET password = :newpassword WHERE id = :idnum');
+            $modifPassword->execute(array(
+                'newpassword' => $dataContact,
+                'idnum' => $contactId
+            )); 
+        }
+
+
+// ++++++++++++++++++++++ controller +++++++++++++++++++++++++
+
+            // Modification du mot de passe 
+
+      
+             // Comptage des contacts
+            $contactsCount = getContactsCount();
+            // Liste des contacts par groupe puis nom
+            $contactsByGroup = getContactsByGroup();
+            // Liste des contacts par nom
+            $contactsByName = getContactsByName();            
+        
+
+            // Récupération du détail d'un contact
+
+            if (isset($_POST['contact']) AND isset($_POST['valider'])) {
+                $contactDetail = getContactDetail($_POST['contact']);
+            }
+
+            // Modifications d'un contact
+
+                // Suppression d'un contact
+            if(isset($_POST['champ']) AND isset($_POST['delete'])) {
+                deleteContact($_POST['contact-modif']);
+                $commentModif = 'Le contact a bien été Supprimé !';
+        
+                // Interdiction à un contact de commenter    
+            } else if(isset($_POST['bloquage']) AND isset($_POST['contact-modif']) AND isset($_POST['remplacer'])) {
+                bloqContactComment($_POST['contact-modif']);
+                $commentModif = 'Ce contact ne pourra plus poster de comments !';
+
+                // Modification d'une donnee d'un contact  
+            } else if(isset($_POST['champ']) AND isset($_POST['contact-modif']) AND isset($_POST['modif_champ']) AND       isset($_POST['remplacer'])) {
+                
+                // Modification du pseudo          
+                if ($_POST['champ'] == 1) {
+                    modifPseudo($_POST['modif_champ'], $_POST['contact-modif']);
+                    $commentModif = 'La modification du pseudo du contact a bien été enrégistrée !';
+
+                // Modification du mail          
+                } else if ($_POST['champ'] == 2) {
+                    modifMail($_POST['modif_champ'], $_POST['contact-modif']);
+                    $commentModif = 'La modification de l\'email du contact a bien été enrégistrée !';
+                    
+                 // Modification du mot de passe    
+                } else if ($_POST['champ'] == 3) {
+                    modifPassword($_POST['modif_champ'], $_POST['contact-modif']);
+                    $commentModif = 'La modification du mot de passe du contact a bien été enrégistrée !';
+                }
+            };
+        
+
+ob_start(); 
+?>
+
 <p>===========================================================</p>
 <!-- Confirm connect -->
 
 <h3>
     Bienvenue sur l' administration de vos contacts !
 </h3>
-
 <p>
     Nous sommes le :
     <?php echo date('d/m/Y') . '<br>';
@@ -21,8 +194,6 @@
         	}
         ?>
 </p>
-
-
 <br />
 <p>===========================================================</p>
 
@@ -31,30 +202,16 @@
 <h3>
     Liste des contacts classés par catégorie :
 </h3>
-
-<?php   // connexion à la base de données
-        try {  
-            $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+<p>
+    <?php echo 'Nombre d\'abonnés à votre blog à ce jour: ' . $contactsCount['nbre_contacts'] ?>
+</p>
+<p>
+    <?php 
+        foreach($contactsByGroup as $contact) {
+            echo $contact['grade_groupe'] . ' : ' . $contact['name_contact'] . ' ' . $contact['first_name_contact'] . '<br>';
         }
-        catch(Exception $e) {
-            die('Erreur : '.$e->getMessage());
-        }
-            // Nombre totale de contacts
-    
-        $req = $db->query('SELECT COUNT(*) AS nbre_contacts FROM contacts');
-        $data = $req->fetch();
-        echo '<p>Nombre d\'abonnés à votre blog à ce jour: ' . $data['nbre_contacts'] . '</p>';
-        $req->closeCursor(); // Termine le traitement de la requête
-    
-            // Classement par groupe puis nom
-    
-        $req = $db->query('SELECT c.name AS name_contact, c.first_name AS first_name_contact, g.grade AS grade_groupe FROM groups AS g INNER JOIN contacts AS c ON c.group_id = g.id ORDER BY group_id, name');
-        while ($data = $req->fetch()) {
-        echo $data['grade_groupe'] . ' : ' . $data['name_contact'] . ' ' . $data['first_name_contact'] . '<br>';
-        }
-        $req->closeCursor(); // Termine le traitement de la requête
     ?>
-
+</p>
 <br />
 <p>===========================================================</p>
 
@@ -64,33 +221,36 @@
     Voir les champs d'un contact :
 </h3>
 
+<!-- Messages d'action sur les contacts -->
+
+<p class="success">
+    <?php
+        if ($commentModif) {
+            echo $commentModif;
+        }
+    ?>
+</p>
+
 <form method="post" action="backend_admin_contacts.php">
     <label>Sélectionnez un contact : </label><select name="contact">
         <?php
-                $req = $db->query('SELECT *, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM contacts');
-                while ($data = $req->fetch()) { // liste déroulante des contacts
-                echo '<option value="' . $data['id'] . '">' . $data['name_maj'] . ' ' . $data['first_name_min'] . '</option>';
-                }
-                $req->closeCursor(); // Termine le traitement de la requête
-            ?>
+            foreach($contactsByName as $contact) {
+               echo '<option value="' . $contact['id'] . '">' . $contact['name_maj'] . ' ' . $contact['first_name_min'] . '</option>';
+            }
+        ?>
     </select>
     <input type="submit" value="valider" name="valider" /><br>
 
     <?php
-            if (isset($_POST['contact']) AND isset($_POST['valider'])) {
-                $req = $db->prepare('SELECT * FROM contacts WHERE id = ?');
-                $req->execute(array($_POST['contact']));
-                while ($data = $req->fetch()) {  // Détail du contact sélectionné
-                    echo 'Date de création : ' . $data['creation_date'] . '<br>';
-                    echo 'Nom : ' . $data['name'] . '<br>';
-                    echo 'Prénom : ' . $data['first_name'] . '<br>';  
-                    echo 'Pseudo : ' . $data['pseudo'] . '<br>';  
-                    echo 'Mail : ' . $data['email'] . '<br>';  
-                    echo 'Mot de passe : ' . $data['password'] . '<br>';  
-                }
-                $req->closeCursor(); // Termine le traitement de la requête
-            }
-        ?>
+        foreach($contactDetail as $dataContact) { // Détail du contact sélectionné
+            echo 'Date de création : ' . $dataContact['creation_date'] . '<br>';
+            echo 'Nom : ' . $dataContact['name'] . '<br>';
+            echo 'Prénom : ' . $dataContact['first_name'] . '<br>';  
+            echo 'Pseudo : ' . $dataContact['pseudo'] . '<br>';  
+            echo 'Mail : ' . $dataContact['email'] . '<br>';  
+            echo 'Mot de passe : ' . $dataContact['password'] . '<br>';  
+        }
+    ?>
 </form>
 
 <br />
@@ -105,85 +265,20 @@
 <form method="post" action="backend_admin_contacts.php">
     <label>Sélectionnez un contact : </label><select name="contact-modif">
         <?php
-                $req = $db->query('SELECT * FROM contacts');
-                while ($data = $req->fetch()) { // liste déroulante des contacts
-                echo '<option value="' . $data['id'] . '">' . $data['name'] . '</option>';
-                }
-                $req->closeCursor(); // Termine le traitement de la requête
-            ?>
+           foreach($contactsByName as $contact) {
+               echo '<option value="' . $contact['id'] . '">' . $contact['name_maj'] . ' ' . $contact['first_name_min'] . '</option>';
+            }
+        ?>
     </select><br> <!-- Sélection du champ à modifier -->
     <label>Supprimer tout le contact ?</label><input type="checkbox" name="delete" /><br>
     <label>Bloquer ses comments</label><input type="checkbox" name="bloquage" /><br>
     <label>Sélectionnez le champ à modifier : </label><select name="champ">
-        <option value="1">Nom</option>
-        <option value="2">Prénom</option>
-        <option value="3">Pseudo</option>
-        <option value="4">e-mail</option>
-        <option value="5">Mot de passe</option>
+        <option value="1">Pseudo</option>
+        <option value="2">e-mail</option>
+        <option value="3">Mot de passe</option>
     </select><br>
     <label>Nouveau contenu du champ : </label><input type="text" name="modif_champ" />
     <input type="submit" value="Appliquer" name="remplacer" />
-
-    <?php 
-            if(isset($_POST['champ']) AND isset($_POST['delete'])) {  // si tout le contact à supprimer
-                $req = $db->prepare('DELETE FROM contacts WHERE id = :idnum');
-                $req->execute(array(
-                    'idnum' => $_POST['contact-modif'] // fonction de l'id récupérée de la liste déroulante des contacts
-                ));  
-                echo '<br>'.'Le contact a bien été Supprimé !';
-                $req->closeCursor(); // Termine le traitement de la requête
-             // Sinon si modification d'un champ seulement    
-            } else if(isset($_POST['bloquage']) AND isset($_POST['contact-modif']) AND isset($_POST['remplacer'])) {
-                    $req = $db->prepare('UPDATE contacts SET block_comment = 1 WHERE id = :idnum');
-                    $req->execute(array(
-                        'idnum' => $_POST['contact-modif']
-                    ));  
-                    echo '<br>'.'Ce contact ne pourra plus poster de comments !';
-                    $req->closeCursor(); // Termine le traitement de la requête
-                } else if(isset($_POST['champ']) AND isset($_POST['contact-modif']) AND isset($_POST['modif_champ']) AND isset($_POST['remplacer'])) {
-                if ($_POST['champ'] == 1) { // si modif nom
-                    $req = $db->prepare('UPDATE contacts SET name = :nvname WHERE id = :idnum');
-                    $req->execute(array(
-                        'nvname' => $_POST['modif_champ'],
-                        'idnum' => $_POST['contact-modif']
-                    ));  
-                    echo '<br>'.'La modification du nom du contact a bien été enrégistrée !';
-                    $req->closeCursor(); // Termine le traitement de la requête
-                } else if ($_POST['champ'] == 2) { // si modif prénom
-                    $req = $db->prepare('UPDATE contacts SET first_name = :nvfirst_name WHERE id = :idnum');
-                    $req->execute(array(
-                        'nvfirst_name' => $_POST['modif_champ'],
-                        'idnum' => $_POST['contact-modif']
-                    ));
-                    echo '<br>'.'La modification du prénom du contact a bien été enrégistrée !';
-                    $req->closeCursor(); // Termine le traitement de la requête
-                } else if ($_POST['champ'] == 3) { // si modif pseudo
-                    $req = $db->prepare('UPDATE contacts SET pseudo = :nvpseudo WHERE id = :idnum');
-                    $req->execute(array(
-                        'nvpseudo' => $_POST['modif_champ'],
-                        'idnum' => $_POST['contact-modif']
-                    ));
-                    echo '<br>'.'La modification du pseudo du contact a bien été enrégistrée !';
-                    $req->closeCursor(); // Termine le traitement de la requête
-                } else if ($_POST['champ'] == 4) { // si modif email
-                    $req = $db->prepare('UPDATE contacts SET email = :nvemail WHERE id = :idnum');
-                    $req->execute(array(
-                        'nvemail' => $_POST['modif_champ'],
-                        'idnum' => $_POST['contact-modif']
-                    ));
-                    echo '<br>'.'La modification de l\'email du contact a bien été enrégistrée !';
-                    $req->closeCursor(); // Termine le traitement de la requête
-                } else if ($_POST['champ'] == 5) { // si modif mot de passe
-                    $req = $db->prepare('UPDATE contacts SET password = :newpassword WHERE id = :idnum');
-                    $req->execute(array(
-                        'newpassword' => $_POST['modif_champ'],
-                        'idnum' => $_POST['contact-modif']
-                    ));
-                    echo '<br>'.'La modification du mot de passe du contact a bien été enrégistrée !';
-                    $req->closeCursor(); // Termine le traitement de la requête
-                }
-            };
-        ?>
 </form>
 
 <?php $content = ob_get_clean(); ?>

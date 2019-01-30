@@ -19,7 +19,7 @@ function dbConnect() {
 //                           Fonctions pour le login                    
 //**************************************************************************************
 
-            // Fonction de récupération des donnees d'un membre connecté   
+            // Récupération des donnees d'un membre connecté   
     
 function getMemberData($pseudo, $dbPassword) {
     $db = dbConnect();
@@ -32,7 +32,7 @@ function getMemberData($pseudo, $dbPassword) {
     return $memberData;
 }
        
-            // Fonction de contrôle du pseudo de login   
+            // Contrôle du pseudo de login   
 
 function pseudoControl($pseudo) {
     $db = dbConnect();
@@ -42,7 +42,7 @@ function pseudoControl($pseudo) {
     return $pseudoValid;
 }
         
-            // Fonction de vérification d'un formulaire de création de compte   
+            // Vérification d'un formulaire de création de compte   
 
 function newMember() {
     $db = dbConnect();
@@ -116,7 +116,7 @@ function newMember() {
     }
 }
 
-            // Fonction de création d'un nouveau membre   
+            // Création d'un nouveau membre   
 
 function memberCreate() {
     $db = dbConnect();
@@ -135,7 +135,7 @@ function memberCreate() {
 //                Fonctions pour l'afichage d'un billet et ses commentaires                  
 //**************************************************************************************
 
-            // Fonction de comptage du nombre de billets 
+            // Comptage du nombre de billets 
 
 function getPostsCount() {
     $db = dbConnect();
@@ -145,7 +145,7 @@ function getPostsCount() {
     return $postsCount;
 }
 
-            // Fonction d'affichage des billets par ordre décroissant 
+            // Récupération des billets par ordre décroissant 
 
 function getPosts() {
     $db = dbConnect();
@@ -153,7 +153,7 @@ function getPosts() {
     return $posts;
 }
 
-            // Fonction d'affichage des billets par groupes de 5 (avec un OFFSET selon indice page) 
+            // Récupération des billets par groupes de 5 (avec un OFFSET selon indice page) 
 
 function getPostsBy5($offset) {
     $db = dbConnect();
@@ -163,7 +163,7 @@ function getPostsBy5($offset) {
     return $postsBy5;
 }
 
-            // Fonction de comptage du nombre de commentaires par billet 
+            // Comptage du nombre de commentaires par billet 
 
 function getCommentsCount($postId) {
     $db = dbConnect();
@@ -173,7 +173,7 @@ function getCommentsCount($postId) {
 }
 
 
-            // Fonction d'affichage du billet sélectionné
+            // Récupération du billet sélectionné
 
 function getPost($postId) {
     $db = dbConnect();
@@ -184,7 +184,7 @@ function getPost($postId) {
     return $post;
 }
 
-            // Fonction d'affichage des commentaires du billet
+            // Récupération des commentaires du billet
 
 function getComments($postId) {
     $db = dbConnect();
@@ -193,7 +193,7 @@ function getComments($postId) {
     return $comments;
 }
 
-            // Fonction de contrôle si contact autorisé à commenter
+            // Contrôle si contact autorisé à commenter
 
 function permitComments($member) {
     $db = dbConnect();
@@ -204,7 +204,7 @@ function permitComments($member) {
     return $allowComment;
 }
 
-            // Fonction d'insertion d'un nouveau comment
+            // Insertion d'un nouveau comment
 
 function addComment($postId, $author, $comment) {            
     $db = dbConnect();
@@ -217,7 +217,7 @@ function addComment($postId, $author, $comment) {
     $req->closeCursor();
 }
 
-            // Fonction de Suppression d'un comment
+            // Suppression d'un comment
     
 function deleteComment($commentId) {  
     $db = dbConnect();
