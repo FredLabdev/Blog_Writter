@@ -5,8 +5,6 @@ require('model.php');
 //                           Fonctions pour le login                    
 //**************************************************************************************
 
-            // Fonction de contrôle d'un formulaire de login
-
 function loginControl($pseudo, $password) {
     $login_error = '<p class="alert">' . 'Erreur : pseudo et/ou mot de passe errone(s) !' . '</p>';
     $dbPassword = (pseudoControl($pseudo))['password']; // on récupère le password de la db si pseudo ok
@@ -26,8 +24,6 @@ function loginControl($pseudo, $password) {
     }
 }
 
-            // Fonction déclenchant le proccessus de connexion (1-2-3): 
-
 function loginAvailable($pseudo, $password) {
                 // 1 - Récupération de ses données   
     $memberData = getMemberData($pseudo, $password);
@@ -37,10 +33,7 @@ function loginAvailable($pseudo, $password) {
     homePageDirect($memberData['pseudo'], $memberData['group_id']);
 }
 
-            // 2 - Fonction d'ouverture de session   
-
 function sessionStart($memberData) {
-    // on démarre la session, et on stocke les paramètres utiles aux autres pages
     session_start();
     $_SESSION['name'] = $memberData['name'];
     $_SESSION['first_name'] = $memberData['first_name'];
@@ -49,18 +42,15 @@ function sessionStart($memberData) {
     $_SESSION['group_id'] = $memberData['group_id'];    
 } 
 
-            // 3 - Fonction de re-direction vers accueil front ou backend
-
 function homePageDirect($pseudo, $group) {
     if ((htmlspecialchars($pseudo == 'admin')) AND ($group == 1)) {
-        header('Location: index.php?action=listPosts'); // Soit on le dirige vers l'accueil backend,
+        header('Location: index.php?action=listPosts'); 
     }  
     else if ($group !== 1) {
-        header('Location: index.php?action=listPosts'); // soit vers l'accueil frontend. 
+        header('Location: index.php?action=listPosts');
     }  
 }
 
-            // Fonction de Controle du formulaire d'un nouveau membre
 
 function createAccount() {
     $account_error = newMember();
@@ -72,9 +62,9 @@ function createAccount() {
 //**************************************************************************************
 
 function contactsHome($message, $contactDetail) {
-    $contactsCount = getContactsCount(); // Comptage des contacts
-    $contactsByGroup = getContactsByGroup(); // Liste des contacts par groupe puis nom
-    $contactsByName = getContactsByName(); // Liste des contacts par nom 
+    $contactsCount = getContactsCount();
+    $contactsByGroup = getContactsByGroup();
+    $contactsByName = getContactsByName();
     $message;
     $contactDetail;
     require('contacts_view.php');
@@ -120,8 +110,6 @@ function contactModifPassword($contactId, $contactEntryNewData) {
 //                Fonctions pour l'afichage d'un billet et ses commentaires                  
 //**************************************************************************************
 
-            // Liste de tous les billets
-
 function listPosts($page) {
     $postsCount = getPostsCount();
     $posts = getPosts();
@@ -136,13 +124,9 @@ function listPosts($page) {
     require('home_view.php');
 }
 
-            // Nbre de commentaires d'un billet
-
 function commentsByPost($page) {
     $commentsCount = getCommentsCount($postId);
 }
-
-            // Détail d'un billet et ses commentaires
 
 function post($postId) {
     $post = getPost($postId);
@@ -152,8 +136,6 @@ function post($postId) {
     $comments = getComments($postId);
     require('post_view.php');
 }
-
-            // Autorisation et ajout d'un commentaire
 
 function allowComment($postId, $member, $newComment) {
     $allowComment = permitComments($member);
@@ -166,10 +148,21 @@ function allowComment($postId, $member, $newComment) {
     post($postId);
 }
 
-          // Fonction supprimant un commentaire
-
 function commentErase($postId, $commentId) {
     deleteComment($commentId);     
     $commentErase = '<p class="success">' . 'Le comment '. $commentId . ' a bien été Supprimé !' . '</p>';
     post($postId);
+}
+
+//**************************************************************************************
+//                              Fonction pour la deconnexion                  
+//**************************************************************************************
+
+function sessionEnd() {
+    $login_error = '<p class="alert">' . 'Vous êtes bien déconnecté.' . '<br>' . 'A bientôt ' . $_SESSION['first_name'] . '</p>';
+    require('login.php');
+    $_SESSION = array(); // Suppression des variables de session et de la session
+    session_destroy();
+    setcookie('pseudo', ''); // Suppression des cookies de connexion automatique
+    setcookie('password', '');
 }

@@ -49,7 +49,7 @@
 <!-- Voir les champs d'un contact -->
 
 <h3>
-    Voir les champs d'un contact :
+    Editer un contact :
 </h3>
 
 <form method="post" action="index.php?action=contactDetail">
@@ -84,10 +84,8 @@
 <br />
 <p>===========================================================</p>
 
-<!-- Modification du champs d'un contact -->
-
 <h3>
-    Modifier le champ d'un contact :
+    Modifier un contact :
 </h3>
 
 <form method="post" action="index.php?action=contactModif">
@@ -99,9 +97,9 @@
             }
         ?>
     </select><br> <!-- Sélection du champ à modifier -->
-    <label>Supprimer tout le contact ?</label><input type="checkbox" name="delete" /><br>
     <label>Bloquer ses comments</label><input type="checkbox" name="bloquage" /><br>
-    <label>Sélectionnez le champ à modifier : </label><select name="champ">
+    <label>Sélectionnez le champ à modifier : </label>
+    <select name="champ">
         <option value=""></option>
         <option value="1">Pseudo</option>
         <option value="2">e-mail</option>
@@ -109,6 +107,37 @@
     </select><br>
     <label>Nouveau contenu du champ : </label><input type="text" name="modif_champ" />
     <input type="submit" value="Appliquer" name="remplacer" />
+</form>
+
+<br />
+<p>===========================================================</p>
+
+
+<h3>
+    Supprimer un contact :
+</h3>
+
+<form name="delete">
+    <select name="contactErase">
+        <option value=""></option>
+        <?php
+           foreach($contactsByName as $contact) {
+               echo '<option value="' . $contact['id'] . '">' . $contact['id'] . $contact['name_maj'] . ' ' . $contact['first_name_min'] . '</option>';
+            }
+        ?>
+    </select><br> <!-- Sélection du champ à modifier -->
+    <a href="#" onClick="var contactId = document.forms.delete.contactErase.options[document.forms.delete.contactErase.options.selectedIndex].value;
+        function valid_confirm(contact) {
+            if (confirm('Voulez-vous vraiment apporter ces modifications ?')) {
+                var url = 'index.php?action=contactDelete&contactErase=' + contact;
+                document.location.href = url;
+                return true;
+            } else {
+                alert('Je me disais aussi...');
+                return false;
+            }
+        }
+        valid_confirm(contactId);"> Supprimer </a>
 </form>
 
 <?php $content = ob_get_clean(); ?>

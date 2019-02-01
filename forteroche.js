@@ -1,17 +1,19 @@
 // DECONNEXION SESSION 
-document.getElementById("deconnexion").addEventListener('click', function (e) {
-    e.preventDefault();
-    delete_confirm();
-});
 
-function delete_confirm() {
+function deconnect_confirm() {
     if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
-        document.location.href = "deconnexion.php";
+        document.location.href = "index.php?action=deconnexion";
         return true;
     } else {
+        alert("Je me disais aussi...");
         return false;
     }
 }
+document.getElementById("deconnexion").addEventListener('click', function (e) {
+    e.preventDefault();
+    deconnect_confirm();
+});
+
 
 // MODIFICATION D'UN COMPTE FRONTEND 
 

@@ -18,8 +18,6 @@ function dbConnect() {
 //**************************************************************************************
 //                           Fonctions pour le login                    
 //**************************************************************************************
-
-            // Récupération des donnees d'un membre connecté   
     
 function getMemberData($pseudo, $dbPassword) {
     $db = dbConnect();
@@ -31,8 +29,6 @@ function getMemberData($pseudo, $dbPassword) {
     $memberData = $req->fetch();
     return $memberData;
 }
-       
-            // Contrôle du pseudo de login   
 
 function pseudoControl($pseudo) {
     $db = dbConnect();
@@ -42,8 +38,6 @@ function pseudoControl($pseudo) {
     return $pseudoValid;
 }
         
-            // Vérification d'un formulaire de création de compte   
-
 function newMember() {
     $db = dbConnect();
     if(isset($_POST['name']) AND isset($_POST['first_name']) AND isset($_POST['pseudo']) AND isset($_POST['email']) AND isset($_POST['password']) AND isset($_POST['password_confirm'])) {
@@ -116,8 +110,6 @@ function newMember() {
     }
 }
 
-            // Création d'un nouveau membre   
-
 function memberCreate() {
     $db = dbConnect();
     $req = $db->prepare('INSERT INTO contacts(name, first_name, pseudo, email, password, creation_date) VALUES(:name, :first_name, :pseudo, :email, :password, NOW())');
@@ -135,17 +127,12 @@ function memberCreate() {
 //                       Fonctions pour l'afichage des contacts                  
 //**************************************************************************************
 
-            // Comptage des contacts
-
 function getContactsCount() {
     $db = dbConnect();
     $getContactsCount = $db->query('SELECT COUNT(*) AS nbre_contacts FROM contacts');
     $contactsCount = $getContactsCount->fetch();
     return $contactsCount;
 }
-
-
-           // Récupération des contacts par classés par catégorie puis nom
 
 function getContactsByGroup() {
     $db = dbConnect();
@@ -157,19 +144,15 @@ function getContactsByGroup() {
     return $contactsByGroup;
 }
 
-           // Récupération des contacts par classés par nom
-
 function getContactsByName() {
     $db = dbConnect();
-    $getContactsByName = $db->query('SELECT *, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM contacts ORDER BY name'); 
+    $getContactsByName = $db->query('SELECT id, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM contacts ORDER BY name'); 
     $contactsByName = array(); 
     while ($contactByName = $getContactsByName->fetch()) {
         $contactsByName[] = $contactByName; // on créer un tableau regroupant les contacts
     }
     return $contactsByName;
 }
-
-           // Récupération des contacts par classés par nom
 
 function getContactDetail($contactId) {
     $db = dbConnect();
@@ -182,8 +165,6 @@ function getContactDetail($contactId) {
     return $contactDetail;
 }
 
-            // Suppression d'un contact
-
 function deleteContact($contactId) {
     $db = dbConnect();
     $deleteContact = $db->prepare('DELETE FROM contacts WHERE id = :idnum');
@@ -192,8 +173,6 @@ function deleteContact($contactId) {
     )); 
 }
 
-            // Interdiction à un contact de commenter
-
 function bloqContactComment($contactId) {
     $db = dbConnect();
     $bloqContactComment = $db->prepare('UPDATE contacts SET block_comment = 1 WHERE id = :idnum');
@@ -201,8 +180,6 @@ function bloqContactComment($contactId) {
         'idnum' => $contactId
     )); 
 }
-
-            // Modification du pseudo
 
 function modifPseudo($dataContact, $contactId) {
     $db = dbConnect();
@@ -213,8 +190,6 @@ function modifPseudo($dataContact, $contactId) {
     )); 
 }
 
-            // Modification du mail
-
 function modifMail($dataContact, $contactId) {
     $db = dbConnect();
     $modifMail = $db->prepare('UPDATE contacts SET email = :nvemail WHERE id = :idnum');
@@ -223,8 +198,6 @@ function modifMail($dataContact, $contactId) {
         'idnum' => $contactId
     )); 
 }
-
-            // Modification du mot de passe 
 
 function modifPassword($dataContact, $contactId) {
     $db = dbConnect();
@@ -242,17 +215,13 @@ function modifPassword($dataContact, $contactId) {
 //                Fonctions pour l'afichage d'un billet et ses commentaires                  
 //**************************************************************************************
 
-            // Comptage du nombre de billets 
-
 function getPostsCount() {
     $db = dbConnect();
     $req = $db->query('SELECT COUNT(id) AS nbre_posts FROM posts');
     $postsCount = $req->fetch();
-    $req->closeCursor(); // Termine le traitement de la requête
+    $req->closeCursor();
     return $postsCount;
 }
-
-            // Récupération des billets par ordre décroissant 
 
 function getPosts() {
     $db = dbConnect();
@@ -260,17 +229,13 @@ function getPosts() {
     return $posts;
 }
 
-            // Récupération des billets par groupes de 5 (avec un OFFSET selon indice page) 
-
 function getPostsBy5($offset) {
     $db = dbConnect();
-    $postsBy5 = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%Y à %Hh%imin%ss\') AS date FROM posts ORDER BY creation_date DESC LIMIT 5 OFFSET :idmax');
+    $postsBy5 = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%Y à %Hh%imin%ss\') AS date FROM posts ORDER BY creation_date DESC LIMIT 5 OFFSET :idmax'); // OFFSET selon indice page
     $postsBy5->bindValue(':idmax', $offset, PDO::PARAM_INT);
     $postsBy5->execute();
     return $postsBy5;
 }
-
-            // Comptage du nombre de commentaires par billet 
 
 function getCommentsCount($postId) {
     $db = dbConnect();
@@ -278,9 +243,6 @@ function getCommentsCount($postId) {
     $commentsCount->execute(array($postId));    
     return $commentsCount;
 }
-
-
-            // Récupération du billet sélectionné
 
 function getPost($postId) {
     $db = dbConnect();
@@ -291,16 +253,12 @@ function getPost($postId) {
     return $post;
 }
 
-            // Récupération des commentaires du billet
-
 function getComments($postId) {
     $db = dbConnect();
     $comments = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\')comment_date_fr FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');
     $comments->execute(array($postId));    
     return $comments;
 }
-
-            // Contrôle si contact autorisé à commenter
 
 function permitComments($member) {
     $db = dbConnect();
@@ -310,8 +268,6 @@ function permitComments($member) {
     $req->closeCursor();
     return $allowComment;
 }
-
-            // Insertion d'un nouveau comment
 
 function addComment($postId, $author, $comment) {            
     $db = dbConnect();
@@ -323,8 +279,6 @@ function addComment($postId, $author, $comment) {
     ));
     $req->closeCursor();
 }
-
-            // Suppression d'un comment
     
 function deleteComment($commentId) {  
     $db = dbConnect();
