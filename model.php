@@ -38,7 +38,7 @@ function getPasswordFromPseudo($pseudo) {
     return $passwordFromPseudo;
 }
 
-function pseudoControl($pseudo) {
+function getPseudoIdem($pseudo) {
     $db = dbConnect();
     $getPseudoIdem = $db->prepare('SELECT COUNT(pseudo) AS pseudo_idem FROM contacts WHERE pseudo = :pseudo');
     $getPseudoIdem->execute(array('pseudo' => $pseudo));
@@ -46,7 +46,7 @@ function pseudoControl($pseudo) {
     return $pseudoIdem;
 }
 
-function mailControl($mail) {
+function getMailIdem($mail) {
     $db = dbConnect();
     $getMailIdem = $db->prepare('SELECT COUNT(email) AS email_idem FROM contacts WHERE email = :email');
     $getMailIdem->execute(array('email' => $mail));

@@ -6,7 +6,7 @@ require('model.php');
 //**************************************************************************************
 
 function loginControl($pseudo, $password) {
-    $login_error = '<p class="alert">' . 'Erreur : pseudo et/ou mot de passe errone(s) !' . '</p>';
+    $login_error = 'Erreur : pseudo et/ou mot de passe errone(s) !';
     $dbPassword = (getPasswordFromPseudo($pseudo))['password']; // on récupère le password de la db si pseudo ok
     $isPasswordCorrect = password_verify($password, $dbPassword); 
     if ($dbPassword) {
@@ -51,19 +51,20 @@ function homePageDirect($pseudo, $group) {
     }  
 }
 
-
-function newMember($createName, $createFirstName, $createPseudo, $createMail, $mailConfirm, $createPassword, $passwordConfirm) {
-    $account_error = ''; // On défini une variable regroupant les erreurs
-    $pseudoIdem = pseudoControl($createPseudo);
+function pseudoControl($pseudo, $account_error) {
+    $pseudoIdem = getPseudoIdem($pseudo);
     if ($pseudoIdem['pseudo_idem'] == 0) {
     } else {
         $account_error .= 'Désolé, ce pseudo existe déjà !';
     }
-    // Adresse email: vérification format, 2 saisies idem, et pas déjà existante dans la db
-    if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $createMail)) {
-        $mailIdem = mailControl($createMail);
+    return $account_error;
+}
+
+function mailControl($mail, $mailConfirm, $account_error) {
+    if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $mail)) {
+        $mailIdem = getMailIdem($mail);
         if ($mailIdem['email_idem'] == 0) {
-            if ($mailConfirm == $createMail) {
+            if ($mailConfirm == $mail) {
             } else {
                 $account_error .= 'Attention vos 2 adresses mail sont différentes !';
             } 
@@ -73,30 +74,40 @@ function newMember($createName, $createFirstName, $createPseudo, $createMail, $m
     } else {
         $account_error .= 'Désolé le format d\'adresse mail n\'est pas valide.';
     }    
-    // Mot de passe: vérification format, 2 saisies idem, et pas déjà existant dans la db 
-    if (preg_match("#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#", $createPassword)) {
-        if ($passwordConfirm == $createPassword) {
+    return $account_error;
+}
+
+function passwordControl($password, $passwordConfirm, $account_error) {
+    if (preg_match("#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#", $password)) {
+        if ($passwordConfirm == $password) {
             $getAllPassword = getAllPassword();
             while ($allPassword = $getAllPassword->fetch()) {
-                $isPasswordExist = password_verify($createPassword, $allPassword['password']);
+                $isPasswordExist = password_verify($password, $allPassword['password']);
                 if (!$isPasswordExist) {   
                 } else {
                     $account_error .= 'Désolé ce mot de passe existe déjà !';
                 }
             }
         } else {
-                $account_error .= 'Attention vos mots de passes ne sont pas identiques !';
+            $account_error .= 'Attention vos mots de passes ne sont pas identiques !';
         }   
     } else {
         $account_error .= 'Désolé votre mot de passe doit être composé de minimum 8 caractères'  . '<br>' . 'dont 1 Majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial !';
     }    
-    
-    if ($account_error == '') { // Fin, si tout ok (variable d'erreurs restée à 0),
+    return $account_error;
+}
+
+function newMember($createName, $createFirstName, $createPseudo, $createMail, $mailConfirm, $createPassword, $passwordConfirm) {
+    $account_error = '';
+    $account_error = pseudoControl($createPseudo, $account_error);
+    $account_error = mailControl($createMail, $mailConfirm, $account_error);
+    $account_error = passwordControl($createPassword, $passwordConfirm, $account_error);    
+    if ($account_error == '') { // Si tout ok on creer le nouveau membre,
         memberCreate($createName, $createFirstName, $createPseudo, $createMail, $createPassword);
         $account_success = 'Bonjour, votre compte est bien créé !' . '<br>' . 'Accédez au site en vous connectant ci-dessus.';
-        loginControl($createPseudo, $createPassword);
+        loginControl($createPseudo, $createPassword); // et on démmarre sa session
     } else {
-        require('login.php');
+        require('login.php'); // retour au login avec affichage des erreurs
     }
 }
 
