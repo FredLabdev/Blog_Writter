@@ -7,7 +7,7 @@ require('model.php');
 
 function loginControl($pseudo, $password) {
     $login_error = '<p class="alert">' . 'Erreur : pseudo et/ou mot de passe errone(s) !' . '</p>';
-    $dbPassword = (pseudoControl($pseudo))['password']; // on récupère le password de la db si pseudo ok
+    $dbPassword = (getPasswordFromPseudo($pseudo))['password']; // on récupère le password de la db si pseudo ok
     $isPasswordCorrect = password_verify($password, $dbPassword); 
     if ($dbPassword) {
         if ($isPasswordCorrect) {
@@ -52,9 +52,52 @@ function homePageDirect($pseudo, $group) {
 }
 
 
-function createAccount() {
-    $account_error = newMember();
-    require('login.php');
+function newMember($createName, $createFirstName, $createPseudo, $createMail, $mailConfirm, $createPassword, $passwordConfirm) {
+    $account_error = ''; // On défini une variable regroupant les erreurs
+    $pseudoIdem = pseudoControl($createPseudo);
+    if ($pseudoIdem['pseudo_idem'] == 0) {
+    } else {
+        $account_error .= 'Désolé, ce pseudo existe déjà !';
+    }
+    // Adresse email: vérification format, 2 saisies idem, et pas déjà existante dans la db
+    if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $createMail)) {
+        $mailIdem = mailControl($createMail);
+        if ($mailIdem['email_idem'] == 0) {
+            if ($mailConfirm == $createMail) {
+            } else {
+                $account_error .= 'Attention vos 2 adresses mail sont différentes !';
+            } 
+        } else {
+            $account_error .= 'Désolé cette adresse mail existe déjà !';
+        }     
+    } else {
+        $account_error .= 'Désolé le format d\'adresse mail n\'est pas valide.';
+    }    
+    // Mot de passe: vérification format, 2 saisies idem, et pas déjà existant dans la db 
+    if (preg_match("#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#", $createPassword)) {
+        if ($passwordConfirm == $createPassword) {
+            $getAllPassword = getAllPassword();
+            while ($allPassword = $getAllPassword->fetch()) {
+                $isPasswordExist = password_verify($createPassword, $allPassword['password']);
+                if (!$isPasswordExist) {   
+                } else {
+                    $account_error .= 'Désolé ce mot de passe existe déjà !';
+                }
+            }
+        } else {
+                $account_error .= 'Attention vos mots de passes ne sont pas identiques !';
+        }   
+    } else {
+        $account_error .= 'Désolé votre mot de passe doit être composé de minimum 8 caractères'  . '<br>' . 'dont 1 Majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial !';
+    }    
+    
+    if ($account_error == '') { // Fin, si tout ok (variable d'erreurs restée à 0),
+        memberCreate($createName, $createFirstName, $createPseudo, $createMail, $createPassword);
+        $account_success = 'Bonjour, votre compte est bien créé !' . '<br>' . 'Accédez au site en vous connectant ci-dessus.';
+        loginControl($createPseudo, $createPassword);
+    } else {
+        require('login.php');
+    }
 }
 
 //**************************************************************************************

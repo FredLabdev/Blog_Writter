@@ -13,11 +13,11 @@ session_start();
 <p>===========================================================</p>
 <!-- Confirm connect -->
 
-<h3>
+<h3 class=success>
     Bienvenue
     <?php 
-            echo $_SESSION['first_name'] . ' !';
-        ?>
+        echo $_SESSION['first_name'] . ' !';
+    ?>
 </h3>
 
 <p>===========================================================</p>

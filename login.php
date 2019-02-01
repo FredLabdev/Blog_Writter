@@ -7,15 +7,11 @@
 <!-- envoie formulaire connexion en méthode POST -->
 
 <h3>
-    <?php 
-            if ($login_error) {
-                echo $login_error;
-            } else {
-                echo '<p>' . 'Veuillez vous identifier :' . '</p>';
-            }
-        ?>
+    Veuillez vous identifier :
 </h3>
-
+<p class="alert">
+    <?php echo $login_error; ?>
+</p>
 <form method="post" action="index.php?action=login">
     <p>
         <label>Votre pseudo : <input type="text" name="pseudo_connect" /></label><br>
@@ -27,15 +23,11 @@
 </form>
 
 <h3>
-    <?php 
-            if ($account_error) {
-                echo $account_error;
-            } else {
-                echo '<p>' . 'Création de compte :' . '</p>';
-            }
-        ?>
+    Création de compte :
 </h3>
-
+<p class="alert">
+    <?php echo $account_error; ?>
+</p>
 <form method="post" action="index.php?action=newMember">
     <p>
         <label>Votre nom : <input type="text" name="name" /></label><br>

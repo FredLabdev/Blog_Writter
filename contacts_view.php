@@ -89,7 +89,8 @@
 </h3>
 
 <form method="post" action="index.php?action=contactModif">
-    <label>Sélectionnez un contact : </label><select name="contact-modif">
+    <label>Sélectionnez un contact : </label>
+    <select name="contact-modif">
         <option value=""></option>
         <?php
            foreach($contactsByName as $contact) {
@@ -118,6 +119,7 @@
 </h3>
 
 <form name="delete">
+    <label>Sélectionnez un contact : </label>
     <select name="contactErase">
         <option value=""></option>
         <?php

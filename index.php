@@ -24,7 +24,12 @@ if (isset($_GET['action'])) {
 
         // Formulaire de création de compte,
     else if ($_GET['action'] == 'newMember') {
-        createAccount();
+        if(!empty($_POST['name']) && !empty($_POST['first_name']) && !empty($_POST['pseudo']) && !empty($_POST['email']) && !empty($_POST['email_confirm']) && !empty($_POST['password']) && !empty($_POST['password_confirm'])) {
+            newMember(htmlspecialchars($_POST['name']), htmlspecialchars($_POST['first_name']), htmlspecialchars($_POST['pseudo']), htmlspecialchars($_POST['email']), htmlspecialchars($_POST['email_confirm']), htmlspecialchars($_POST['password']), htmlspecialchars($_POST['password_confirm']));
+        } else {
+            $account_error = '<p class="alert">' . 'Erreur : Veuillez renseigner tous les champs' . '</p>';
+            require('login.php');
+        }
     } 
 
     //**************************************************************************************
