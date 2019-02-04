@@ -35,6 +35,7 @@ function loginAvailable($pseudo, $password) {
 
 function sessionStart($memberData) {
     session_start();
+    $_SESSION['id'] = $memberData['id'];
     $_SESSION['name'] = $memberData['name'];
     $_SESSION['first_name'] = $memberData['first_name'];
     $_SESSION['pseudo'] = $memberData['pseudo'];
@@ -43,7 +44,7 @@ function sessionStart($memberData) {
 } 
 
 function homePageDirect($pseudo, $group) {
-    if ((htmlspecialchars($pseudo == 'admin')) AND ($group == 1)) {
+    if ($_SESSION['group_id']) {
         header('Location: index.php?action=listPosts'); 
     }  
     else if ($group !== 1) {
@@ -51,33 +52,33 @@ function homePageDirect($pseudo, $group) {
     }  
 }
 
-function pseudoControl($pseudo, $account_error) {
+function pseudoControl($pseudo, $message_error) {
     $pseudoIdem = getPseudoIdem($pseudo);
     if ($pseudoIdem['pseudo_idem'] == 0) {
     } else {
-        $account_error .= 'Désolé, ce pseudo existe déjà !';
+        $message_error .= 'Désolé, ce pseudo existe déjà !';
     }
-    return $account_error;
+    return $message_error;
 }
 
-function mailControl($mail, $mailConfirm, $account_error) {
+function mailControl($mail, $mailConfirm, $message_error) {
     if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $mail)) {
         $mailIdem = getMailIdem($mail);
         if ($mailIdem['email_idem'] == 0) {
             if ($mailConfirm == $mail) {
             } else {
-                $account_error .= 'Attention vos 2 adresses mail sont différentes !';
+                $message_error .= 'Attention vos 2 adresses mail sont différentes !';
             } 
         } else {
-            $account_error .= 'Désolé cette adresse mail existe déjà !';
+            $message_error .= 'Désolé cette adresse mail existe déjà !';
         }     
     } else {
-        $account_error .= 'Désolé le format d\'adresse mail n\'est pas valide.';
+        $message_error .= 'Désolé le format d\'adresse mail n\'est pas valide.';
     }    
-    return $account_error;
+    return $message_error;
 }
 
-function passwordControl($password, $passwordConfirm, $account_error) {
+function passwordControl($password, $passwordConfirm, $message_error) {
     if (preg_match("#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#", $password)) {
         if ($passwordConfirm == $password) {
             $getAllPassword = getAllPassword();
@@ -85,24 +86,24 @@ function passwordControl($password, $passwordConfirm, $account_error) {
                 $isPasswordExist = password_verify($password, $allPassword['password']);
                 if (!$isPasswordExist) {   
                 } else {
-                    $account_error .= 'Désolé ce mot de passe existe déjà !';
+                    $message_error .= 'Désolé ce mot de passe existe déjà !';
                 }
             }
         } else {
-            $account_error .= 'Attention vos mots de passes ne sont pas identiques !';
+            $message_error .= 'Attention vos mots de passes ne sont pas identiques !';
         }   
     } else {
-        $account_error .= 'Désolé votre mot de passe doit être composé de minimum 8 caractères'  . '<br>' . 'dont 1 Majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial !';
+        $message_error .= 'Désolé votre mot de passe doit être composé de minimum 8 caractères'  . '<br>' . 'dont 1 Majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial !';
     }    
-    return $account_error;
+    return $message_error;
 }
 
 function newMember($createName, $createFirstName, $createPseudo, $createMail, $mailConfirm, $createPassword, $passwordConfirm) {
-    $account_error = '';
-    $account_error = pseudoControl($createPseudo, $account_error);
-    $account_error = mailControl($createMail, $mailConfirm, $account_error);
-    $account_error = passwordControl($createPassword, $passwordConfirm, $account_error);    
-    if ($account_error == '') { // Si tout ok on creer le nouveau membre,
+    $message_error = '';
+    $message_error = pseudoControl($createPseudo, $message_error);
+    $message_error = mailControl($createMail, $mailConfirm, $message_error);
+    $message_error = passwordControl($createPassword, $passwordConfirm, $message_error);    
+    if ($message_error == '') { // Si tout ok on creer le nouveau membre,
         memberCreate($createName, $createFirstName, $createPseudo, $createMail, $createPassword);
         $account_success = 'Bonjour, votre compte est bien créé !' . '<br>' . 'Accédez au site en vous connectant ci-dessus.';
         loginControl($createPseudo, $createPassword); // et on démmarre sa session
@@ -115,49 +116,92 @@ function newMember($createName, $createFirstName, $createPseudo, $createMail, $m
 //                        Fonctions pour l'afichage des contacts             
 //**************************************************************************************
 
-function contactsHome($message, $contactDetail) {
+function contactsHome($message_success, $message_error, $contactDetail) {
     $contactsCount = getContactsCount();
     $contactsByGroup = getContactsByGroup();
     $contactsByName = getContactsByName();
-    $message;
+    $message_success;
+    $message_error;
     $contactDetail;
-    require('contacts_view.php');
+    if ($_SESSION['group_id'] == 1) {
+        require('contacts_view.php');
+    } else {
+        require('contact_view.php');
+    }      
 }
 
-function contactDetail($contactId) {
+function contactDetail($message_success, $message_error, $contactId) {
     $contactDetail = getContactDetail($contactId);
-    $commentModif = 'Voici le détail de ce contact :';
-    contactsHome($commentModif, $contactDetail);
+    contactsHome($message_success, $message_error, $contactDetail);
 }
+
+//**************************************************************************************
+//                        Fonctions pour la modification des contacts             
+//**************************************************************************************
 
 function contactDelete($contactId) {
     deleteContact($contactId);
-    $commentModif = 'Le contact a bien été Supprimé !';
-    contactsHome($commentModif, "");
+    $message_success = 'Le compte a bien été supprimé...';
+    contactDetail($message_success, "", $contactId);
 }
 
-function contactBloqComment($contactId) {
-    bloqContactComment($contactId);
-    $commentModif = 'Le contact a bien été bloqué et ne pourra plus commenter !';
-    contactsHome($commentModif, "");
+function contactBloqComment($contactId, $blockId) {
+    bloqContactComment($contactId, $blockId);
+    if ($blockId == 1) {
+        $message_success = 'Le contact a bien été bloqué et ne pourra plus commenter !';
+    } else {
+        $message_success = 'Le contact a bien été débloqué et pourra de nouveau commenter !';
+    }
+    
+    contactDetail($message_success, "", $contactId);
 }
 
-function contactModifPseudo($contactId, $contactEntryNewData) {
-    modifPseudo($contactId, $contactEntryNewData);
-    $commentModif = 'La modification du pseudo du contact a bien été enrégistrée !';
-    contactsHome($commentModif, "");
+function newPseudo($contactId, $newPseudo) {
+    $message_error = '';
+    $message_error = pseudoControl($newPseudo, $message_error);
+    if ($message_error == '') { // Si tout ok on creer le nouveau membre,
+        contactModifPseudo($contactId, $newPseudo); // et on démmarre sa session
+    } else {
+        require('contact_view.php'); // retour au login avec affichage des erreurs
+    }
 }
 
-function contactModifMail($contactId, $contactEntryNewData) {
-    modifMail($contactId, $contactEntryNewData);
-    $commentModif = 'La modification de l\'email du contact a bien été enrégistrée !';
-    contactsHome($commentModif, "");
+function contactModifPseudo($contactId, $newPseudo) {
+    modifPseudo($contactId, $newPseudo);
+    $message_success = 'La modification du pseudo du contact a bien été enrégistrée !';
+    contactDetail($message_success, "", $contactId);
 }
 
-function contactModifPassword($contactId, $contactEntryNewData) {
-    modifPassword($contactId, $contactEntryNewData);
-    $commentModif = 'La modification du mot de passe du contact a bien été enrégistrée !';
-    contactsHome($commentModif, "");
+function newMail($contactId, $newMail, $mailConfirm) {
+    $message_error = '';
+    $message_error = mailControl($newMail, $mailConfirm, $message_error);
+    if ($message_error == '') { // Si tout ok on creer le nouveau membre,
+        contactModifMail($contactId, $newMail); // et on démmarre sa session
+    } else {
+        contactDetail("", $message_error, $contactId);
+    }
+}
+
+function contactModifMail($contactId, $newMail) {
+    modifMail($contactId, $newMail);
+    $message_success = 'La modification de l\'email du contact a bien été enrégistrée !';
+    contactDetail($message_success, "", $contactId);
+}
+
+function newPassword($contactId, $newPassword, $passwordConfirm) {
+    $message_error = '';
+    $message_error = passwordControl($newPassword, $passwordConfirm, $message_error);
+    if ($message_error == '') { // Si tout ok on creer le nouveau membre,
+        contactModifPassword($contactId, $newPassword); // et on démmarre sa session
+    } else {
+        contactDetail("", $message_error, $contactId);
+    }
+}
+
+function contactModifPassword($contactId, $newPassword) {
+    modifPassword($contactId, $newPassword);
+    $message_success = 'La modification du mot de passe du contact a bien été enrégistrée !';
+    contactDetail($message_success, "", $contactId);
 }
 
 //**************************************************************************************
@@ -189,6 +233,17 @@ function post($postId) {
     } 
     $comments = getComments($postId);
     require('post_view.php');
+}
+
+function postExtract($text) {
+    $max=20;
+    if (strlen($text) > $max) { // vérifie que texte plus long que max extrait
+        // récupère 1er espace après $max pour éviter de couper un mot en plein milieu
+        $space = strpos($text,' ',$max);
+        //récupère l'extrait jusqu'à l'espace préalablement cherché auquel on ajoute "..."
+        $extract = substr($text,0,$space).'...';
+    }
+    return $extract;
 }
 
 function allowComment($postId, $member, $newComment) {

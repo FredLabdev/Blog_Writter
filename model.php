@@ -122,15 +122,16 @@ function deleteContact($contactId) {
     )); 
 }
 
-function bloqContactComment($contactId) {
+function bloqContactComment($contactId, $blockId) {
     $db = dbConnect();
-    $bloqContactComment = $db->prepare('UPDATE contacts SET block_comment = 1 WHERE id = :idnum');
+    $bloqContactComment = $db->prepare('UPDATE contacts SET block_comment = :blockId WHERE id = :idnum');
     $bloqContactComment->execute(array(
+        'blockId' => $blockId,
         'idnum' => $contactId
     )); 
 }
 
-function modifPseudo($dataContact, $contactId) {
+function modifPseudo($contactId, $dataContact) {
     $db = dbConnect();
     $modifPseudo = $db->prepare('UPDATE contacts SET pseudo = :nvpseudo WHERE id = :idnum');
     $modifPseudo->execute(array(
@@ -139,7 +140,7 @@ function modifPseudo($dataContact, $contactId) {
     )); 
 }
 
-function modifMail($dataContact, $contactId) {
+function modifMail($contactId, $dataContact) {
     $db = dbConnect();
     $modifMail = $db->prepare('UPDATE contacts SET email = :nvemail WHERE id = :idnum');
     $modifMail->execute(array(
@@ -148,11 +149,11 @@ function modifMail($dataContact, $contactId) {
     )); 
 }
 
-function modifPassword($dataContact, $contactId) {
+function modifPassword($contactId, $dataContact) {
     $db = dbConnect();
     $modifPassword = $db->prepare('UPDATE contacts SET password = :newpassword WHERE id = :idnum');
     $modifPassword->execute(array(
-        'newpassword' => $dataContact,
+        'newpassword' => password_hash($dataContact, PASSWORD_DEFAULT),
         'idnum' => $contactId
     )); 
 }
@@ -180,7 +181,7 @@ function getPosts() {
 
 function getPostsBy5($offset) {
     $db = dbConnect();
-    $postsBy5 = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%Y à %Hh%imin%ss\') AS date FROM posts ORDER BY creation_date DESC LIMIT 5 OFFSET :idmax'); // OFFSET selon indice page
+    $postsBy5 = $db->prepare('SELECT id, chapter_title, chapter_content, chapter_extract, DATE_FORMAT(creation_date, \'%d/%m/%Y à %Hh%imin%ss\') AS date FROM posts ORDER BY creation_date DESC LIMIT 5 OFFSET :idmax'); // OFFSET selon indice page
     $postsBy5->bindValue(':idmax', $offset, PDO::PARAM_INT);
     $postsBy5->execute();
     return $postsBy5;

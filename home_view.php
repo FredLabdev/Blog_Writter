@@ -67,9 +67,9 @@ session_start();
     <?php echo $post['chapter_title'] . ' : ' . ' le '. $post['date']; ?>
 </h3>
 <p>
-    <?php echo htmlspecialchars($post['chapter_content']); ?>
+    <?php echo $post['chapter_extract']; ?>
 </p>
-<a href="index.php?action=post&amp;billet=<?php echo $post['id']; ?>">Commentaires</a><br>
+<a href="index.php?action=post&amp;billet=<?php echo $post['id']; ?>">Voir plus</a>
 <p>===========================================================</p>
 
 <?php

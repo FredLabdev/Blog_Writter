@@ -1,11 +1,7 @@
 <?php 
     session_start();
     $title = 'Membres';
-    if ($_SESSION['group_id'] == 1) {
-        $template = 'backend';
-    } else {
-        $template = 'frontend';
-    }       
+    $template = 'backend';
     ob_start(); 
 ?>
 
@@ -13,17 +9,13 @@
 <!-- Confirm connect -->
 
 <h3>
-    Bienvenue sur l' administration de vos contacts !
+    Bienvenue sur l' administration de tous les membres !
 </h3>
 <p>
+    Bonjour
+    <?php echo ' ' . $_SESSION['first_name'];?>
     Nous sommes le :
-    <?php echo date('d/m/Y') . '<br>';
-        	if(isset($_SESSION['pseudo'])) {
-            	echo ' Bonjour ' . $_SESSION['first_name'];
-        	} else {
-            	echo 'Erreur nom ou prénom visiteur';
-        	}
-        ?>
+    <?php echo ' ' . date('d/m/Y') . '<br>';?>
 </p>
 <br />
 <p>===========================================================</p>
@@ -51,7 +43,12 @@
 <h3>
     Editer un contact :
 </h3>
-
+<p class="success">
+    <?php echo $message_success; ?>
+</p>
+<p class="alert">
+    <?php echo $message_error; ?>
+</p>
 <form method="post" action="index.php?action=contactDetail">
     <label>Sélectionnez un contact : </label><select name="contact">
         <option value=""></option>
@@ -61,14 +58,7 @@
             }
         ?>
     </select>
-    <input type="submit" value="valider" name="valider" /><br>
-    <p class="success">
-        <?php
-            if ($message) {
-                echo $message;
-            }
-        ?>
-    </p>
+    <input type="submit" value="Valider" name="valider" /><br>
     <?php
         foreach($contactDetail as $dataContact) { // Détail du contact sélectionné
             echo 'Date de création : ' . $dataContact['creation_date'] . '<br>';
@@ -77,36 +67,26 @@
             echo 'Pseudo : ' . $dataContact['pseudo'] . '<br>';  
             echo 'Mail : ' . $dataContact['email'] . '<br>';  
             echo 'Mot de passe : ' . $dataContact['password'] . '<br>';  
+            if($dataContact['block_comment'] == 0) {
+                echo 'Commentaires autorisés : oui';
+            } else {
+                echo 'Commentaires autorisés : non';
+            };  
         }
     ?>
 </form>
-
-<br />
-<p>===========================================================</p>
-
-<h3>
-    Modifier un contact :
-</h3>
-
+<p>.......................................................</p>
 <form method="post" action="index.php?action=contactModif">
-    <label>Sélectionnez un contact : </label>
-    <select name="contact-modif">
-        <option value=""></option>
-        <?php
-           foreach($contactsByName as $contact) {
-               echo '<option value="' . $contact['id'] . '">' . $contact['name_maj'] . ' ' . $contact['first_name_min'] . '</option>';
-            }
+    <input type="hidden" name="contact_modif" value="<?php echo $dataContact['id']; ?>" />
+    <label>
+        <?php if($dataContact['block_comment'] == 0) {
+                echo 'Bloquer ses commentaires';
+            } else {
+                echo 'Réautoriser ses commentaires';
+            };
         ?>
-    </select><br> <!-- Sélection du champ à modifier -->
-    <label>Bloquer ses comments</label><input type="checkbox" name="bloquage" /><br>
-    <label>Sélectionnez le champ à modifier : </label>
-    <select name="champ">
-        <option value=""></option>
-        <option value="1">Pseudo</option>
-        <option value="2">e-mail</option>
-        <option value="3">Mot de passe</option>
-    </select><br>
-    <label>Nouveau contenu du champ : </label><input type="text" name="modif_champ" />
+    </label>
+    <input type="checkbox" name="bloquage" value="<?php if($dataContact['block_comment'] == 0){echo '1';}else{echo '0';};?>" /><br>
     <input type="submit" value="Appliquer" name="remplacer" />
 </form>
 
@@ -115,20 +95,12 @@
 
 
 <h3>
-    Supprimer un contact :
+    Pour supprimer ce compte, cliquez ici :
 </h3>
 
 <form name="delete">
-    <label>Sélectionnez un contact : </label>
-    <select name="contactErase">
-        <option value=""></option>
-        <?php
-           foreach($contactsByName as $contact) {
-               echo '<option value="' . $contact['id'] . '">' . $contact['id'] . $contact['name_maj'] . ' ' . $contact['first_name_min'] . '</option>';
-            }
-        ?>
-    </select><br> <!-- Sélection du champ à modifier -->
-    <a href="#" onClick="var contactId = document.forms.delete.contactErase.options[document.forms.delete.contactErase.options.selectedIndex].value;
+    <input type="hidden" name="contact_modif" value="<?php echo $dataContact['id']; ?>" />
+    <a href="#" onClick="var contactId = document.forms.delete.contact_modif.value;
         function valid_confirm(contact) {
             if (confirm('Voulez-vous vraiment apporter ces modifications ?')) {
                 var url = 'index.php?action=contactDelete&contactErase=' + contact;
@@ -139,7 +111,7 @@
                 return false;
             }
         }
-        valid_confirm(contactId);"> Supprimer </a>
+        valid_confirm(contactId);"> Désincrire ce membre </a>
 </form>
 
 <?php $content = ob_get_clean(); ?>

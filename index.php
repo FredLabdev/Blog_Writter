@@ -80,45 +80,46 @@ if (isset($_GET['action'])) {
     //**************************************************************************************
     //                     Actions pour le contacts_view (Admin)              
     //**************************************************************************************
-     
-        // Lister les contacts,   
-    else if ($_GET['action'] == 'contacts') {
-        contactsHome("", "");
-    } 
     
-        // Détailler un contact,    
+        // Affichage des contacts,    
     else if ($_GET['action'] == 'contactDetail') {
-        if (isset($_POST['contact']) AND isset($_POST['valider'])) {
-            contactDetail($_POST['contact']);
-        } else {
-            echo 'Erreur : aucun contact selectionné';
+        if ($_SESSION['group_id'] == 1) { // => demande detail d'un compte lambda depuis le backend
+            if (isset($_POST['valider'])) {
+                if (!empty($_POST['contact'])) {
+                    contactDetail("", "", $_POST['contact']);
+                } else {
+                    contactDetail("", 'Erreur : Veuillez sélectionner un contact', "");
+                }
+            } else {
+                contactDetail("", "", "");
+            }
+        } else { // => demande detail de son propre compte par un membre
+            contactDetail("", "", $_SESSION['id']);
         }
     }
     
         // modifier un contact   
-    else if ($_GET['action'] == 'contactModif') {
-        if (isset($_POST['contact-modif'])) {
-            if(isset($_POST['bloquage'])) { // Lui interdir de commenter 
-                contactBloqComment($_POST['contact-modif']);   
-            } else if(isset($_POST['champ']) AND isset($_POST['modif_champ'])) { // Modification du pseudo
-                if ($_POST['champ'] == 1) {
-                    contactModifPseudo($_POST['contact-modif'], $_POST['modif_champ']); // Modification du mail       
-                } else if ($_POST['champ'] == 2) {
-                    contactModifMail($_POST['contact-modif'], $_POST['modif_champ']); // Modification du mot de passe     
-                } else if ($_POST['champ'] == 3) {
-                    contactModifPassword($_POST['modif_champ'], $_POST['contact-modif']);
+    else if ($_GET['action'] == 'contactModif') {  
+        if ($_POST['contact_modif']) {
+            if(isset($_POST['bloquage'])) { // Backend : interdir de commenter 
+                contactBloqComment($_POST['contact_modif'], $_POST['bloquage']);   
+            } else if(!empty($_POST['champ']) AND !empty($_POST['modif_champ']) AND !empty($_POST['modif_champ_confirm'])) {
+                if ($_POST['champ'] == 1) { // Frontend : modification du mail
+                    newMail($_POST['contact_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
+                } else if ($_POST['champ'] == 2) { // Frontend : Modification du mot de passe     
+                    newPassword($_POST['contact_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
                 } else {
                     echo 'Erreur : Aucun champ à modifier';
                 }
-            } else if (!isset($_POST['champ'])) {
-                echo 'Erreur : Veuillez selectionner un champ';
-            } else if (!isset($_POST['modif_champ'])) {
-                echo 'Erreur : Veuillez rentrer une nouvelle valeure au chanmp';
-            } else {
-                echo 'Erreur : aucune modification selectionnée';
+            } else if (empty($_POST['champ'])) {
+                contactDetail("", 'Erreur : Veuillez selectionner un champ', $_SESSION['id']);
+            } else if (empty($_POST['modif_champ'])) {
+                contactDetail("", 'Erreur : Veuillez rentrer une nouvelle valeure au champ', $_SESSION['id']);
+            } else if (empty($_POST['modif_champ_confirm'])) {
+                contactDetail("", 'Erreur : Veuillez confirmer cette nouvelle valeure', $_SESSION['id']);
             }
         } else {
-        echo 'Erreur : aucun contact selectionné';
+            contactDetail("", 'Erreur : Veuillez sélectionner un contact', "");
         }
     }
     

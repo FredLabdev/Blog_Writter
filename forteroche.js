@@ -1,4 +1,6 @@
-// DECONNEXION SESSION 
+//**************************************************************************************
+//                       Interactions fontend pour la deconnexion             
+//**************************************************************************************
 
 function deconnect_confirm() {
     if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
@@ -14,8 +16,9 @@ document.getElementById("deconnexion").addEventListener('click', function (e) {
     deconnect_confirm();
 });
 
-
-// MODIFICATION D'UN COMPTE FRONTEND 
+//**************************************************************************************
+//                Interactions fontend pour la modification d'un compte             
+//**************************************************************************************
 
 var form = document.getElementById('form_modif');
 var champ = document.getElementById('champ');
@@ -67,10 +70,8 @@ missChampConfirm.addEventListener("input", function (event) {
 form.addEventListener("submit", function (event) {
     if (errorChamp.innerHTML !== "") {
         errorChamp.className = "error active";
-        event.preventDefault();
     }
     if (errorChampConfirm.innerHTML !== "") {
         errorChampConfirm.className = "error active";
-        event.preventDefault();
     }
 }, false);
