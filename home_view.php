@@ -12,14 +12,9 @@ session_start();
 <br />
 <p>===========================================================</p>
 <!-- Confirm connect -->
-
-<h3 class=success>
-    Bienvenue
-    <?php 
-        echo $_SESSION['first_name'] . ' !';
-    ?>
+<h3>
+    Bienvenue dans l'administration de votre site !
 </h3>
-
 <p>===========================================================</p>
 <!-- Liste des posts -->
 
@@ -33,6 +28,34 @@ session_start();
         }
     ?>
 </ul>
+
+<p>===========================================================</p>
+<!-- Ajouter un post -->
+
+<h3>
+    Ajouter un nouveau billet :
+</h3>
+<p class="success">
+    <?php echo $message_success; ?>
+</p>
+<form action="index.php?action=addPost" method="post">
+    <p>
+        <label>Titre du billet : </label><br>
+        <input type="text" name="titre" />
+        <label>Contenu du billet : </label><br>
+        <textarea name="contenu" rows="8" cols="45"></textarea>
+        <label>L'insérer après un billet particulier : </label>
+        <select name="postBefore">
+            <option value=""></option>
+            <?php
+            foreach($postList as $postBefore) {
+               echo '<option value="' . $postBefore['id'] . '">' . $postBefore['chapter_title'] . '</option>';
+            }
+        ?>
+        </select>
+    </p>
+    <input type="submit" value="Publier votre billet" />
+</form>
 
 <p>===========================================================</p>
 <!-- Les pages par groupe de 5 posts -->

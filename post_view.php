@@ -12,18 +12,9 @@
 <br />
 <p>===========================================================</p>
 <!-- Confirm connect -->
-
-<p>
-    Nous sommes le :
-    <?php echo date('d/m/Y') . '<br>';
-        	if(isset($_SESSION['pseudo'])) {
-            	echo ' Bonjour ' . $_SESSION['first_name'];
-        	} else {
-            	echo 'Erreur nom ou prénom visiteur';
-        	}
-        ?>
-</p>
-
+<h3>
+    Détail d'un billet
+</h3>
 <p>=======================================================================================</p>
 
 <!-- Détail du billet -->

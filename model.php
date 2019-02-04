@@ -203,6 +203,17 @@ function getPost($postId) {
     return $post;
 }
 
+function addPost($postTitle, $postContent, $postExtract, $postBefore) {            
+    $db = dbConnect();
+    $req = $db->prepare('INSERT INTO posts(creation_date, chapter_title, chapter_content, chapter_extract) VALUES(NOW(), :titre, :contenu, :extract)');
+    $req->execute(array(
+        'titre' => $postTitle,
+        'contenu' => $postContent,
+        'extract' => $postExtract
+    ));
+    $req->closeCursor();
+}
+    
 function getComments($postId) {
     $db = dbConnect();
     $comments = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\')comment_date_fr FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');

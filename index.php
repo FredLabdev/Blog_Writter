@@ -27,7 +27,7 @@ if (isset($_GET['action'])) {
         if(!empty($_POST['name']) && !empty($_POST['first_name']) && !empty($_POST['pseudo']) && !empty($_POST['email']) && !empty($_POST['email_confirm']) && !empty($_POST['password']) && !empty($_POST['password_confirm'])) {
             newMember(htmlspecialchars($_POST['name']), htmlspecialchars($_POST['first_name']), htmlspecialchars($_POST['pseudo']), htmlspecialchars($_POST['email']), htmlspecialchars($_POST['email_confirm']), htmlspecialchars($_POST['password']), htmlspecialchars($_POST['password_confirm']));
         } else {
-            $account_error = '<p class="alert">' . 'Erreur : Veuillez renseigner tous les champs' . '</p>';
+            $account_error = 'Erreur : Veuillez renseigner tous les champs';
             require('login.php');
         }
     } 
@@ -38,13 +38,13 @@ if (isset($_GET['action'])) {
      
         // Lister les billets, 
     else if ($_GET['action'] == 'listPosts') {
-        listPosts(1);
+        listPosts(1, "");
     }
 
         // Indice de page de billets (par groupe de 5),     
     else if ($_GET['action'] == 'pagePosts') {
         if (isset($_GET['page']) > 0) {
-            listPosts($_GET['page']);
+            listPosts($_GET['page'], "");
         } else {
             echo 'Erreur : aucun identifiant de page de billets envoyé';
         }
@@ -56,6 +56,20 @@ if (isset($_GET['action'])) {
             post($_GET['billet']);
         } else {
             echo 'Erreur : aucun identifiant de billet envoyé';
+        }
+    }
+     
+        // Ajouter un billet,     
+    else if ($_GET['action'] == 'addPost') {
+        if(!empty($_POST['titre']) AND !empty($_POST['contenu'])) {
+            if (!empty($_POST['postBefore'])) {
+                newPost(htmlspecialchars($_POST['titre']), htmlspecialchars($_POST['contenu']), htmlspecialchars($_POST['postBefore']));
+            } else {
+                newPost(htmlspecialchars($_POST['titre']), htmlspecialchars($_POST['contenu']), "");
+            }
+        } else {
+            $post_error = 'Erreur : Veuillez renseigner tous les champs';
+            require('home_view.php');
         }
     }
      

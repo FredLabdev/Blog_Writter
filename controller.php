@@ -208,12 +208,13 @@ function contactModifPassword($contactId, $newPassword) {
 //                Fonctions pour l'afichage d'un billet et ses commentaires                  
 //**************************************************************************************
 
-function listPosts($page) {
+function listPosts($page, $message_success) {
     $postsCount = getPostsCount();
     $posts = getPosts();
     $offset = ($page-1)*5;  
     $postsBy5 = getPostsBy5($offset);
     $billet_max = $postsCount['nbre_posts']-($offset);
+    $message_success;
     if ($billet_max <= 5) {
         $billet_min = 1;
     } else {
@@ -241,9 +242,20 @@ function postExtract($text) {
         // récupère 1er espace après $max pour éviter de couper un mot en plein milieu
         $space = strpos($text,' ',$max);
         //récupère l'extrait jusqu'à l'espace préalablement cherché auquel on ajoute "..."
-        $extract = substr($text,0,$space).'...';
+        $postExtract = substr($text,0,$space).'...';
     }
-    return $extract;
+    return $postExtract;
+}
+
+function newPost($postTitle, $postContent, $postBefore) {
+    $postExtract = postExtract($postContent);
+    if(!empty($postBefore)) {
+        addPost($postTitle, $postContent, $postExtract, $postBefore); 
+    } else {
+        addPost($postTitle, $postContent, $postExtract, "");     
+    }
+    $message_success = 'Votre billet ' . $postTitle . ' a bien été publié ci-dessus';
+    listPosts(1, $message_success);
 }
 
 function allowComment($postId, $member, $newComment) {

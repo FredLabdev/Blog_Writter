@@ -11,12 +11,6 @@
 <h3>
     Bienvenue sur l' administration de tous les membres !
 </h3>
-<p>
-    Bonjour
-    <?php echo ' ' . $_SESSION['first_name'];?>
-    Nous sommes le :
-    <?php echo ' ' . date('d/m/Y') . '<br>';?>
-</p>
 <br />
 <p>===========================================================</p>
 

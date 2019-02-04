@@ -11,16 +11,6 @@
 <h3>
     Bienvenue sur l' administration de votre compte !
 </h3>
-<p>
-    Nous sommes le :
-    <?php echo date('d/m/Y') . '<br>';
-        	if(isset($_SESSION['pseudo'])) {
-            	echo ' Bonjour ' . $_SESSION['first_name'];
-        	} else {
-            	echo 'Erreur nom ou prénom visiteur';
-        	}
-        ?>
-</p>
 <br />
 <p>===========================================================</p>
 

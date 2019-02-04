@@ -23,7 +23,6 @@
             if($template == 'backend') {
             echo'<li><a href="index.php?action=listPosts">Accueil</a></li>';
             echo '<li><a href="backend_modif_billet.php">Modifier un billet</a></li>';
-            echo '<li><a href="backend_insert_billet.php">Crééer un nouveau billet</a></li>';
             echo '<li><a href="index.php?action=contactDetail">Administrer les contacts</a></li>';
             } else {
             echo'<li><a href="index.php?action=listPosts">Accueil</a></li>';
@@ -36,6 +35,12 @@
             echo '</nav>';
         }
     ?>
+    <p>
+        Bonjour
+        <?php echo ' ' . $_SESSION['first_name'];?>
+        , nous sommes le :
+        <?php echo ' ' . date('d/m/Y') . '<br>';?>
+    </p>
     <?= $content ?>
     <footer id="pied_de_page">
         <script src="ajax.js"></script>
