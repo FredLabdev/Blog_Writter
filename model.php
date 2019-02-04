@@ -213,6 +213,33 @@ function addPost($postTitle, $postContent, $postExtract, $postBefore) {
     ));
     $req->closeCursor();
 }
+ 
+function postModifTitle($postId, $newPostTitle) {
+    $db = dbConnect();
+    $modifTitle = $db->prepare('UPDATE posts SET chapter_title = :nvtitre WHERE id = :idnum');
+    $modifTitle->execute(array(
+        'nvtitre' => $newPostTitle,
+        'idnum' => $postId
+    )); 
+}
+
+function postModifContent($postId, $newPostContent) {
+    $db = dbConnect();
+    $modifContent = $db->prepare('UPDATE posts SET chapter_content = :nvcontenu WHERE id = :idnum');
+    $modifContent->execute(array(
+        'nvcontenu' => $newPostContent,
+        'idnum' => $postId
+    )); 
+}
+
+function deletePost($postId) {  
+    $db = dbConnect();
+    $req = $db->prepare('DELETE FROM posts WHERE id = :idnum');
+    $req->execute(array(
+        'idnum' => $postId
+    ));  
+    $req->closeCursor();
+}
     
 function getComments($postId) {
     $db = dbConnect();

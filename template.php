@@ -21,13 +21,11 @@
             echo '<h3>Menu</h3>';
             echo '<ul>';
             if($template == 'backend') {
-            echo'<li><a href="index.php?action=listPosts">Accueil</a></li>';
-            echo '<li><a href="backend_modif_billet.php">Modifier un billet</a></li>';
+            echo'<li><a href="index.php?action=listPosts">Administrer les billets</a></li>';
             echo '<li><a href="index.php?action=contactDetail">Administrer les contacts</a></li>';
             } else {
             echo'<li><a href="index.php?action=listPosts">Accueil</a></li>';
             echo '<li><a href="index.php?action=contactDetail">Gérer son compte</a></li>';
-            echo '<li><a href="frontend_contact.php">Contact</a></li>';
             }
             echo '<li><a href="#" id="deconnexion">Deconnexion</a></li>';
             echo '</ul>';

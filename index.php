@@ -17,7 +17,7 @@ if (isset($_GET['action'])) {
             loginControl(htmlspecialchars($_POST['pseudo_connect']), htmlspecialchars($_POST['password_connect']));
         }
         else {
-            $login_error = '<p class="alert">' . 'Erreur : tous les champs ne sont pas remplis !' . '</p>';
+            $login_error =  utf8_encode('Erreur : tous les champs ne sont pas remplis !');
             require('login.php');
         }
     } 
@@ -27,7 +27,7 @@ if (isset($_GET['action'])) {
         if(!empty($_POST['name']) && !empty($_POST['first_name']) && !empty($_POST['pseudo']) && !empty($_POST['email']) && !empty($_POST['email_confirm']) && !empty($_POST['password']) && !empty($_POST['password_confirm'])) {
             newMember(htmlspecialchars($_POST['name']), htmlspecialchars($_POST['first_name']), htmlspecialchars($_POST['pseudo']), htmlspecialchars($_POST['email']), htmlspecialchars($_POST['email_confirm']), htmlspecialchars($_POST['password']), htmlspecialchars($_POST['password_confirm']));
         } else {
-            $account_error = 'Erreur : Veuillez renseigner tous les champs';
+            $account_error =  utf8_encode('Erreur : Veuillez renseigner tous les champs');
             require('login.php');
         }
     } 
@@ -46,16 +46,16 @@ if (isset($_GET['action'])) {
         if (isset($_GET['page']) > 0) {
             listPosts($_GET['page'], "");
         } else {
-            echo 'Erreur : aucun identifiant de page de billets envoyé';
+            echo  utf8_encode('Erreur : aucun identifiant de page de billets envoyé');
         }
     }
      
         // Détailler un billet,    
     else if ($_GET['action'] == 'post') {
         if (isset($_GET['billet']) && $_GET['billet'] > 0) {
-            post($_GET['billet']);
+            post($_GET['billet'], "", "");
         } else {
-            echo 'Erreur : aucun identifiant de billet envoyé';
+            echo  utf8_encode('Erreur : aucun identifiant de billet envoyé');
         }
     }
      
@@ -68,8 +68,38 @@ if (isset($_GET['action'])) {
                 newPost(htmlspecialchars($_POST['titre']), htmlspecialchars($_POST['contenu']), "");
             }
         } else {
-            $post_error = 'Erreur : Veuillez renseigner tous les champs';
+            $post_error =  utf8_encode('Erreur : Veuillez renseigner tous les champs');
             require('home_view.php');
+        }
+    }
+    
+        // modifier un billet   
+    else if ($_GET['action'] == 'postModif') {  
+        if ($_POST['postId']) {
+            if(!empty($_POST['champ']) AND !empty($_POST['modif_champ'])) {
+                if ($_POST['champ'] == 1) {
+                    newPostTitle($_POST['postId'], htmlspecialchars($_POST['modif_champ']));
+                } else if ($_POST['champ'] == 2) {
+                    newPostContent($_POST['postId'], htmlspecialchars($_POST['modif_champ']));
+                } else {
+                    echo  utf8_encode('Erreur : Aucun champ à modifier');
+                }
+            } else if (empty($_POST['champ'])) {
+                post($_POST['postId'], "",  utf8_encode('Erreur : Veuillez selectionner un champ'));
+            } else if (empty($_POST['modif_champ'])) {
+                post($_POST['postId'], "",  utf8_encode('Erreur : Veuillez rentrer une nouvelle valeure au champ'));
+            } 
+        } else {
+            post($_POST['postId'], "",  utf8_encode('Erreur : Aucun billet sélectionné'), "");
+        }
+    }
+    
+       // supprimer un billet   
+    else if ($_GET['action'] == 'postDelete') {
+        if ($_GET['postId']) {
+            postErase($_GET['postId']);
+        } else {
+            post($_GET['postId'], "",  utf8_encode('Erreur : Aucun billet sélectionné'), "");
         }
     }
      
@@ -78,7 +108,7 @@ if (isset($_GET['action'])) {
         if (isset($_GET['billet']) && $_GET['billet'] > 0) {
             allowComment($_GET['billet'], $_SESSION['pseudo'], $_POST['nv_comment']);
         } else {
-            echo 'Erreur : aucun identifiant de billet envoyé';
+            echo  utf8_encode('Erreur : aucun identifiant de billet envoyé');
         }
     }
      
@@ -87,7 +117,7 @@ if (isset($_GET['action'])) {
         if (isset($_GET['billet']) && $_GET['billet'] > 0) {
             commentErase($_GET['billet'], $_POST['delete_comment']);  
         } else {
-            echo 'Erreur : aucun identifiant de billet envoyé';
+            echo  utf8_encode('Erreur : aucun identifiant de billet envoyé');
         }
     }
     
@@ -102,7 +132,7 @@ if (isset($_GET['action'])) {
                 if (!empty($_POST['contact'])) {
                     contactDetail("", "", $_POST['contact']);
                 } else {
-                    contactDetail("", 'Erreur : Veuillez sélectionner un contact', "");
+                    contactDetail("",  utf8_encode('Erreur : Veuillez sélectionner un contact'), "");
                 }
             } else {
                 contactDetail("", "", "");
@@ -123,17 +153,17 @@ if (isset($_GET['action'])) {
                 } else if ($_POST['champ'] == 2) { // Frontend : Modification du mot de passe     
                     newPassword($_POST['contact_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
                 } else {
-                    echo 'Erreur : Aucun champ à modifier';
+                    echo  utf8_encode('Erreur : Aucun champ à modifier');
                 }
             } else if (empty($_POST['champ'])) {
-                contactDetail("", 'Erreur : Veuillez selectionner un champ', $_SESSION['id']);
+                contactDetail("",  utf8_encode('Erreur : Veuillez selectionner un champ'), $_SESSION['id']);
             } else if (empty($_POST['modif_champ'])) {
-                contactDetail("", 'Erreur : Veuillez rentrer une nouvelle valeure au champ', $_SESSION['id']);
+                contactDetail("",  utf8_encode('Erreur : Veuillez rentrer une nouvelle valeure au champ'), $_SESSION['id']);
             } else if (empty($_POST['modif_champ_confirm'])) {
-                contactDetail("", 'Erreur : Veuillez confirmer cette nouvelle valeure', $_SESSION['id']);
+                contactDetail("",  utf8_encode('Erreur : Veuillez confirmer cette nouvelle valeure'), $_SESSION['id']);
             }
         } else {
-            contactDetail("", 'Erreur : Veuillez sélectionner un contact', "");
+            contactDetail("",  utf8_encode('Erreur : Veuillez sélectionner un contact'), "");
         }
     }
     
@@ -142,7 +172,7 @@ if (isset($_GET['action'])) {
         if ($_GET['contactErase']) {
             contactDelete($_GET['contactErase']);
         } else {
-            echo 'Erreur : aucun contact selectionné';
+            echo  utf8_encode('Erreur : aucun contact selectionné');
         }
     }
     

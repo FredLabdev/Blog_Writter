@@ -16,16 +16,20 @@
     Détail d'un billet
 </h3>
 <p>=======================================================================================</p>
-
+<p class="success">
+    <?php echo $message_success; ?>
+</p>
+<p class="alert">
+    <?php echo $message_error; ?>
+</p>
 <!-- Détail du billet -->
 
 <div class="news">
     <h3>
         <?php 
-            if(!$post) {
-                echo '<p class="alert">' . 'Ce billet n\'existe pas !' . '</p>';
-            } else {
+            if($post) {
                 echo htmlspecialchars($post['chapter_title']); 
+
         ?>
         <em> publié le
             <?php 
@@ -41,17 +45,43 @@
     </p>
 </div>
 
-<!-- Messages d'action sur les commentaires -->
+<!-- Modifier ce billet -->
 
-<?php
-    if ($commentError) {
-        echo $commentError;
-    } else if ($commentSuccess) {
-        echo $commentSuccess;
-    } else if ($commentErase) {
-        echo $commentErase;
-    }
-?>
+<h3>
+    Modifier ce billet :
+</h3>
+<form method="post" action="index.php?action=postModif">
+    <input type="hidden" name="postId" value="<?php echo $post['id']; ?>" />
+    <label>Sinon sélectionnez le champ à modifier : </label><select name="champ">
+        <option value=""></option>
+        <option value="1">Titre de l'épisode</option>
+        <option value="2">Contenu de l'épisode</option>
+    </select><br>
+    <label>Nouveau contenu du champ : </label>
+    <textarea name="modif_champ" rows="8" cols="45"></textarea>
+    <input type="submit" value="Valider" name="remplacer" />
+</form>
+
+<br />
+<p>===========================================================</p>
+<h3>
+    Pour supprimer ce billet, cliquez ici :
+</h3>
+<form name="delete">
+    <input type="hidden" name="deletePost" value="<?php echo $post['id']; ?>" />
+    <a href="#" onClick="var postId = document.forms.delete.deletePost.value;
+        function valid_confirm(postId) {
+            if (confirm('Voulez-vous vraiment supprimer ce billet et ces commentaires ?')) {
+                var url = 'index.php?action=postDelete&postId=' + postId;
+                document.location.href = url;
+                return true;
+            } else {
+                alert('Je me disais aussi...');
+                return false;
+            }
+        }
+        valid_confirm(postId);"> Effacer ce billet </a>
+</form>
 
 <!-- Liste des commentaires -->
 
