@@ -1,5 +1,5 @@
 <?php 
-session_start();
+    session_start();
     $title = 'Accueil';
     if ($_SESSION['group_id'] == 1) {
         $template = 'backend';
@@ -13,6 +13,9 @@ session_start();
 <p>===========================================================</p>
 <!-- Confirm connect -->
 <h3>
+    Bonjour
+    <?php echo ' ' . $_SESSION['first_name'];?>, nous sommes le :
+    <?php echo date('d/m/Y') . '.<br>';?>
     Bienvenue dans l'administration de votre site !
 </h3>
 <p>===========================================================</p>
@@ -102,4 +105,4 @@ session_start();
 
 <?php $content = ob_get_clean(); ?>
 
-<?php require('template.php'); ?>
+<?php require('view/frontend/template.php'); ?>

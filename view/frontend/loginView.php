@@ -1,7 +1,9 @@
-<?php $title = 'Login'; ?>
-<?php $template = 'frontend'; ?>
-<?php $menu = 'no_menu'; ?>
-<?php ob_start(); ?>
+<?php 
+$title = 'Login';
+$template = 'frontend';
+$menu = 'no_menu';
+ob_start(); 
+?>
 
 <p>===========================================================</p>
 <!-- envoie formulaire connexion en méthode POST -->
@@ -9,8 +11,11 @@
 <h3>
     Veuillez vous identifier :
 </h3>
+<p class="success">
+    <?php echo $message_success; ?>
+</p>
 <p class="alert">
-    <?php echo $login_error; ?>
+    <?php echo utf8_encode($login_error); ?>
 </p>
 <form method="post" action="index.php?action=login">
     <p>
@@ -26,7 +31,7 @@
     Création de compte :
 </h3>
 <p class="alert">
-    <?php echo $account_error; ?>
+    <?php echo utf8_encode($message_error); ?>
 </p>
 <form method="post" action="index.php?action=newMember">
     <p>
@@ -43,4 +48,4 @@
 
 <?php $content = ob_get_clean(); ?>
 
-<?php require('template.php'); ?>
+<?php require('view/frontend/template.php'); ?>

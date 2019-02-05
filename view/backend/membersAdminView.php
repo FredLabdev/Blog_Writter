@@ -14,7 +14,7 @@
 <br />
 <p>===========================================================</p>
 
-<!-- Liste des contacts par catégorie -->
+<!-- Liste des membres par catégorie -->
 
 <h3>
     Liste des contacts classés par catégorie :
@@ -32,7 +32,7 @@
 <br />
 <p>===========================================================</p>
 
-<!-- Voir les champs d'un contact -->
+<!-- Voir les champs d'un membre -->
 
 <h3>
     Editer un contact :
@@ -109,4 +109,4 @@
 
 <?php $content = ob_get_clean(); ?>
 
-<?php require('template.php'); ?>
+<?php require('view/frontend/template.php'); ?>

@@ -1,5 +1,6 @@
 <?php
-require('controller.php');
+require('controller/backend.php');
+require('controller/frontend.php');
 
 //**************************************************************************************
 //                       Si le routeur recoit une action dans l'URL              
@@ -18,7 +19,7 @@ if (isset($_GET['action'])) {
         }
         else {
             $login_error =  utf8_encode('Erreur : tous les champs ne sont pas remplis !');
-            require('login.php');
+            require('view/frontend/loginView.php');
         }
     } 
 
@@ -28,7 +29,7 @@ if (isset($_GET['action'])) {
             newMember(htmlspecialchars($_POST['name']), htmlspecialchars($_POST['first_name']), htmlspecialchars($_POST['pseudo']), htmlspecialchars($_POST['email']), htmlspecialchars($_POST['email_confirm']), htmlspecialchars($_POST['password']), htmlspecialchars($_POST['password_confirm']));
         } else {
             $account_error =  utf8_encode('Erreur : Veuillez renseigner tous les champs');
-            require('login.php');
+            require('view/frontend/loginView.php');
         }
     } 
 
@@ -69,7 +70,7 @@ if (isset($_GET['action'])) {
             }
         } else {
             $post_error =  utf8_encode('Erreur : Veuillez renseigner tous les champs');
-            require('home_view.php');
+            require('view/frontend/postsListView.php');
         }
     }
     
@@ -196,5 +197,5 @@ else if ($_COOKIE['password']) {
 }
         // Soit on dirige vers la page de connexion, 
 else {
-    require('login.php');
+    require('view/frontend/loginView.php');
 }

@@ -6,7 +6,7 @@
     <title>
         <?= $title ?>
     </title>
-    <link href="style.css" rel="stylesheet" />
+    <link href="public/style.css" rel="stylesheet" />
 </head>
 
 <body class="<?= $template ?>">
@@ -33,16 +33,10 @@
             echo '</nav>';
         }
     ?>
-    <p>
-        Bonjour
-        <?php echo ' ' . $_SESSION['first_name'];?>
-        , nous sommes le :
-        <?php echo ' ' . date('d/m/Y') . '<br>';?>
-    </p>
     <?= $content ?>
     <footer id="pied_de_page">
-        <script src="ajax.js"></script>
-        <script src="forteroche.js"></script>
+        <script src="public/ajax.js"></script>
+        <script src="public/forteroche.js"></script>
         <p>Copyright Fred Lab, tous droits réservés</p>
     </footer>
 
