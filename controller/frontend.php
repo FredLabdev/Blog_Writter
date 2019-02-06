@@ -1,9 +1,9 @@
 <?php
 
-require_once('model/frontend/CommentManager.php');
-require_once('model/frontend/LoginManager.php');
-require_once('model/frontend/MemberManager.php');
-require_once('model/frontend/PostManager.php');
+require_once('model/CommentManager.php');
+require_once('model/LoginManager.php');
+require_once('model/MemberManager.php');
+require_once('model/PostManager.php');
 
 //**************************************************************************************
 //                        Controller frontend LoginManager           
@@ -11,7 +11,7 @@ require_once('model/frontend/PostManager.php');
 
 function loginControl($pseudo, $password) {
     $login_error = 'Erreur : pseudo et/ou mot de passe errone(s) !';
-    $loginManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\LoginManager();
+    $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
     $dbPassword = ($loginManager->getPasswordFromPseudo($pseudo))['password']; 
     $isPasswordCorrect = password_verify($password, $dbPassword); 
     if ($dbPassword) {
@@ -31,7 +31,7 @@ function loginControl($pseudo, $password) {
 
 function loginAvailable($pseudo, $password) {
                 // 1 - Récupération de ses données   
-    $loginManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\LoginManager();
+    $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
     $memberData = $loginManager->getMemberData($pseudo, $password);
                 // 2 - Ouverture de session   
     sessionStart($memberData);
@@ -59,7 +59,7 @@ function homePageDirect($pseudo, $group) {
 }
 
 function pseudoControl($pseudo, $message_error) {
-    $loginManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\LoginManager();
+    $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
     $pseudoIdem = $loginManager->getPseudoIdem($pseudo);
     if ($pseudoIdem['pseudo_idem'] == 0) {
     } else {
@@ -70,7 +70,7 @@ function pseudoControl($pseudo, $message_error) {
 
 function mailControl($mail, $mailConfirm, $message_error) {
     if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $mail)) {
-        $loginManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\LoginManager();
+        $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
         $mailIdem = $loginManager->getMailIdem($mail);
         if ($mailIdem['email_idem'] == 0) {
             if ($mailConfirm == $mail) {
@@ -89,7 +89,7 @@ function mailControl($mail, $mailConfirm, $message_error) {
 function passwordControl($password, $passwordConfirm, $message_error) {
     if (preg_match("#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$#", $password)) {
         if ($passwordConfirm == $password) {
-            $loginManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\LoginManager();
+            $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
             $getAllPassword = $loginManager->getAllPassword();
             while ($allPassword = $getAllPassword->fetch()) {
                 $isPasswordExist = password_verify($password, $allPassword['password']);
@@ -113,7 +113,7 @@ function newMember($createName, $createFirstName, $createPseudo, $createMail, $m
     $message_error = mailControl($createMail, $mailConfirm, $message_error);
     $message_error = passwordControl($createPassword, $passwordConfirm, $message_error);    
     if ($message_error == '') { // Si tout ok on creer le nouveau membre,
-        $loginManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\LoginManager();
+        $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
         $loginManager->memberCreate($createName, $createFirstName, $createPseudo, $createMail, $createPassword);
         loginControl($createPseudo, $createPassword); // et on démmarre sa session
     } else {
@@ -126,7 +126,7 @@ function newMember($createName, $createFirstName, $createPseudo, $createMail, $m
 //**************************************************************************************
 
 function listPosts($page, $message_success) {
-    $postManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\PostManager();
+    $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
     $postsCount = $postManager->getPostsCount();
     $postsList = $postManager->getPosts();
     $pages_max = getPagesMax($postsCount);
@@ -156,11 +156,11 @@ function getPagesMax($postsCount) {
 }
 
 function post($postId, $message_success, $message_error) {
-    $postManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\PostManager();
+    $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
     $postDetails = $postManager->getPost($postId);
     $message_success;
     $message_error;
-    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\CommentManager();
+    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
     $comments = $commentManager->getComments($postId);
     require('view/frontend/postView.php');
 }
@@ -170,7 +170,7 @@ function post($postId, $message_success, $message_error) {
 //**************************************************************************************
 
 function commentsByPost($page) {
-    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\CommentManager();
+    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
     $commentsCount = $commentManager->getCommentsCount($postId);
 }
 
@@ -179,7 +179,7 @@ function commentsByPost($page) {
 //**************************************************************************************
 
 function contactsHome($message_success, $message_error, $contactDetails) {
-    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\MemberManager();
+    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
     $contactsCount = $memberManager->getContactsCount();
     $contactsByGroup = $memberManager->getContactsByGroup();
     $contactsByName = $memberManager->getContactsByName();
@@ -194,7 +194,7 @@ function contactsHome($message_success, $message_error, $contactDetails) {
 }
 
 function contactDetail($message_success, $message_error, $contactId) {
-    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\MemberManager();
+    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
     $contactDetails = $memberManager->getContactDetail($contactId);
     contactsHome($message_success, $message_error, $contactDetails);
 }
@@ -210,7 +210,7 @@ function newMail($contactId, $newMail, $mailConfirm) {
 }
 
 function contactModifMail($contactId, $newMail) {
-    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\MemberManager();
+    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
     $memberManager->modifMail($contactId, $newMail);
     $message_success =  utf8_encode('La modification de l\'email du contact a bien été enrégistrée !');
     contactDetail($message_success, "", $contactId);
@@ -227,14 +227,14 @@ function newPassword($contactId, $newPassword, $passwordConfirm) {
 }
 
 function contactModifPassword($contactId, $newPassword) {
-    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\MemberManager();
+    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
     $memberManager->modifPassword($contactId, $newPassword);
     $message_success =  utf8_encode('La modification du mot de passe du contact a bien été enrégistrée !');
     contactDetail($message_success, "", $contactId);
 }
 
 function contactDelete($contactId) {
-    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\MemberManager();
+    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
     $memberManager->deleteContact($contactId);
     $message_success =  utf8_encode('Ce compte a bien été supprimé...');
     if ($_SESSION['group_id'] == 1) {

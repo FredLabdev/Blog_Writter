@@ -1,8 +1,8 @@
 <?php
 
-require_once('model/backend/CommentManager.php');
-require_once('model/backend/MemberManager.php');
-require_once('model/backend/PostManager.php');
+require_once('model/CommentManager.php');
+require_once('model/MemberManager.php');
+require_once('model/PostManager.php');
 
 //**************************************************************************************
 // Controller backend PostManager (+backend CommentManager) (+Controller frontend PostManager)          
@@ -22,7 +22,7 @@ function postExtract($text) {
 function newPost($postTitle, $postContent, $postBefore) {
     $postExtract = postExtract($postContent);
     if(!empty($postBefore)) {
-        $postManager = new \FredLab\tp4_blog_ecrivain\Model\Backend\PostManager();
+        $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
         $postManager->addPost($postTitle, $postContent, $postExtract, $postBefore); 
     } else {
         $postManager->addPost($postTitle, $postContent, $postExtract, "");     
@@ -32,7 +32,7 @@ function newPost($postTitle, $postContent, $postBefore) {
 }
 
 function newPostTitle($postId, $newPostTitle) {
-    $postManager = new \FredLab\tp4_blog_ecrivain\Model\Backend\PostManager();
+    $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
     $postManager->postModifTitle($postId, $newPostTitle);
     $message_success =  'Le titre de l\'épisode ' . $postId . ' a bien été modifié ci-dessous !';
     post($postId, $message_success, "");
@@ -40,16 +40,16 @@ function newPostTitle($postId, $newPostTitle) {
 
 function newPostContent($postId, $newPostContent) {
     $postExtract = postExtract($newPostContent);
-    $postManager = new \FredLab\tp4_blog_ecrivain\Model\Backend\PostManager();
+    $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
     $postManager->postModifContent($postId, $newPostContent, $postExtract);
     $message_success =  'Le contenu de l\'épisode ' . $postId . ' a bien été modifié ci-dessous !';
     post($postId, $message_success, "");
 }
     
 function postErase($postId) {
-    $postManager = new \FredLab\tp4_blog_ecrivain\Model\Backend\PostManager();
+    $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
     $postManager->deletePost($postId);     
-    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\Backend\CommentManager();
+    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
     $commentManager->deleteComments($postId);     
     $message_success =  'Le billet '. $postId . ' et ses ommentaires ont bien été supprimés !';
     listPosts(1, $message_success);
@@ -60,7 +60,7 @@ function postErase($postId) {
 //**************************************************************************************
 
 function allowComment($postId, $member, $newComment) {
-    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\Backend\CommentManager();
+    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
     $allowComment = $commentManager->permitComments($member);
     $message_error = "";
     if($allowComment['block_comment'] == 1) {
@@ -73,7 +73,7 @@ function allowComment($postId, $member, $newComment) {
 }
 
 function commentErase($postId, $commentId) {
-    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\Backend\CommentManager();
+    $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
     $commentManager->deleteComment($commentId);     
     $message_success =  'Le comment '. $commentId . ' a bien été Supprimé !';
     post($postId, $message_success, "");
@@ -84,7 +84,7 @@ function commentErase($postId, $commentId) {
 //**************************************************************************************
 
 function contactBloqComment($contactId, $blockId) {
-    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\Backend\MemberManager();
+    $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
     $memberManager->bloqContactComment($contactId, $blockId);
     if ($blockId == 1) {
         $message_success =  'Le contact a bien été bloqué et ne pourra plus commenter !';

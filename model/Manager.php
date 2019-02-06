@@ -1,6 +1,6 @@
 <?php
 
-namespace FredLab\tp4_blog_ecrivain\Model\Backend;
+namespace FredLab\tp4_blog_ecrivain\Model;
 
 class Manager {
     

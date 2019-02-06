@@ -1,8 +1,8 @@
 <?php 
   
-namespace FredLab\tp4_blog_ecrivain\Model\Frontend;
+namespace FredLab\tp4_blog_ecrivain\Model;
 
-require_once("model/frontend/Manager.php");
+require_once("model/Manager.php");
 
 class LoginManager extends Manager { // se situe dans le namespace
 
