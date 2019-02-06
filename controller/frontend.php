@@ -12,7 +12,7 @@ require_once('model/frontend/PostManager.php');
 function loginControl($pseudo, $password) {
     $login_error = 'Erreur : pseudo et/ou mot de passe errone(s) !';
     $loginManager = new \FredLab\tp4_blog_ecrivain\Model\Frontend\LoginManager();
-    $dbPassword = ($loginManager->getPasswordFromPseudo($pseudo))['password']; // on récupère le password de la db si pseudo ok
+    $dbPassword = ($loginManager->getPasswordFromPseudo($pseudo))['password']; 
     $isPasswordCorrect = password_verify($password, $dbPassword); 
     if ($dbPassword) {
         if ($isPasswordCorrect) {

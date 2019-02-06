@@ -1,7 +1,5 @@
 <?php
 
-require_once('controller/frontend.php');
-
 require_once('model/backend/CommentManager.php');
 require_once('model/backend/MemberManager.php');
 require_once('model/backend/PostManager.php');
