@@ -27,21 +27,20 @@
 <div class="news">
     <h3>
         <?php 
-            if($postDatas) {
-                echo htmlspecialchars($postDatas['chapter_title']); 
-
+            foreach($postDetails as $dataPost) { // Détail du contact sélectionné
+            echo $dataPost['chapter_title'];  
         ?>
         <em> publié le
             <?php 
-                echo $postDatas['creation_date_fr']; 
-            ?>
+            echo $dataPost['creation_date_fr']; 
+        ?>
         </em>
     </h3>
     <p>
         <?php 
-                echo nl2br(htmlspecialchars($postDatas['chapter_content'])); 
-            }
-            ?>
+            echo nl2br(htmlspecialchars($dataPost['chapter_content'])); 
+        }
+        ?>
     </p>
 </div>
 
@@ -51,7 +50,7 @@
     Modifier ce billet :
 </h3>
 <form method="post" action="index.php?action=postModif">
-    <input type="hidden" name="postId" value="<?php echo $postDatas['id']; ?>" />
+    <input type="hidden" name="postId" value="<?php echo $dataPost['id']; ?>" />
     <label>Sinon sélectionnez le champ à modifier : </label><select name="champ">
         <option value=""></option>
         <option value="1">Titre de l'épisode</option>
@@ -68,7 +67,7 @@
     Pour supprimer ce billet, cliquez ici :
 </h3>
 <form name="delete">
-    <input type="hidden" name="deletePost" value="<?php echo $postDatas['id']; ?>" />
+    <input type="hidden" name="deletePost" value="<?php echo $dataPost['id']; ?>" />
     <a href="#" onClick="var postId = document.forms.delete.deletePost.value;
         function valid_confirm(postId) {
             if (confirm('Voulez-vous vraiment supprimer ce billet et ces commentaires ?')) {

@@ -106,13 +106,13 @@ function getPostsBy5($offset) {
 
 function getPost($postId) {
     $db = dbConnect();
-    $post = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%%Hh%imin%ss\') AS creation_date_fr FROM posts WHERE id = ?');
-    $post->execute(array($postId));
-    $postDatas = array(); 
-    while ($postData = $post->fetch()) {
-        $postDatas[] = $postData; // on créer un tableau regroupant les posts
+    $getPostDetail = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%%Hh%imin%ss\') AS creation_date_fr FROM posts WHERE id = ?');
+    $getPostDetail->execute(array($postId));
+    $postDetails = array(); 
+    while ($postDetail = $getPostDetail->fetch()) {
+        $postDetails[] = $postDetail; // on créer un tableau regroupant les donnees des contacts
     }
-    return $postDatas;
+    return $postDetails;
 }
 
 //**************************************************************************************

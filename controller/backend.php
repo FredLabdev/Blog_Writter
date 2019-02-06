@@ -50,7 +50,8 @@ function newPostContent($postId, $newPostContent) {
     
 function postErase($postId) {
     deletePost($postId);     
-    $message_success =  'Le billet '. $postId . ' a bien été Supprimé !';
+    deleteComments($postId);     
+    $message_success =  'Le billet '. $postId . ' et ses ommentaires ont bien été supprimés !';
     listPosts(1, $message_success);
 }
 

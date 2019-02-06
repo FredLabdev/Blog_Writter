@@ -21,6 +21,9 @@
 <p>===========================================================</p>
 <!-- Liste des posts -->
 
+<p class="success">
+    <?php echo $message_success; ?>
+</p>
 <ul>
     <?php
         echo '<h3>' . 'Liste des ' . $postsCount['nbre_posts'] . ' posts publiés à ce jour :' . '</h3>';
@@ -38,9 +41,6 @@
 <h3>
     Ajouter un nouveau billet :
 </h3>
-<p class="success">
-    <?php echo $message_success; ?>
-</p>
 <form action="index.php?action=addPost" method="post">
     <p>
         <label>Titre du billet : </label><br>

@@ -8,14 +8,12 @@
 //**************************************************************************************
 //**************************************************************************************
 
-class CommentManager
-{
 
 //**************************************************************************************
 //                    Fonctions pour l'afichage des commentaires                  
 //**************************************************************************************
 
-public function permitComments($member) {
+function permitComments($member) {
     $db = dbConnect();
     $req = $db->prepare('SELECT block_comment FROM contacts WHERE pseudo = ?');
     $req->execute(array($member));
@@ -24,7 +22,7 @@ public function permitComments($member) {
     return $allowComment;
 }
 
-public function addComment($postId, $author, $comment) {            
+function addComment($postId, $author, $comment) {            
     $db = dbConnect();
     $req = $db->prepare('INSERT INTO comments(post_id, author, comment, comment_date) VALUES(:post_id, :author, :comment, NOW())');
     $req->execute(array(
@@ -35,7 +33,7 @@ public function addComment($postId, $author, $comment) {
     $req->closeCursor();
 }
     
-public function deleteComment($commentId) {  
+function deleteComment($commentId) {  
     $db = dbConnect();
     $req = $db->prepare('DELETE FROM comments WHERE id = :idnum');
     $req->execute(array(
@@ -44,16 +42,22 @@ public function deleteComment($commentId) {
     $req->closeCursor();
 }
     
+function deleteComments($postId) {  
+    $db = dbConnect();
+    $req = $db->prepare('DELETE FROM comments WHERE post_id = :postidnum');
+    $req->execute(array(
+        'postidnum' => $postId
+    ));  
+    $req->closeCursor();
+}
+    
 //**************************************************************************************
 //                          Connexion à la base de données                         
 //**************************************************************************************
 
-private function dbConnect() {
-    $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-    return $db;
-}
 
-}
+
+
 //**************************************************************************************
 //                     Fonctions pour l'afichage d'un billet             
 //**************************************************************************************

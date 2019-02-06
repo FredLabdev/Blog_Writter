@@ -153,7 +153,7 @@ function getPagesMax($postsCount) {
 }
 
 function post($postId, $message_success, $message_error) {
-    $postDatas = getPost($postId);
+    $postDetails = getPost($postId);
     $message_success;
     $message_error;
     $comments = getComments($postId);
