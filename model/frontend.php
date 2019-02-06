@@ -9,7 +9,7 @@
 //**************************************************************************************
     
 //**************************************************************************************
-//                          Connexion à la base de données                         
+//                               Model frontend Manager
 //**************************************************************************************
 
 function dbConnect() {
@@ -18,7 +18,7 @@ function dbConnect() {
 }
 
 //**************************************************************************************
-//                           Fonctions pour le login                    
+//                               Model frontend LoginManager
 //**************************************************************************************
     
 function getMemberData($pseudo, $dbPassword) {
@@ -75,7 +75,7 @@ function memberCreate($createName, $createFirstName, $createPseudo, $createMail,
 }
 
 //**************************************************************************************
-//                        Fonctions pour l'afichage des billets                  
+//                               Model frontend PostManager
 //**************************************************************************************
 
 function getPostsCount() {
@@ -116,7 +116,7 @@ function getPost($postId) {
 }
 
 //**************************************************************************************
-//                   Fonctions pour l'afichage des commentaires                  
+//                               Model frontend CommentManager
 //**************************************************************************************
 
 function getCommentsCount($postId) {
@@ -134,7 +134,7 @@ function getComments($postId) {
 }
 
 //**************************************************************************************
-//                       Fonctions pour l'afichage des membres                  
+//                               Model frontend MemberManager   
 //**************************************************************************************
 
 function getContactsCount() {

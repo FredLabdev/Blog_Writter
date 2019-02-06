@@ -10,7 +10,7 @@
 
 
 //**************************************************************************************
-//                    Fonctions pour l'afichage des commentaires                  
+//                        Model backend CommentManager           
 //**************************************************************************************
 
 function permitComments($member) {
@@ -52,14 +52,14 @@ function deleteComments($postId) {
 }
     
 //**************************************************************************************
-//                          Connexion à la base de données                         
+//                        Model
 //**************************************************************************************
 
 
 
 
 //**************************************************************************************
-//                     Fonctions pour l'afichage d'un billet             
+//                        Model backend PostManager           
 //**************************************************************************************
 
 function addPost($postTitle, $postContent, $postExtract, $postBefore) {            
@@ -102,7 +102,7 @@ function deletePost($postId) {
 }
 
 //**************************************************************************************
-//                       Fonctions pour l'afichage des membres                  
+//                        Model backend MemberManager           
 //**************************************************************************************
 
 function bloqContactComment($contactId, $blockId) {

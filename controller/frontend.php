@@ -10,7 +10,7 @@ require('model/frontend.php');
 //**************************************************************************************
 
 //**************************************************************************************
-//                              Fonctions pour le login                
+//                        Controller frontend LoginManager           
 //**************************************************************************************
 
 function loginControl($pseudo, $password) {
@@ -120,7 +120,7 @@ function newMember($createName, $createFirstName, $createPseudo, $createMail, $m
 }
 
 //**************************************************************************************
-//                      Fonctions pour l'afichage des billets                
+//                        Controller frontend PostManager             
 //**************************************************************************************
 
 function listPosts($page, $message_success) {
@@ -161,7 +161,7 @@ function post($postId, $message_success, $message_error) {
 }
 
 //**************************************************************************************
-//                   Fonctions pour l'afichage des commentaires                  
+//                        Controller frontend CommentManager           
 //**************************************************************************************
 
 function commentsByPost($page) {
@@ -169,7 +169,7 @@ function commentsByPost($page) {
 }
 
 //**************************************************************************************
-//                       Fonctions pour la gestion des membres             
+//                        Controller frontend MemberManager           
 //**************************************************************************************
 
 function contactsHome($message_success, $message_error, $contactDetails) {
@@ -234,7 +234,7 @@ function contactDelete($contactId) {
 }
 
 //**************************************************************************************
-//                              Fonction pour la deconnexion                  
+//                        Controller frontend DeconnexionManager           
 //**************************************************************************************
 
 function sessionEnd() {

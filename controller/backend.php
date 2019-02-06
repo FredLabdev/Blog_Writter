@@ -10,7 +10,7 @@ require('model/backend.php');
 //**************************************************************************************
 
 //**************************************************************************************
-//                     Fonctions pour l'afichage d'un billet              
+//                        Controller backend PostManager           
 //**************************************************************************************
 
 function postExtract($text) {
@@ -56,7 +56,7 @@ function postErase($postId) {
 }
 
 //**************************************************************************************
-//                Fonctions pour l'afichage des commentaires                  
+//                        Controller backend CommentManager                    
 //**************************************************************************************
 
 function allowComment($postId, $member, $newComment) {
@@ -78,7 +78,7 @@ function commentErase($postId, $commentId) {
 }
 
 //**************************************************************************************
-//                        Fonctions pour la modification des membres             
+//                        Controller backend MemberManager                
 //**************************************************************************************
 
 function contactBloqComment($contactId, $blockId) {
