@@ -1,7 +1,7 @@
 <?php 
 $title = 'Login';
 $template = 'frontend';
-$menu = 'no_menu';
+$noMenu = 'no_menu';
 ob_start(); 
 ?>
 

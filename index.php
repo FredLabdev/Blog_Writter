@@ -1,6 +1,9 @@
 <?php
+session_start();
 require('controller/backend.php');
 require('controller/frontend.php');
+
+try {
 
 //**************************************************************************************
 //                       Si le routeur recoit une action dans l'URL              
@@ -47,7 +50,7 @@ if (isset($_GET['action'])) {
         if (isset($_GET['page']) > 0) {
             listPosts($_GET['page'], "");
         } else {
-            echo  utf8_encode('Erreur : aucun identifiant de page de billets envoyé');
+            throw new Exception('Aucun identifiant de page de billets envoyé');
         }
     }
      
@@ -56,7 +59,7 @@ if (isset($_GET['action'])) {
         if (isset($_GET['billet']) && $_GET['billet'] > 0) {
             post($_GET['billet'], "", "");
         } else {
-            echo  utf8_encode('Erreur : aucun identifiant de billet envoyé');
+            throw new Exception('Aucun identifiant de page de billets envoyé');
         }
     }
      
@@ -109,7 +112,7 @@ if (isset($_GET['action'])) {
         if (isset($_GET['billet']) && $_GET['billet'] > 0) {
             allowComment($_GET['billet'], $_SESSION['pseudo'], $_POST['nv_comment']);
         } else {
-            echo  utf8_encode('Erreur : aucun identifiant de billet envoyé');
+            throw new Exception('Aucun identifiant de billet envoyé');
         }
     }
      
@@ -118,7 +121,7 @@ if (isset($_GET['action'])) {
         if (isset($_GET['billet']) && $_GET['billet'] > 0) {
             commentErase($_GET['billet'], $_POST['delete_comment']);  
         } else {
-            echo  utf8_encode('Erreur : aucun identifiant de billet envoyé');
+            throw new Exception('Aucun identifiant de billet envoyé');
         }
     }
     
@@ -178,7 +181,7 @@ if (isset($_GET['action'])) {
     }
     
     //**************************************************************************************
-    //                     Actions pour la deconnexion             
+    //                          Actions pour la deconnexion             
     //**************************************************************************************
      
         // supprimer un contact   
@@ -198,4 +201,13 @@ else if ($_COOKIE['password']) {
         // Soit on dirige vers la page de connexion, 
 else {
     require('view/frontend/loginView.php');
+}
+
+//**************************************************************************************
+//                        Redirection vers page des erreurs             
+//**************************************************************************************
+
+} catch(Exception $e) {
+    $errorMessage = $e->getMessage();
+    require('view/errorView.php');
 }

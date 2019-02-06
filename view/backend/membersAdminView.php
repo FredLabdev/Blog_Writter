@@ -54,7 +54,7 @@
     </select>
     <input type="submit" value="Valider" name="valider" /><br>
     <?php
-        foreach($contactDetail as $dataContact) { // Détail du contact sélectionné
+        foreach($contactDetails as $dataContact) { // Détail du contact sélectionné
             echo 'Date de création : ' . $dataContact['creation_date'] . '<br>';
             echo 'Nom : ' . $dataContact['name'] . '<br>';
             echo 'Prénom : ' . $dataContact['first_name'] . '<br>';  

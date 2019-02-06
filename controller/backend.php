@@ -10,7 +10,7 @@ require('model/backend.php');
 //**************************************************************************************
 
 //**************************************************************************************
-//                Fonctions pour l'afichage d'un billet et ses commentaires                  
+//                     Fonctions pour l'afichage d'un billet              
 //**************************************************************************************
 
 function postExtract($text) {
@@ -53,6 +53,10 @@ function postErase($postId) {
     $message_success =  'Le billet '. $postId . ' a bien été Supprimé !';
     listPosts(1, $message_success);
 }
+
+//**************************************************************************************
+//                Fonctions pour l'afichage des commentaires                  
+//**************************************************************************************
 
 function allowComment($postId, $member, $newComment) {
     $allowComment = permitComments($member);

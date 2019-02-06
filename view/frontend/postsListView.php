@@ -25,8 +25,8 @@
     <?php
         echo '<h3>' . 'Liste des ' . $postsCount['nbre_posts'] . ' posts publiés à ce jour :' . '</h3>';
         $compteur = $postsCount['nbre_posts'];
-        while ($postList = $posts->fetch()) {
-            echo '<li style="color: red;">' . ' N° ' . $compteur . ' : ' . $postList['chapter_title'] . '</li>';
+        foreach($postsList as $post) {
+            echo '<li style="color: red;">' . ' N° ' . $compteur . ' : ' . $post['chapter_title'] . '</li>';
             $compteur--;
         }
     ?>
@@ -51,7 +51,7 @@
         <select name="postBefore">
             <option value=""></option>
             <?php
-            foreach($postList as $postBefore) {
+            foreach($postsList as $postBefore) {
                echo '<option value="' . $postBefore['id'] . '">' . $postBefore['chapter_title'] . '</option>';
             }
         ?>
@@ -64,8 +64,8 @@
 <!-- Les pages par groupe de 5 posts -->
 
 <p>Page
-    <?php // Boucle affichant le bon nombre de liens vers d'autres pages, par groupe de 5 posts 
-        for ($page=1, $pages_max=($postsCount['nbre_posts']/5)+($postsCount['nbre_posts']%5); $page<=$pages_max; $page++) {
+    <?php 
+        for ($page=1, $pages_max; $page<=$pages_max; $page++) {
             echo '<a href="index.php?action=pagePosts&amp;page=' . $page .'">' . $page . '</a>' . ' ';
         }
     ?>

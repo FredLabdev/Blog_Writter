@@ -1,19 +1,4 @@
 <?php 
-    session_start();
-
-//**************************************************************************************
-//                          Connexion à la base de données                         
-//**************************************************************************************
-
-function dbConnect() {
-    try {
-        $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-    }
-    catch(Exception $e) {
-        die('Erreur : '.$e->getMessage());
-    }
-    return $db;
-}
 
 //**************************************************************************************
 //**************************************************************************************
@@ -23,6 +8,15 @@ function dbConnect() {
 //**************************************************************************************
 //**************************************************************************************
     
+//**************************************************************************************
+//                          Connexion à la base de données                         
+//**************************************************************************************
+
+function dbConnect() {
+    $db = new PDO('mysql:host=localhost;dbname=forteroche', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+    return $db;
+}
+
 //**************************************************************************************
 //                           Fonctions pour le login                    
 //**************************************************************************************
@@ -81,7 +75,7 @@ function memberCreate($createName, $createFirstName, $createPseudo, $createMail,
 }
 
 //**************************************************************************************
-//                Fonctions pour l'afichage d'un billet et ses commentaires                  
+//                        Fonctions pour l'afichage des billets                  
 //**************************************************************************************
 
 function getPostsCount() {
@@ -95,7 +89,11 @@ function getPostsCount() {
 function getPosts() {
     $db = dbConnect();
     $posts = $db->query('SELECT chapter_title, creation_date FROM posts ORDER BY creation_date DESC');
-    return $posts;
+    $postsList = array(); 
+    while ($post = $posts->fetch()) {
+        $postsList[] = $post; // on créer un tableau regroupant les posts
+    }
+    return $postsList;
 }
 
 function getPostsBy5($offset) {
@@ -106,20 +104,26 @@ function getPostsBy5($offset) {
     return $postsBy5;
 }
 
+function getPost($postId) {
+    $db = dbConnect();
+    $post = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%%Hh%imin%ss\') AS creation_date_fr FROM posts WHERE id = ?');
+    $post->execute(array($postId));
+    $postDatas = array(); 
+    while ($postData = $post->fetch()) {
+        $postDatas[] = $postData; // on créer un tableau regroupant les posts
+    }
+    return $postDatas;
+}
+
+//**************************************************************************************
+//                   Fonctions pour l'afichage des commentaires                  
+//**************************************************************************************
+
 function getCommentsCount($postId) {
     $db = dbConnect();
     $commentsCount = $db->prepare('SELECT COUNT(post_id) AS nbre_comment FROM comments WHERE post_id = ?');
     $commentsCount->execute(array($postId));    
     return $commentsCount;
-}
-
-function getPost($postId) {
-    $db = dbConnect();
-    $req = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%%Hh%imin%ss\') AS creation_date_fr FROM posts WHERE id = ?');
-    $req->execute(array($postId));
-    $post = $req->fetch();
-    $req->closeCursor();
-    return $post;
 }
     
 function getComments($postId) {
@@ -164,11 +168,11 @@ function getContactDetail($contactId) {
     $db = dbConnect();
     $getContactDetail = $db->prepare('SELECT * FROM contacts WHERE id = ?');
     $getContactDetail->execute(array($contactId));          
-    $contactDetail = array(); 
-    while ($dataContact = $getContactDetail->fetch()) {
-        $contactDetail[] = $dataContact; // on créer un tableau regroupant les donnees des contacts
+    $contactDetails = array(); 
+    while ($contactDetail = $getContactDetail->fetch()) {
+        $contactDetails[] = $contactDetail; // on créer un tableau regroupant les donnees des contacts
     }
-    return $contactDetail;
+    return $contactDetails;
 }
 
 function deleteContact($contactId) {

@@ -120,30 +120,40 @@ function newMember($createName, $createFirstName, $createPseudo, $createMail, $m
 }
 
 //**************************************************************************************
-//                Fonctions pour l'afichage d'un billet et ses commentaires                  
+//                      Fonctions pour l'afichage des billets                
 //**************************************************************************************
 
 function listPosts($page, $message_success) {
     $postsCount = getPostsCount();
-    $posts = getPosts();
-    $offset = ($page-1)*5;  
-    $postsBy5 = getPostsBy5($offset);
-    $billet_max = $postsCount['nbre_posts']-($offset);
-    $message_success;
-    if ($billet_max <= 5) {
-        $billet_min = 1;
+    $postsList = getPosts();
+    $pages_max = getPagesMax($postsCount);
+    if ($page <= $pages_max) {
+        $offset = ($page-1)*5;  
+        $postsBy5 = getPostsBy5($offset);
+        $billet_max = $postsCount['nbre_posts']-($offset);
+        $message_success;
+        if ($billet_max <= 5) {
+            $billet_min = 1;
+        } else {
+            $billet_min = $billet_max-4;
+        }
+        require('view/frontend/postsListView.php');
     } else {
-        $billet_min = $billet_max-4;
+        throw new Exception('Mauvais indice de page envoyé');
     }
-    require('view/frontend/postsListView.php');
 }
 
-function commentsByPost($page) {
-    $commentsCount = getCommentsCount($postId);
+function getPagesMax($postsCount) {
+    if ($postsCount['nbre_posts']%5 == 0) { // 5 billets par page
+        $pages_max = $postsCount['nbre_posts']/5;
+    } else {
+        $pages_max = ($postsCount['nbre_posts']/5)+1;
+    }
+    return $pages_max;
 }
 
 function post($postId, $message_success, $message_error) {
-    $post = getPost($postId);
+    $postDatas = getPost($postId);
     $message_success;
     $message_error;
     $comments = getComments($postId);
@@ -151,16 +161,24 @@ function post($postId, $message_success, $message_error) {
 }
 
 //**************************************************************************************
+//                   Fonctions pour l'afichage des commentaires                  
+//**************************************************************************************
+
+function commentsByPost($page) {
+    $commentsCount = getCommentsCount($postId);
+}
+
+//**************************************************************************************
 //                       Fonctions pour la gestion des membres             
 //**************************************************************************************
 
-function contactsHome($message_success, $message_error, $contactDetail) {
+function contactsHome($message_success, $message_error, $contactDetails) {
     $contactsCount = getContactsCount();
     $contactsByGroup = getContactsByGroup();
     $contactsByName = getContactsByName();
     $message_success;
     $message_error;
-    $contactDetail;
+    $contactDetails;
     if ($_SESSION['group_id'] == 1) {
         require('view/backend/membersAdminView.php');
     } else {
@@ -169,8 +187,8 @@ function contactsHome($message_success, $message_error, $contactDetail) {
 }
 
 function contactDetail($message_success, $message_error, $contactId) {
-    $contactDetail = getContactDetail($contactId);
-    contactsHome($message_success, $message_error, $contactDetail);
+    $contactDetails = getContactDetail($contactId);
+    contactsHome($message_success, $message_error, $contactDetails);
 }
 
 function newMail($contactId, $newMail, $mailConfirm) {

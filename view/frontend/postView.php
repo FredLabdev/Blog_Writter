@@ -27,19 +27,19 @@
 <div class="news">
     <h3>
         <?php 
-            if($post) {
-                echo htmlspecialchars($post['chapter_title']); 
+            if($postDatas) {
+                echo htmlspecialchars($postDatas['chapter_title']); 
 
         ?>
         <em> publié le
             <?php 
-                echo $post['creation_date_fr']; 
+                echo $postDatas['creation_date_fr']; 
             ?>
         </em>
     </h3>
     <p>
         <?php 
-                echo nl2br(htmlspecialchars($post['chapter_content'])); 
+                echo nl2br(htmlspecialchars($postDatas['chapter_content'])); 
             }
             ?>
     </p>
@@ -51,7 +51,7 @@
     Modifier ce billet :
 </h3>
 <form method="post" action="index.php?action=postModif">
-    <input type="hidden" name="postId" value="<?php echo $post['id']; ?>" />
+    <input type="hidden" name="postId" value="<?php echo $postDatas['id']; ?>" />
     <label>Sinon sélectionnez le champ à modifier : </label><select name="champ">
         <option value=""></option>
         <option value="1">Titre de l'épisode</option>
@@ -68,7 +68,7 @@
     Pour supprimer ce billet, cliquez ici :
 </h3>
 <form name="delete">
-    <input type="hidden" name="deletePost" value="<?php echo $post['id']; ?>" />
+    <input type="hidden" name="deletePost" value="<?php echo $postDatas['id']; ?>" />
     <a href="#" onClick="var postId = document.forms.delete.deletePost.value;
         function valid_confirm(postId) {
             if (confirm('Voulez-vous vraiment supprimer ce billet et ces commentaires ?')) {
