@@ -17,15 +17,15 @@
 <!-- Liste des membres par catégorie -->
 
 <h3>
-    Liste des contacts classés par catégorie :
+    Liste des members classés par catégorie :
 </h3>
 <p>
-    <?php echo 'Nombre d\'abonnés à votre blog à ce jour: ' . $contactsCount['nbre_contacts'] ?>
+    <?php echo 'Nombre d\'abonnés à votre blog à ce jour: ' . $membersCount['nbre_members'] ?>
 </p>
 <p>
     <?php 
-        foreach($contactsByGroup as $contact) {
-            echo $contact['grade_groupe'] . ' : ' . $contact['name_contact'] . ' ' . $contact['first_name_contact'] . '<br>';
+        foreach($membersByGroup as $member) {
+            echo $member['grade_groupe'] . ' : ' . $member['name_member'] . ' ' . $member['first_name_member'] . '<br>';
         }
     ?>
 </p>
@@ -35,7 +35,7 @@
 <!-- Voir les champs d'un membre -->
 
 <h3>
-    Editer un contact :
+    Editer un member :
 </h3>
 <p class="success">
     <?php echo $message_success; ?>
@@ -43,25 +43,24 @@
 <p class="alert">
     <?php echo $message_error; ?>
 </p>
-<form method="post" action="index.php?action=contactDetail">
-    <label>Sélectionnez un contact : </label><select name="contact">
+<form method="post" action="index.php?action=memberDetail">
+    <label>Sélectionnez un member : </label><select name="member">
         <option value=""></option>
         <?php
-            foreach($contactsByName as $contact) {
-               echo '<option value="' . $contact['id'] . '">' . $contact['name_maj'] . ' ' . $contact['first_name_min'] . '</option>';
+            foreach($membersByName as $member) {
+               echo '<option value="' . $member['id'] . '">' . $member['name_maj'] . ' ' . $member['first_name_min'] . '</option>';
             }
         ?>
     </select>
     <input type="submit" value="Valider" name="valider" /><br>
     <?php
-        foreach($contactDetails as $dataContact) { // Détail du contact sélectionné
-            echo 'Date de création : ' . $dataContact['creation_date'] . '<br>';
-            echo 'Nom : ' . $dataContact['name'] . '<br>';
-            echo 'Prénom : ' . $dataContact['first_name'] . '<br>';  
-            echo 'Pseudo : ' . $dataContact['pseudo'] . '<br>';  
-            echo 'Mail : ' . $dataContact['email'] . '<br>';  
-            echo 'Mot de passe : ' . $dataContact['password'] . '<br>';  
-            if($dataContact['block_comment'] == 0) {
+        foreach($memberDetails as $dataMember) { // Détail du member sélectionné
+            echo 'Date de création : ' . $dataMember['creation_date'] . '<br>';
+            echo 'Nom : ' . $dataMember['name'] . '<br>';
+            echo 'Prénom : ' . $dataMember['first_name'] . '<br>';  
+            echo 'Pseudo : ' . $dataMember['pseudo'] . '<br>';  
+            echo 'Mail : ' . $dataMember['email'] . '<br>';  
+            if($dataMember['block_comment'] == 0) {
                 echo 'Commentaires autorisés : oui';
             } else {
                 echo 'Commentaires autorisés : non';
@@ -70,17 +69,17 @@
     ?>
 </form>
 <p>.......................................................</p>
-<form method="post" action="index.php?action=contactModif">
-    <input type="hidden" name="contact_modif" value="<?php echo $dataContact['id']; ?>" />
+<form method="post" action="index.php?action=memberModif">
+    <input type="hidden" name="member_modif" value="<?php echo $dataMember['id']; ?>" />
     <label>
-        <?php if($dataContact['block_comment'] == 0) {
+        <?php if($dataMember['block_comment'] == 0) {
                 echo 'Bloquer ses commentaires';
             } else {
                 echo 'Réautoriser ses commentaires';
             };
         ?>
     </label>
-    <input type="checkbox" name="bloquage" value="<?php if($dataContact['block_comment'] == 0){echo '1';}else{echo '0';};?>" /><br>
+    <input type="checkbox" name="bloquage" value="<?php if($dataMember['block_comment'] == 0){echo '1';}else{echo '0';};?>" /><br>
     <input type="submit" value="Appliquer" name="remplacer" />
 </form>
 
@@ -92,11 +91,11 @@
 </h3>
 
 <form name="delete">
-    <input type="hidden" name="contact_modif" value="<?php echo $dataContact['id']; ?>" />
-    <a href="#" onClick="var contactId = document.forms.delete.contact_modif.value;
-        function valid_confirm(contact) {
-            if (confirm('Voulez-vous vraiment apporter ces modifications ?')) {
-                var url = 'index.php?action=contactDelete&contactErase=' + contact;
+    <input type="hidden" name="member_modif" value="<?php echo $dataMember['id']; ?>" />
+    <a href="#" onClick="var memberId = document.forms.delete.member_modif.value;
+        function valid_confirm(member) {
+            if (confirm('Voulez-vous vraiment désinscrire ce membre ?')) {
+                var url = 'index.php?action=memberDelete&memberErase=' + member;
                 document.location.href = url;
                 return true;
             } else {
@@ -104,7 +103,7 @@
                 return false;
             }
         }
-        valid_confirm(contactId);"> Désincrire ce membre </a>
+        valid_confirm(memberId);"> Désincrire ce membre </a>
 </form>
 
 <?php $backend = ob_get_clean(); ?>

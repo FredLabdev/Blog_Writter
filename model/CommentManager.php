@@ -7,19 +7,33 @@ require_once("model/Manager.php");
 class CommentManager extends Manager { // se situe dans le namespace
 
 //**************************************************************************************
-//                        Model backend CommentManager           
+//                                Model CommentManager           
 //**************************************************************************************
 
-    public function permitComments($member) {
+    public function getCommentsCount($postId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT block_comment FROM contacts WHERE pseudo = ?');
-        $req->execute(array($member));
-        $allowComment = $req->fetch();
-        $req->closeCursor();
-        return $allowComment;
+        $commentsCount = $db->prepare('SELECT COUNT(post_id) AS nbre_comment FROM comments WHERE post_id = ?');
+        $commentsCount->execute(array($postId));    
+        return $commentsCount;
     }
 
-    public function addComment($postId, $author, $comment) {            
+    public function getComments($postId) {
+        $db = $this->dbConnect();
+        $comments = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\')comment_date_fr FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');
+        $comments->execute(array($postId));    
+        return $comments;
+    }
+
+    public function getMemberNoComment($member) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT block_comment FROM members WHERE pseudo = ?');
+        $req->execute(array($member));
+        $addCommentRight = $req->fetch();
+        $req->closeCursor();
+        return $addCommentRight;
+    }
+    
+   public function addComment($postId, $author, $comment) {            
         $db = $this->dbConnect();
         $req = $db->prepare('INSERT INTO comments(post_id, author, comment, comment_date) VALUES(:post_id, :author, :comment, NOW())');
         $req->execute(array(
@@ -46,24 +60,6 @@ class CommentManager extends Manager { // se situe dans le namespace
             'postidnum' => $postId
         ));  
         $req->closeCursor();
-    }
-
-//**************************************************************************************
-//                        Model frontend CommentManager           
-//**************************************************************************************
-
-    public function getCommentsCount($postId) {
-        $db = $this->dbConnect();
-        $commentsCount = $db->prepare('SELECT COUNT(post_id) AS nbre_comment FROM comments WHERE post_id = ?');
-        $commentsCount->execute(array($postId));    
-        return $commentsCount;
-    }
-
-    public function getComments($postId) {
-        $db = $this->dbConnect();
-        $comments = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\')comment_date_fr FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');
-        $comments->execute(array($postId));    
-        return $comments;
     }
     
 }

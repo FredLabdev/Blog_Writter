@@ -7,92 +7,79 @@ require_once("model/Manager.php");
 class MemberManager extends Manager { // se situe dans le namespace
 
 //**************************************************************************************
-//                        Model backend MemberManager           
+//                              Model MemberManager           
 //**************************************************************************************
-
-    public function bloqContactComment($contactId, $blockId) {
+ 
+    public function getMembersCount() {
         $db = $this->dbConnect();
-        $bloqContactComment = $db->prepare('UPDATE contacts SET block_comment = :blockId WHERE id = :idnum');
-        $bloqContactComment->execute(array(
+        $getMembersCount = $db->query('SELECT COUNT(*) AS nbre_members FROM members');
+        $membersCount = $getMembersCount->fetch();
+        return $membersCount;
+    }
+
+    public function getMembersByGroup() {
+        $db = $this->dbConnect();
+        $getMembersByGroup = $db->query('SELECT c.name AS name_member, c.first_name AS first_name_member, g.grade AS grade_groupe FROM groups AS g INNER JOIN members AS c ON c.group_id = g.id ORDER BY group_id, name');        
+        $membersByGroup = array(); 
+        while ($memberByGroup = $getMembersByGroup->fetch()) {
+            $membersByGroup[] = $memberByGroup; // on créer un tableau regroupant les members
+        }
+        return $membersByGroup;
+    }
+
+    public function getMembersByName() {
+        $db = $this->dbConnect();
+        $getMembersByName = $db->query('SELECT id, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM members ORDER BY name'); 
+        $membersByName = array(); 
+        while ($memberByName = $getMembersByName->fetch()) {
+            $membersByName[] = $memberByName; // on créer un tableau regroupant les members
+        }
+        return $membersByName;
+    }
+
+    public function getMemberDetail($memberId) {
+        $db = $this->dbConnect();
+        $getMemberDetail = $db->prepare('SELECT * FROM members WHERE id = ?');
+        $getMemberDetail->execute(array($memberId));          
+        $memberDetails = array(); 
+        while ($memberDetail = $getMemberDetail->fetch()) {
+            $memberDetails[] = $memberDetail; // on créer un tableau regroupant les donnees des members
+        }
+        return $memberDetails;
+    }
+
+    public function changeMemberMail($memberId, $dataMember) {
+        $db = $this->dbConnect();
+        $changeMemberMail = $db->prepare('UPDATE members SET email = :nvemail WHERE id = :idnum');
+        $changeMemberMail->execute(array(
+            'nvemail' => $dataMember,
+            'idnum' => $memberId
+        )); 
+    }
+
+    public function changeMemberPassword($memberId, $dataMember) {
+        $db = $this->dbConnect();
+        $changeMemberPassword = $db->prepare('UPDATE members SET password = :newpassword WHERE id = :idnum');
+        $changeMemberPassword->execute(array(
+            'newpassword' => password_hash($dataMember, PASSWORD_DEFAULT),
+            'idnum' => $memberId
+        )); 
+    }
+
+    public function changeMemberNoComment($memberId, $blockId) {
+        $db = $this->dbConnect();
+        $changeMemberNoComment = $db->prepare('UPDATE members SET block_comment = :blockId WHERE id = :idnum');
+        $changeMemberNoComment->execute(array(
             'blockId' => $blockId,
-            'idnum' => $contactId
+            'idnum' => $memberId
         )); 
     }
     
-//**************************************************************************************
-//                        Model frontend MemberManager           
-//**************************************************************************************
-
-    public function getContactsCount() {
+    public function deleteMember($memberId) {
         $db = $this->dbConnect();
-        $getContactsCount = $db->query('SELECT COUNT(*) AS nbre_contacts FROM contacts');
-        $contactsCount = $getContactsCount->fetch();
-        return $contactsCount;
-    }
-
-    public function getContactsByGroup() {
-        $db = $this->dbConnect();
-        $getContactsByGroup = $db->query('SELECT c.name AS name_contact, c.first_name AS first_name_contact, g.grade AS grade_groupe FROM groups AS g INNER JOIN contacts AS c ON c.group_id = g.id ORDER BY group_id, name');        
-        $contactsByGroup = array(); 
-        while ($contactByGroup = $getContactsByGroup->fetch()) {
-            $contactsByGroup[] = $contactByGroup; // on créer un tableau regroupant les contacts
-        }
-        return $contactsByGroup;
-    }
-
-    public function getContactsByName() {
-        $db = $this->dbConnect();
-        $getContactsByName = $db->query('SELECT id, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM contacts ORDER BY name'); 
-        $contactsByName = array(); 
-        while ($contactByName = $getContactsByName->fetch()) {
-            $contactsByName[] = $contactByName; // on créer un tableau regroupant les contacts
-        }
-        return $contactsByName;
-    }
-
-    public function getContactDetail($contactId) {
-        $db = $this->dbConnect();
-        $getContactDetail = $db->prepare('SELECT * FROM contacts WHERE id = ?');
-        $getContactDetail->execute(array($contactId));          
-        $contactDetails = array(); 
-        while ($contactDetail = $getContactDetail->fetch()) {
-            $contactDetails[] = $contactDetail; // on créer un tableau regroupant les donnees des contacts
-        }
-        return $contactDetails;
-    }
-
-    public function deleteContact($contactId) {
-        $db = $this->dbConnect();
-        $deleteContact = $db->prepare('DELETE FROM contacts WHERE id = :idnum');
-        $deleteContact->execute(array(
-            'idnum' => $contactId
-        )); 
-    }
-
-    public function modifPseudo($contactId, $dataContact) {
-        $db = $this->dbConnect();
-        $modifPseudo = $db->prepare('UPDATE contacts SET pseudo = :nvpseudo WHERE id = :idnum');
-        $modifPseudo->execute(array(
-            'nvpseudo' => $dataContact,
-            'idnum' => $contactId
-        )); 
-    }
-
-    public function modifMail($contactId, $dataContact) {
-        $db = $this->dbConnect();
-        $modifMail = $db->prepare('UPDATE contacts SET email = :nvemail WHERE id = :idnum');
-        $modifMail->execute(array(
-            'nvemail' => $dataContact,
-            'idnum' => $contactId
-        )); 
-    }
-
-    public function modifPassword($contactId, $dataContact) {
-        $db = $this->dbConnect();
-        $modifPassword = $db->prepare('UPDATE contacts SET password = :newpassword WHERE id = :idnum');
-        $modifPassword->execute(array(
-            'newpassword' => password_hash($dataContact, PASSWORD_DEFAULT),
-            'idnum' => $contactId
+        $deleteMember = $db->prepare('DELETE FROM members WHERE id = :idnum');
+        $deleteMember->execute(array(
+            'idnum' => $memberId
         )); 
     }
     

@@ -27,7 +27,7 @@
 <div class="news">
     <h3>
         <?php 
-            foreach($postDetails as $dataPost) { // Détail du contact sélectionné
+            foreach($postDetails as $dataPost) { // Détail du member sélectionné
             echo $dataPost['chapter_title'];  
         ?>
         <em> publié le
@@ -72,7 +72,7 @@
     <input type="hidden" name="deletePost" value="<?php echo $dataPost['id']; ?>" />
     <a href="#" onClick="var postId = document.forms.delete.deletePost.value;
         function valid_confirm(postId) {
-            if (confirm('Voulez-vous vraiment supprimer ce billet et ces commentaires ?')) {
+            if (confirm('Voulez-vous vraiment supprimer ce billet et ses commentaires ?')) {
                 var url = 'index.php?action=postDelete&postId=' + postId;
                 document.location.href = url;
                 return true;

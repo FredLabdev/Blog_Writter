@@ -21,13 +21,12 @@
     <?php echo $message_success; ?>
 </p>
 <?php
-        foreach($contactDetails as $dataContact) { // Détail du contact sélectionné
-            echo 'Date de création : ' . $dataContact['creation_date'] . '<br>';
-            echo 'Nom : ' . $dataContact['name'] . '<br>';
-            echo 'Prénom : ' . $dataContact['first_name'] . '<br>';  
-            echo 'Pseudo : ' . $dataContact['pseudo'] . '<br>';  
-            echo 'Mail : ' . $dataContact['email'] . '<br>';  
-            echo 'Mot de passe : ' . $dataContact['password'] . '<br>';  
+        foreach($memberDetails as $dataMember) { // Détail du member sélectionné
+            echo 'Date de création : ' . $dataMember['creation_date'] . '<br>';
+            echo 'Nom : ' . $dataMember['name'] . '<br>';
+            echo 'Prénom : ' . $dataMember['first_name'] . '<br>';  
+            echo 'Pseudo : ' . $dataMember['pseudo'] . '<br>';  
+            echo 'Mail : ' . $dataMember['email'] . '<br>';  
         }
     ?>
 
@@ -38,8 +37,8 @@
     Modifier votre adresse mail, votre mot de passe :
 </h3>
 
-<form novalidate method="post" action="index.php?action=contactModif" id="form_modif" name="modif">
-    <input type="hidden" name="contact_modif" value="<?php echo $dataContact['id']; ?>" />
+<form novalidate method="post" action="index.php?action=memberModif" id="form_modif" name="modif">
+    <input type="hidden" name="member_modif" value="<?php echo $dataMember['id']; ?>" />
     <label>Sélectionnez le champ à modifier : </label>
     <select id="champ" name="champ">
         <option value=""></option>
@@ -69,11 +68,11 @@
 </h3>
 
 <form name="delete">
-    <input type="hidden" name="contact_modif" value="<?php echo $dataContact['id']; ?>" />
-    <a href="#" onClick="var contactId = document.forms.delete.contact_modif.value;
-        function valid_confirm(contact) {
-            if (confirm('Voulez-vous vraiment apporter ces modifications ?')) {
-                var url = 'index.php?action=contactDelete&contactErase=' + contact;
+    <input type="hidden" name="member_modif" value="<?php echo $dataMember['id']; ?>" />
+    <a href="#" onClick="var memberId = document.forms.delete.member_modif.value;
+        function valid_confirm(member) {
+            if (confirm('Voulez-vous vraiment vous désinscrire définitivement ?')) {
+                var url = 'index.php?action=memberDelete&memberErase=' + member;
                 document.location.href = url;
                 return true;
             } else {
@@ -81,7 +80,7 @@
                 return false;
             }
         }
-        valid_confirm(contactId);"> Désincription </a>
+        valid_confirm(memberId);"> Désincription </a>
 </form>
 
 <?php $frontend = ob_get_clean(); ?>

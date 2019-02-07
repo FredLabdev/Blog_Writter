@@ -50,6 +50,7 @@ ob_start();
         <label>Confirmez votre e-mail : <input type="text" name="email_confirm" /></label><br>
         <label>Créez un mot de passe : <input type="password" name="password" /></label><br>
         <label>Confirmez votre mot de passe : <input type="password" name="password_confirm" /></label><br>
+        <label>Prochaine connexion automatique ?<input type="checkbox" name="login_auto" /></label><br>
     </p>
     <input type="submit" value="valider" name="newMember" /><br>
 </form>
