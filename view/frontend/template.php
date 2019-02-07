@@ -37,7 +37,14 @@
         if (!$noMenu == 'no_menu') {
             echo $menu;
         }
-        echo $content;
+        echo $all1;
+        if ($template == 'backend') {
+            echo $backend;
+        }
+        if ($template == 'frontend') {
+            echo $frontend;
+        }
+        echo $all2;
     ?>
     <footer id="pied_de_page">
         <script src="public/ajax.js"></script>

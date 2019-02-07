@@ -44,6 +44,8 @@
     </p>
 </div>
 
+<?php $all1 = ob_get_clean(); ?>
+<?php ob_start();?>
 <!-- Modifier ce billet -->
 
 <h3>
@@ -82,6 +84,8 @@
         valid_confirm(postId);"> Effacer ce billet </a>
 </form>
 
+<?php $backend = ob_get_clean(); ?>
+<?php ob_start();?>
 <!-- Liste des commentaires -->
 
 <h2>commentaires</h2>
@@ -121,7 +125,7 @@
 
 <!-- Ajout d'un commentaire -->
 
-<h3>Ajouter un comment :</h3>
+<h3>Ajouter un commentaire :</h3>
 <form action="index.php?action=addComment&amp;billet=<?php echo $_GET['billet']; ?>" method="post">
     <p>
         <label>Votre message :</label><br>
@@ -131,6 +135,6 @@
     <input type="submit" value="Envoyer votre comment" />
 </form>
 
-<?php $content = ob_get_clean(); ?>
+<?php $all2 = ob_get_clean(); ?>
 
 <?php require('view/frontend/template.php'); ?>

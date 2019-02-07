@@ -84,6 +84,6 @@
         valid_confirm(contactId);"> Désincription </a>
 </form>
 
-<?php $content = ob_get_clean(); ?>
+<?php $frontend = ob_get_clean(); ?>
 
 <?php require('view/frontend/template.php'); ?>

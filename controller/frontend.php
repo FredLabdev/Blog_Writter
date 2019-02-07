@@ -10,7 +10,11 @@ require_once('model/PostManager.php');
 //**************************************************************************************
 
 function loginControl($pseudo, $password) {
-    $login_error = 'Erreur : pseudo et/ou mot de passe errone(s) !';
+    if ($pseudo == "" || $password =="") {
+        $login_error =  'Erreur : tous les champs ne sont pas remplis !';
+    } else {
+        $login_error = 'Erreur : pseudo et/ou mot de passe errone(s) !';
+    }
     $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
     $dbPassword = ($loginManager->getPasswordFromPseudo($pseudo))['password']; 
     $isPasswordCorrect = password_verify($password, $dbPassword); 
@@ -95,29 +99,34 @@ function passwordControl($password, $passwordConfirm, $message_error) {
                 $isPasswordExist = password_verify($password, $allPassword['password']);
                 if (!$isPasswordExist) {   
                 } else {
-                    $message_error .=  'Ce mot de passe existe déjà !' . '<br>';
+                    $message_error .=  utf8_encode('Ce mot de passe existe déjà !' . '<br>');
                 }
             }
         } else {
             $message_error .=  'Vos mots de passes ne sont pas identiques !' . '<br>';
         }   
     } else {
-        $message_error .=  'Votre mot de passe doit être composé de minimum 8 caractères'  . '<br>' . 'dont 1 Majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial !' . '<br>';
+        $message_error .=  utf8_encode('Votre mot de passe doit être composé de minimum 8 caractères'  . '<br>' . 'dont 1 Majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial !' . '<br>');
     }    
     return $message_error;
 }
 
 function newMember($createName, $createFirstName, $createPseudo, $createMail, $mailConfirm, $createPassword, $passwordConfirm) {
-    $message_error = '';
-    $message_error = pseudoControl($createPseudo, $message_error);
-    $message_error = mailControl($createMail, $mailConfirm, $message_error);
-    $message_error = passwordControl($createPassword, $passwordConfirm, $message_error);    
-    if ($message_error == '') { // Si tout ok on creer le nouveau membre,
-        $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
-        $loginManager->memberCreate($createName, $createFirstName, $createPseudo, $createMail, $createPassword);
-        loginControl($createPseudo, $createPassword); // et on démmarre sa session
+    if ($createName == "" || $createFirstName =="" || $createPseudo =="" || $createMail =="" || $mailConfirm =="" || $createPassword =="" || $passwordConfirm =="") {
+        $message_error =  'Veuillez renseigner tous les champs !';
+        require('view/frontend/loginView.php');
     } else {
-        require('view/frontend/loginView.php'); // retour au login avec affichage des erreurs
+        $message_error = '';
+        $message_error = pseudoControl($createPseudo, $message_error);
+        $message_error = mailControl($createMail, $mailConfirm, $message_error);
+        $message_error = passwordControl($createPassword, $passwordConfirm, $message_error);    
+        if ($message_error == '') { // Si tout ok on creer le nouveau membre,
+            $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
+            $loginManager->memberCreate($createName, $createFirstName, $createPseudo, $createMail, $createPassword);
+            loginControl($createPseudo, $createPassword); // et on démmarre sa session
+        } else {
+            require('view/frontend/loginView.php'); // retour au login avec affichage des erreurs
+        }
     }
 }
 
@@ -236,7 +245,11 @@ function contactModifPassword($contactId, $newPassword) {
 function contactDelete($contactId) {
     $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
     $memberManager->deleteContact($contactId);
-    $message_success =  utf8_encode('Ce compte a bien été supprimé...');
+    if ($_SESSION['id'] == $contactId) {
+        $message_success =  utf8_encode('Votre compte a bien été supprimé. Désolé de vous voir nous quitter...');
+    } else {
+        $message_success =  utf8_encode('Ce compte a bien été supprimé...');
+    }  
     if ($_SESSION['group_id'] == 1) {
         contactDetail($message_success, "", $contactId);
     } else {
@@ -249,7 +262,7 @@ function contactDelete($contactId) {
 //**************************************************************************************
 
 function sessionEnd() {
-    $login_error = 'Vous êtes bien déconnecté.' . '<br>' . 'A bientôt ' . $_SESSION['first_name'];
+    $message_success = utf8_encode('Vous êtes bien déconnecté. A bientôt ') . $_SESSION['first_name'];
     require('view/frontend/loginView.php');
     $_SESSION = array(); // Suppression des variables de session et de la session
     session_destroy();

@@ -35,6 +35,8 @@
     ?>
 </ul>
 
+<?php $all1 = ob_get_clean(); ?>
+<?php ob_start();?>
 <p>===========================================================</p>
 <!-- Ajouter un post -->
 
@@ -60,6 +62,8 @@
     <input type="submit" value="Publier votre billet" />
 </form>
 
+<?php $backend = ob_get_clean(); ?>
+<?php ob_start();?>
 <p>===========================================================</p>
 <!-- Les pages par groupe de 5 posts -->
 
@@ -86,16 +90,16 @@
 <!-- Les détails de la page sélectionnée -->
 
 <?php    
-    while ($post = $postsBy5->fetch()) {
+    foreach($postsBy5 as $postBy5) {
 ?>
 
 <h3 class="news">
-    <?php echo $post['chapter_title'] . ' : ' . ' le '. $post['date']; ?>
+    <?php echo $postBy5['chapter_title'] . ' : ' . ' le '. $postBy5['date']; ?>
 </h3>
 <p>
-    <?php echo $post['chapter_extract']; ?>
+    <?php echo $postBy5['chapter_extract']; ?>
 </p>
-<a href="index.php?action=post&amp;billet=<?php echo $post['id']; ?>">Voir plus</a>
+<a href="index.php?action=post&amp;billet=<?php echo $postBy5['id']; ?>">Voir plus</a>
 <p>===========================================================</p>
 
 <?php
@@ -103,6 +107,6 @@
 }
 ?>
 
-<?php $content = ob_get_clean(); ?>
+<?php $all2 = ob_get_clean(); ?>
 
 <?php require('view/frontend/template.php'); ?>

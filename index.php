@@ -19,10 +19,8 @@ if (isset($_GET['action'])) {
     if ($_GET['action'] == 'login') {
         if (!empty($_POST['pseudo_connect']) && !empty($_POST['password_connect'])) {
             loginControl(htmlspecialchars($_POST['pseudo_connect']), htmlspecialchars($_POST['password_connect']));
-        }
-        else {
-            $login_error =  utf8_encode('Erreur : tous les champs ne sont pas remplis !');
-            require('view/frontend/loginView.php');
+        } else { 
+            loginControl("","");
         }
     } 
 
@@ -31,8 +29,7 @@ if (isset($_GET['action'])) {
         if(!empty($_POST['name']) && !empty($_POST['first_name']) && !empty($_POST['pseudo']) && !empty($_POST['email']) && !empty($_POST['email_confirm']) && !empty($_POST['password']) && !empty($_POST['password_confirm'])) {
             newMember(htmlspecialchars($_POST['name']), htmlspecialchars($_POST['first_name']), htmlspecialchars($_POST['pseudo']), htmlspecialchars($_POST['email']), htmlspecialchars($_POST['email_confirm']), htmlspecialchars($_POST['password']), htmlspecialchars($_POST['password_confirm']));
         } else {
-            $account_error =  utf8_encode('Erreur : Veuillez renseigner tous les champs');
-            require('view/frontend/loginView.php');
+            newMember("","","","","","","","");
         }
     } 
 

@@ -11,7 +11,7 @@ class LoginManager extends Manager { // se situe dans le namespace
 //**************************************************************************************
 
     public function getMemberData($pseudo, $dbPassword) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM contacts WHERE pseudo = :pseudo AND password = :password');
         $req->execute(array(
             'pseudo' => $pseudo,
@@ -22,7 +22,7 @@ class LoginManager extends Manager { // se situe dans le namespace
     }
 
     public function getPasswordFromPseudo($pseudo) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $req = $db->prepare('SELECT password FROM contacts WHERE pseudo = ?');
         $req->execute(array($pseudo));
         $passwordFromPseudo = $req->fetch();
@@ -30,7 +30,7 @@ class LoginManager extends Manager { // se situe dans le namespace
     }
 
     public function getPseudoIdem($pseudo) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $getPseudoIdem = $db->prepare('SELECT COUNT(pseudo) AS pseudo_idem FROM contacts WHERE pseudo = :pseudo');
         $getPseudoIdem->execute(array('pseudo' => $pseudo));
         $pseudoIdem = $getPseudoIdem->fetch();
@@ -38,7 +38,7 @@ class LoginManager extends Manager { // se situe dans le namespace
     }
 
     public function getMailIdem($mail) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $getMailIdem = $db->prepare('SELECT COUNT(email) AS email_idem FROM contacts WHERE email = :email');
         $getMailIdem->execute(array('email' => $mail));
         $mailIdem = $getMailIdem->fetch();
@@ -46,13 +46,13 @@ class LoginManager extends Manager { // se situe dans le namespace
     }
 
     public function getAllPassword() {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $getAllPassword = $db->query('SELECT password FROM contacts');
         return $getAllPassword;
     }
 
     public function memberCreate($createName, $createFirstName, $createPseudo, $createMail, $createPassword) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $memberCreate = $db->prepare('INSERT INTO contacts(name, first_name, pseudo, email, password, creation_date) VALUES(:name, :first_name, :pseudo, :email, :password, NOW())');
         $memberCreate->execute(array(
             'name' => $createName,

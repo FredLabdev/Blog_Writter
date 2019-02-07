@@ -5,18 +5,19 @@ $noMenu = 'no_menu';
 ob_start(); 
 ?>
 
+<p class="success">
+    <?php 
+        if($message_success) {
+            echo $message_success;
+        } else {
+        echo '<br>';
+        }
+    ?>
+</p>
 <p>===========================================================</p>
-<!-- envoie formulaire connexion en méthode POST -->
-
 <h3>
     Veuillez vous identifier :
 </h3>
-<p class="success">
-    <?php echo $message_success; ?>
-</p>
-<p class="alert">
-    <?php echo utf8_encode($login_error); ?>
-</p>
 <form method="post" action="index.php?action=login">
     <p>
         <label>Votre pseudo : <input type="text" name="pseudo_connect" /></label><br>
@@ -26,13 +27,20 @@ ob_start();
     <input type="submit" value="valider" name="login" /><br>
 
 </form>
+<p class="alert">
+    <?php 
+        if($login_error) {
+            echo $login_error;
+        } else {
+        echo '<br>';
+        }
+    ?>
+</p>
 
+<p>===========================================================</p>
 <h3>
     Création de compte :
 </h3>
-<p class="alert">
-    <?php echo utf8_encode($message_error); ?>
-</p>
 <form method="post" action="index.php?action=newMember">
     <p>
         <label>Votre nom : <input type="text" name="name" /></label><br>
@@ -45,7 +53,16 @@ ob_start();
     </p>
     <input type="submit" value="valider" name="newMember" /><br>
 </form>
+<p class="alert">
+    <?php 
+        if($message_error) {
+            echo $message_error;
+        } else {
+        echo '<br>';
+        }
+    ?>
+</p>
 
-<?php $content = ob_get_clean(); ?>
+<?php $all1 = ob_get_clean(); ?>
 
 <?php require('view/frontend/template.php'); ?>

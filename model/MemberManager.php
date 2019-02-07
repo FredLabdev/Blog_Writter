@@ -11,7 +11,7 @@ class MemberManager extends Manager { // se situe dans le namespace
 //**************************************************************************************
 
     public function bloqContactComment($contactId, $blockId) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $bloqContactComment = $db->prepare('UPDATE contacts SET block_comment = :blockId WHERE id = :idnum');
         $bloqContactComment->execute(array(
             'blockId' => $blockId,
@@ -24,14 +24,14 @@ class MemberManager extends Manager { // se situe dans le namespace
 //**************************************************************************************
 
     public function getContactsCount() {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $getContactsCount = $db->query('SELECT COUNT(*) AS nbre_contacts FROM contacts');
         $contactsCount = $getContactsCount->fetch();
         return $contactsCount;
     }
 
     public function getContactsByGroup() {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $getContactsByGroup = $db->query('SELECT c.name AS name_contact, c.first_name AS first_name_contact, g.grade AS grade_groupe FROM groups AS g INNER JOIN contacts AS c ON c.group_id = g.id ORDER BY group_id, name');        
         $contactsByGroup = array(); 
         while ($contactByGroup = $getContactsByGroup->fetch()) {
@@ -41,7 +41,7 @@ class MemberManager extends Manager { // se situe dans le namespace
     }
 
     public function getContactsByName() {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $getContactsByName = $db->query('SELECT id, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM contacts ORDER BY name'); 
         $contactsByName = array(); 
         while ($contactByName = $getContactsByName->fetch()) {
@@ -51,7 +51,7 @@ class MemberManager extends Manager { // se situe dans le namespace
     }
 
     public function getContactDetail($contactId) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $getContactDetail = $db->prepare('SELECT * FROM contacts WHERE id = ?');
         $getContactDetail->execute(array($contactId));          
         $contactDetails = array(); 
@@ -62,7 +62,7 @@ class MemberManager extends Manager { // se situe dans le namespace
     }
 
     public function deleteContact($contactId) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $deleteContact = $db->prepare('DELETE FROM contacts WHERE id = :idnum');
         $deleteContact->execute(array(
             'idnum' => $contactId
@@ -70,7 +70,7 @@ class MemberManager extends Manager { // se situe dans le namespace
     }
 
     public function modifPseudo($contactId, $dataContact) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $modifPseudo = $db->prepare('UPDATE contacts SET pseudo = :nvpseudo WHERE id = :idnum');
         $modifPseudo->execute(array(
             'nvpseudo' => $dataContact,
@@ -79,7 +79,7 @@ class MemberManager extends Manager { // se situe dans le namespace
     }
 
     public function modifMail($contactId, $dataContact) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $modifMail = $db->prepare('UPDATE contacts SET email = :nvemail WHERE id = :idnum');
         $modifMail->execute(array(
             'nvemail' => $dataContact,
@@ -88,7 +88,7 @@ class MemberManager extends Manager { // se situe dans le namespace
     }
 
     public function modifPassword($contactId, $dataContact) {
-        $db = dbConnect();
+        $db = $this->dbConnect();
         $modifPassword = $db->prepare('UPDATE contacts SET password = :newpassword WHERE id = :idnum');
         $modifPassword->execute(array(
             'newpassword' => password_hash($dataContact, PASSWORD_DEFAULT),

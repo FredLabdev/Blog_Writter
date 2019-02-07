@@ -21,8 +21,8 @@ function postExtract($text) {
 
 function newPost($postTitle, $postContent, $postBefore) {
     $postExtract = postExtract($postContent);
+    $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
     if(!empty($postBefore)) {
-        $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
         $postManager->addPost($postTitle, $postContent, $postExtract, $postBefore); 
     } else {
         $postManager->addPost($postTitle, $postContent, $postExtract, "");     
@@ -51,7 +51,7 @@ function postErase($postId) {
     $postManager->deletePost($postId);     
     $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
     $commentManager->deleteComments($postId);     
-    $message_success =  'Le billet '. $postId . ' et ses ommentaires ont bien été supprimés !';
+    $message_success =  'Ce billet et ses commentaires ont bien été supprimés !';
     listPosts(1, $message_success);
 }
 

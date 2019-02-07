@@ -13,6 +13,6 @@
     <?php echo 'Erreur ! ' . $errorMessage; ?>
 </p>
 
-<?php $content = ob_get_clean(); ?>
+<?php $backend = ob_get_clean(); ?>
 
 <?php require('view/frontend/template.php'); ?>
