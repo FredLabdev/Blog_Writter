@@ -1,5 +1,5 @@
 //**************************************************************************************
-//                       Interactions fontend pour la deconnexion             
+//                         Interactions pour la deconnexion             
 //**************************************************************************************
 
 function deconnect_confirm() {
@@ -11,13 +11,57 @@ function deconnect_confirm() {
         return false;
     }
 }
+
 document.getElementById("deconnexion").addEventListener('click', function (e) {
     e.preventDefault();
     deconnect_confirm();
 });
 
 //**************************************************************************************
-//                Interactions fontend pour la modification d'un compte             
+//                         Interactions pour la saisie WYSIWYG             
+//**************************************************************************************
+
+function commande(nom, argument) {
+    if (typeof argument === 'undefined') {
+        argument = '';
+    }
+    switch (nom) {
+        case "createLink":
+            argument = prompt("Quelle est l'adresse du lien ?");
+            break;
+        case "insertImage":
+            argument = prompt("Quelle est l'adresse de l'image ?");
+            break;
+    }
+    document.execCommand(nom, false, argument);
+}
+
+// Création d'un nouveau billet
+function getNewPostInForm() {
+    var newPostInForm = document.getElementById("newPostInForm"); // valeur de saisie récupérée
+    var newPostPlainText = document.getElementById("newPostPlainText"); // qui sera placée, en texte brut
+    newPostPlainText.value = newPostInForm.innerText; // passé en valeur, pour céation de l'extrait,
+    var newPostHTML = document.getElementById("newPostHTML"); // et en HTML,
+    newPostHTML.value = newPostInForm.innerHTML; // pour publicatoin complète mise en forme
+}
+
+// Modification d'un billet
+function getModifPostInForm() {
+    var modifPostInForm = document.getElementById("modifPostInForm"); // valeur de saisie récupérée
+    var modifPostPlainText = document.getElementById("modifPostPlainText"); // qui sera placée, en texte brut
+    modifPostPlainText.value = modifPostInForm.innerText; // passé en valeur, pour nouvel extrait,
+    var modifPostHTML = document.getElementById("modifPostHTML"); // et en HTML,
+    modifPostHTML.value = modifPostInForm.innerHTML; // pour nouvelle publication complète mise en forme
+}
+
+// Affichage complet d'un billet
+if (document.getElementById('postContentHTML').value) {
+    var postContentHTML = document.getElementById('postContentHTML').value; // récupération de son contenu HTML
+    var postInForm = document.getElementById('postInForm'); // qui sera placé dans le DOM
+    postInForm.insertAdjacentHTML('afterend', postContentHTML); // par insertion de son code complet
+}
+//**************************************************************************************
+//                    Interactions pour la modification d'un compte             
 //**************************************************************************************
 
 var form = document.getElementById('form_modif');
@@ -44,7 +88,7 @@ if (missChamp.validity.valueMissing) {
     } else {
         missChampConfirm.setCustomValidity("");
     }
-};
+}
 
 // On place un message d'erreur
 

@@ -137,7 +137,7 @@ try {
     //             Controller frontend PostManager (+frontend CommentManager)            
     //**************************************************************************************
 
-    function listPosts($page, $message_success) {
+    function listPosts($page, $message_success, $message_error) {
         $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
         $postsCount = $postManager->getPostsCount();
         $postsList = $postManager->getPosts();
@@ -147,6 +147,7 @@ try {
             $postsBy5 = $postManager->getPostsBy5($offset);
             $billet_max = $postsCount['nbre_posts']-($offset);
             $message_success;
+            $message_error;
             if ($billet_max <= 5) {
                 $billet_min = 1;
             } else {
@@ -175,6 +176,12 @@ try {
         $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
         $comments = $commentManager->getComments($postId);
         require('view/frontend/postView.php');
+    }
+    
+    function readAllPosts() {
+        $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
+        $postsAll = $postManager->getAllPosts();
+        require('view/frontend/publishingView.php');
     }
 
     //**************************************************************************************

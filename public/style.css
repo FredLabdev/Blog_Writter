@@ -35,20 +35,17 @@ input[type=email] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-
     width: 100%;
     border: 1px solid #333;
     margin: 0;
-
     font-family: inherit;
     font-size: 90%;
-
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
 
-/* Voici notre composition pour les champs invalides */
+/* Composition pour les champs invalides */
 input:invalid {
     border-color: #900;
     background-color: #FDD;
@@ -58,16 +55,14 @@ input:focus:invalid {
     outline: none;
 }
 
-/* Voici la mise en forme pour les erreurs */
+/* Mise en forme pour les erreurs */
 .error {
     width: 100%;
     padding: 0;
-
     font-size: 80%;
     color: white;
     background-color: #900;
     border-radius: 0 0 5px 5px;
-
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -75,4 +70,21 @@ input:focus:invalid {
 
 .error.active {
     padding: 0.3em;
+}
+
+/* Mise en forme de l'editeur de tetxe WYSIWYG */
+#newPostInForm,
+#modifPostInForm {
+    width: 500px;
+    height: 200px;
+    border: 1px solid black;
+    padding: 5px;
+    overflow: auto;
+}
+
+#newPostHTML,
+#newPostPlainText,
+#modifPostHTML,
+#modifPostPlainText {
+    display: none
 }

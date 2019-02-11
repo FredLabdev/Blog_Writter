@@ -20,7 +20,7 @@
     Liste des members classés par catégorie :
 </h3>
 <p>
-    <?php echo 'Nombre d\'abonnés à votre blog à ce jour: ' . $membersCount['nbre_members'] ?>
+    <?= 'Nombre d\'abonnés à votre blog à ce jour: ' . $membersCount['nbre_members'] ?>
 </p>
 <p>
     <?php 
@@ -38,10 +38,10 @@
     Editer un member :
 </h3>
 <p class="success">
-    <?php echo $message_success; ?>
+    <?= $message_success; ?>
 </p>
 <p class="alert">
-    <?php echo $message_error; ?>
+    <?= $message_error; ?>
 </p>
 <form method="post" action="index.php?action=memberDetail">
     <label>Sélectionnez un member : </label><select name="member">
@@ -91,7 +91,7 @@
 </h3>
 
 <form name="delete">
-    <input type="hidden" name="member_modif" value="<?php echo $dataMember['id']; ?>" />
+    <input type="hidden" name="member_modif" value="<?= $dataMember['id']; ?>" />
     <a href="#" onClick="var memberId = document.forms.delete.member_modif.value;
         function valid_confirm(member) {
             if (confirm('Voulez-vous vraiment désinscrire ce membre ?')) {

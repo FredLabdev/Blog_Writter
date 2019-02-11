@@ -39,13 +39,13 @@ try {
 
             // Lister les billets (sans indice de page), 
         else if ($_GET['action'] == 'listPosts') {
-            listPosts(1, "");
+            listPosts(1, "", "");
         }
 
             // Lister les billets (avec un indice de page),     
         else if ($_GET['action'] == 'pagePosts') {
             if (isset($_GET['page']) > 0) {
-                listPosts($_GET['page'], "");
+                listPosts($_GET['page'], "", "");
             } else {
                 throw new Exception('Aucun identifiant de page de billets envoyé');
             }
@@ -62,31 +62,31 @@ try {
 
             // Ajouter un billet,     
         else if ($_GET['action'] == 'addPost') {
-            if(!empty($_POST['titre']) AND !empty($_POST['contenu'])) {
+            if(!empty($_POST['titre']) AND !empty($_POST['newPostHTML'])) {
                 if (!empty($_POST['postBefore'])) {
-                    newPost(htmlspecialchars($_POST['titre']), htmlspecialchars($_POST['contenu']), htmlspecialchars($_POST['postBefore']));
+                    newPost(htmlspecialchars($_POST['titre']), htmlspecialchars($_POST['newPostHTML']), htmlspecialchars($_POST['newPostPlainText']), htmlspecialchars($_POST['postBefore']));
                 } else {
-                    newPost(htmlspecialchars($_POST['titre']), htmlspecialchars($_POST['contenu']), "");
+                    newPost(htmlspecialchars($_POST['titre']), htmlspecialchars($_POST['newPostHTML']), htmlspecialchars($_POST['newPostPlainText']), "");
                 }
             } else {
-                newPost("","","");
+                newPost("","","","");
             }
         }
 
             // modifier un billet   
         else if ($_GET['action'] == 'postModif') {  
             if ($_POST['postId']) {
-                if(!empty($_POST['champ']) AND !empty($_POST['modif_champ'])) {
+                if(!empty($_POST['champ']) AND !empty($_POST['modifPostHTML']) AND !empty($_POST['modifPostPlainText'])) {
                     if ($_POST['champ'] == 1) {
-                        newPostTitle($_POST['postId'], htmlspecialchars($_POST['modif_champ']));
+                        newPostTitle($_POST['postId'], htmlspecialchars($_POST['modifPostPlainText']));
                     } else if ($_POST['champ'] == 2) {
-                        newPostContent($_POST['postId'], htmlspecialchars($_POST['modif_champ']));
+                        newPostContent($_POST['postId'], htmlspecialchars($_POST['modifPostHTML']), htmlspecialchars($_POST['modifPostPlainText']));
                     } else {
                         throw new Exception('Erreur : Aucun champ à modifier');
                     }
                 } else if (empty($_POST['champ'])) {
                     post($_POST['postId'], "",  utf8_encode('Erreur : Veuillez selectionner un champ'));
-                } else if (empty($_POST['modif_champ'])) {
+                } else if (empty($_POST['modifPostHTML']) AND empty($_POST['modifPostPlainText'])) {
                     post($_POST['postId'], "",  utf8_encode('Erreur : Veuillez rentrer une nouvelle valeure au champ'));
                 } 
             } else {
@@ -119,6 +119,11 @@ try {
             } else {
                 throw new Exception('Aucun identifiant de billet envoyé');
             }
+        }
+        
+            // Voir l'intégralité du roman, 
+        else if ($_GET['action'] == 'publishing') {
+            readAllPosts();
         }
 
         //**************************************************************************************

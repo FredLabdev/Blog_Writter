@@ -18,7 +18,7 @@
     Détail de votre compte :
 </h3>
 <p class="success">
-    <?php echo $message_success; ?>
+    <?= $message_success; ?>
 </p>
 <?php
         foreach($memberDetails as $dataMember) { // Détail du member sélectionné
@@ -48,12 +48,12 @@
     <label for="modif_champ">Nouveau contenu du champ : </label>
     <input id="modif_champ" type="email" name="modif_champ" />
     <span class="error" id="error1" aria-live="polite">
-        <?php echo $message_error; ?>
+        <?= $message_error; ?>
     </span><br>
     <label for="modif_champ_confirm">Confirmez ce nouveau contenu : </label>
     <input id="modif_champ_confirm" type="email" name="modif_champ_confirm" />
     <span class="error" id="error2" aria-live="polite">
-        <?php echo $message_error; ?>
+        <?= $message_error; ?>
     </span><br>
     <input id="bouton_envoi" type="submit" value="Appliquer" name="remplacer" />
 

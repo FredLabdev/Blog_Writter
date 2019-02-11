@@ -7,12 +7,12 @@ require_once("model/Manager.php");
 class PostManager extends Manager { // se situe dans le namespace
 
     // private $postTitle;
-    // private $postContent;
+    // private $postContentHTML;
     // private $postExtract;
     // private $postBefore;
     // private $postId;
     // private $newPostTitle;
-    // private $newPostContent;
+    // private $newPostContentHTML;
     // private $postExtract;
 
     public function getPostsCount() {
@@ -56,16 +56,26 @@ class PostManager extends Manager { // se situe dans le namespace
         return $postDetails;
     }
     
+    public function getAllPosts() {
+        $db = $this->dbConnect();
+        $posts = $db->query('SELECT chapter_title, chapter_content FROM posts ORDER BY creation_date');
+        $postsAll = array(); 
+        while ($post = $posts->fetch()) {
+            $postsAll[] = $post; // on créer un tableau regroupant les posts
+        }
+        return $postsAll;
+    }
+    
 //**************************************************************************************
 //                        Model backend PostManager           
 //**************************************************************************************
     
-    public function addPost($postTitle, $postContent, $postExtract, $postBefore) {            
+    public function addPost($postTitle, $postContentHTML, $postExtract, $postBefore) {            
         $db = $this->dbConnect();
         $req = $db->prepare('INSERT INTO posts(creation_date, chapter_title, chapter_content, chapter_extract) VALUES(NOW(), :titre, :contenu, :extract)');
         $req->execute(array(
             'titre' => $postTitle,
-            'contenu' => $postContent,
+            'contenu' => $postContentHTML,
             'extract' => $postExtract
         ));
         $req->closeCursor();
@@ -80,11 +90,11 @@ class PostManager extends Manager { // se situe dans le namespace
         )); 
     }
 
-    public function changePostContent($postId, $newPostContent, $postExtract) {
+    public function changePostContent($postId, $newPostContentHTML, $postExtract) {
         $db = $this->dbConnect();
         $modifContent = $db->prepare('UPDATE posts SET chapter_content = :nvcontenu, chapter_extract = :nvextract WHERE id = :idnum');
         $modifContent->execute(array(
-            'nvcontenu' => $newPostContent,
+            'nvcontenu' => $newPostContentHTML,
             'nvextract' => $postExtract,
             'idnum' => $postId
         )); 

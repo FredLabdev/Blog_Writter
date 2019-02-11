@@ -14,15 +14,18 @@
 <!-- Confirm connect -->
 <h3>
     Bonjour
-    <?php echo ' ' . $_SESSION['first_name'];?>, nous sommes le :
-    <?php echo date('d/m/Y') . '.<br>';?>
+    <?= ' ' . $_SESSION['first_name'];?>, nous sommes le :
+    <?= date('d/m/Y') . '.<br>';?>
     Bienvenue dans l'administration de votre site !
 </h3>
 <p>===========================================================</p>
 <!-- Liste des posts -->
 
 <p class="success">
-    <?php echo $message_success; ?>
+    <?= $message_success; ?>
+</p>
+<p class="alert">
+    <?= $message_error; ?>
 </p>
 <ul>
     <?php
@@ -41,14 +44,33 @@
 <!-- Ajouter un post -->
 
 <h3>
-    Ajouter un nouveau billet :
+    Saisissez et mettez en forme votre nouveau billet ici :
 </h3>
+<input type="button" value="G" style="font-weight:bold;" onclick="commande('bold');" />
+<input type="button" value="I" style="font-style:italic;" onclick="commande('italic');" />
+<input type="button" value="S" style="text-decoration:underline;" onclick="commande('underline');" />
+<input type="button" value="Lien" onclick="commande('createLink');" />
+<input type="button" value="Retirer lien" onclick="commande('unlink');" />
+<input type="button" value="Image" onclick="commande('insertImage');" />
+<select onchange="commande('heading', this.value); this.selectedIndex = 0;">
+    <option value="">Titre</option>
+    <option value="h1">Titre 1</option>
+    <option value="h2">Titre 2</option>
+    <option value="h3">Titre 3</option>
+    <option value="h4">Titre 4</option>
+    <option value="h5">Titre 5</option>
+    <option value="h6">Titre 6</option>
+</select>
+<input type="button" value="effacer" onclick="commande('delete');" />
+<div id="newPostInForm" contentEditable></div>
+
 <form action="index.php?action=addPost" method="post">
     <p>
         <label>Titre du billet : </label><br>
         <input type="text" name="titre" />
-        <label>Contenu du billet : </label><br>
-        <textarea name="contenu" rows="8" cols="45"></textarea>
+        <textarea id="newPostPlainText" name="newPostPlainText"></textarea>
+        <textarea id="newPostHTML" name="newPostHTML"></textarea>
+        <!--Remettre textarea pour fonctionne post -->
         <label>L'insérer après un billet particulier : </label>
         <select name="postBefore">
             <option value=""></option>
@@ -59,7 +81,7 @@
         ?>
         </select>
     </p>
-    <input type="submit" value="Publier votre billet" />
+    <input type="submit" value="Publier votre billet" onclick="getNewPostInForm();" />
 </form>
 
 <?php $backend = ob_get_clean(); ?>
@@ -94,17 +116,17 @@
 ?>
 
 <h3 class="news">
-    <?php echo $postBy5['chapter_title'] . ' : ' . ' le '. $postBy5['date']; ?>
+    <?= $postBy5['chapter_title'] . ' : ' . ' le '. $postBy5['date']; ?>
 </h3>
 <p>
-    <?php echo $postBy5['chapter_extract']; ?>
+    <?= $postBy5['chapter_extract'] . ' : ' . ' le '. $postBy5['date']; ?>
 </p>
-<a href="index.php?action=post&amp;billet=<?php echo $postBy5['id']; ?>">Voir plus</a>
+<a href="index.php?action=post&amp;billet=<?= $postBy5['id']; ?>"> Voir le billet complet ! </a>
+
 <p>===========================================================</p>
 
 <?php
-
-}
+ }
 ?>
 
 <?php $all2 = ob_get_clean(); ?>

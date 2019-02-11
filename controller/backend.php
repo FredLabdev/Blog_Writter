@@ -11,7 +11,7 @@ try {
     //**************************************************************************************
 
     function postExtract($text) {
-        $max=250;
+        $max=200;
         if (strlen($text) > $max) { // vérifie que texte plus long que max extrait
             // récupère 1er espace après $max pour éviter de couper un mot en plein milieu
             $space = strpos($text,' ',$max);
@@ -23,17 +23,17 @@ try {
         return $postExtract;
     }
 
-    function newPost($postTitle, $postContent, $postBefore) {
-        if ($postTitle == "" || $postContent =="") {
-            $post_error =  utf8_encode('Erreur : Veuillez renseigner tous les champs');
-            require('view/frontend/postsListView.php');
+    function newPost($postTitle, $postContentHTML, $postContentText, $postBefore) {
+        if ($postTitle == "" || $postContentHTML =="") {
+            $message_error =  utf8_encode('Erreur : Veuillez renseigner tous les champs');
+            listPosts(1, $message_success, $message_error);
         } else {
-            $postExtract = postExtract($postContent);
+            $postExtract = postExtract($postContentText);
             $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
             if(!empty($postBefore)) {
-                $postManager->addPost($postTitle, $postContent, $postExtract, $postBefore); 
+                $postManager->addPost($postTitle, $postContentHTML, $postExtract, $postBefore); 
             } else {
-                $postManager->addPost($postTitle, $postContent, $postExtract, "");     
+                $postManager->addPost($postTitle, $postContentHTML, $postExtract, "");     
             }
             $message_success =  'Votre billet "' . $postTitle . '" a bien été publié ci-dessus';
             listPosts(1, $message_success, "");
@@ -47,10 +47,10 @@ try {
         post($postId, $message_success, "");
     }
 
-    function newPostContent($postId, $newPostContent) {
-        $postExtract = postExtract($newPostContent);
+    function newPostContent($postId, $newPostContentHTML, $newPostContentText) {
+        $postExtract = postExtract($newPostContentText);
         $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
-        $postManager->changePostContent($postId, $newPostContent, $postExtract);
+        $postManager->changePostContent($postId, $newPostContentHTML, $postExtract);
         $message_success =  'Le contenu de l\'épisode ' . $postId . ' a bien été modifié ci-dessous !';
         post($postId, $message_success, "");
     }
@@ -61,7 +61,7 @@ try {
         $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
         $commentManager->deleteComments($postId);     
         $message_success =  'Ce billet et ses commentaires ont bien été supprimés !';
-        listPosts(1, $message_success);
+        listPosts(1, $message_success, "");
     }
 
     //**************************************************************************************

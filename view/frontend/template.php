@@ -23,6 +23,7 @@
                     if($template == 'backend') {
                         echo'<li><a href="index.php?action=listPosts">Administrer les billets</a></li>';
                         echo '<li><a href="index.php?action=memberDetail">Administrer les members</a></li>';
+                        echo '<li><a href="index.php?action=publishing">Le roman</a></li>';
                     } else {
                         echo'<li><a href="index.php?action=listPosts">Accueil</a></li>';
                         echo '<li><a href="index.php?action=memberDetail">Gérer son compte</a></li>';
