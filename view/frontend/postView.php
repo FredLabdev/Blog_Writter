@@ -125,31 +125,64 @@
     <?= nl2br(htmlspecialchars($comment['comment'])); ?>
 </p>
 
-<!-- Bouton de Suppression pour un commentaire (uniquement si admin, moderateur ou poste par sois-meme)-->
-
+<!-- Bouton de Suppression pour un commentaire (uniquement si admin, modérateur, ou poste par sois-meme)-->
 <?php
         if ($_SESSION['group_id'] == 1 || $_SESSION['group_id'] == 2 || $comment['author'] == $_SESSION['pseudo']) {
     ?>
 <form action="index.php?action=deleteComment&amp;billet=<?= $_GET['billet']; ?>" method="post">
     <input type="hidden" name="delete_comment" value="<?= $comment['id'] ?>" />
-    <input type="submit" value="Supprimer ce message" />
+    <input type="submit" value="Supprimer" />
+</form>
+
+<!-- Bouton de Signalement d'un commentaire comme indésirable (uniquement si modérateur ou admin)-->
+<?php
+        } if ($_SESSION['group_id'] == 1 || $_SESSION['group_id'] == 2) {
+    ?>
+<form action="index.php?action=signalComment&amp;billet=<?= $_GET['billet']; ?>" method="post">
+    <input type="hidden" name="signal_commentId" value="<?php if($comment['comment_signal'] == 0){echo '1';}else{echo '0';};?>" />
+    <input type="hidden" name="signal_comment" value="<?= $comment['id'] ?>" />
+    <input type="submit" name="messageSignal" value="Signaler" />
+</form>
+
+<!-- Bouton de Modification d'un commentaire (uniquement si sois-meme)-->
+<?php
+        } if ($comment['author'] == $_SESSION['pseudo']) {
+    ?>
+<form name="getCommentModif<?= $comment['id'] ?>" action="index.php?action=modifComment&amp;billet=<?= $_GET['billet']; ?>" method="post">
+    <input type="hidden" name="modifCommentId" value="<?= $comment['id'] ?>" />
+    <a href="#<?= $comment['id'] ?>" class="button" onclick="
+    function getModifComment() {
+        var getModifComment = document.getElementById('modifComment<?= $comment['id'] ?>');
+        var modifCommentSubmit = document.getElementById('modifCommentSubmit<?= $comment['id'] ?>');
+        if (getModifComment.className == 'hidden') {
+            getModifComment.className = 'appear';   
+            modifCommentSubmit.className = 'appear';                                    
+        } else {
+            getModifComment.className = 'hidden';  
+            modifCommentSubmit.className = 'hidden';        
+        }
+    }
+    getModifComment();"> Modifier</a>
+    <p id=modifComment<?=$comment['id'] ?> class="hidden">
+        <label>Votre nouveau commentaire :</label><br>
+        <textarea name="modifComment" rows="8" cols="45">
+            </textarea>
+    </p>
+    <input id=modifCommentSubmit<?=$comment['id'] ?> class="hidden" type="submit" value="Valider ce commenatire" />
 </form>
 <?php
-        }
-    ?>
-
-<p>.......................................................................................</p>
-
-<?php
     }
-?>
 
+}
+?>
+<p>===========================================================</p>
 <!-- Ajout d'un commentaire -->
 
-<h3>Ajouter un commentaire :</h3>
-<form action="index.php?action=addComment&amp;billet=<?= $_GET['billet']; ?>" method="post">
+<a href="#" class="button" onclick="
+    getNewComment();"> Ajouter un commentaire </a>
+<form id="newComment" class="hidden" action="index.php?action=addComment&amp;billet=<?= $_GET['billet']; ?>" method="post">
     <p>
-        <label>Votre message :</label><br>
+        <label>Votre commentaire :</label><br>
         <textarea name="nv_comment" rows="8" cols="45">
             </textarea>
     </p>

@@ -1,7 +1,11 @@
 <?php 
     session_start();
     $title = 'Membres';
-    $template = 'backend';
+    if ($_SESSION['group_id'] == 1) {
+        $template = 'backend';
+    } else {
+        $template = 'frontend';
+    }
     ob_start(); 
 ?>
 
@@ -20,7 +24,7 @@
     Liste des members classés par catégorie :
 </h3>
 <p>
-    <?= 'Nombre d\'abonnés à votre blog à ce jour: ' . $membersCount['nbre_members'] ?>
+    <?= 'Nombre d\'abonnés au blog à ce jour (hors administrateurs) : ' . $membersCount['nbre_members'] ?>
 </p>
 <p>
     <?php 
@@ -43,16 +47,17 @@
 <p class="alert">
     <?= $message_error; ?>
 </p>
-<form method="post" action="index.php?action=memberDetail">
+<form id="MemberForm" method="post" action="index.php?action=membersDetail">
     <label>Sélectionnez un member : </label><select name="member">
-        <option value=""></option>
+        <option name="choix" value=""></option>
         <?php
             foreach($membersByName as $member) {
                echo '<option value="' . $member['id'] . '">' . $member['name_maj'] . ' ' . $member['first_name_min'] . '</option>';
             }
         ?>
     </select>
-    <input type="submit" value="Valider" name="valider" /><br>
+    <input type="submit" value="Valider" />
+
     <?php
         foreach($memberDetails as $dataMember) { // Détail du member sélectionné
             echo 'Date de création : ' . $dataMember['creation_date'] . '<br>';
@@ -61,36 +66,59 @@
             echo 'Pseudo : ' . $dataMember['pseudo'] . '<br>';  
             echo 'Mail : ' . $dataMember['email'] . '<br>';  
             if($dataMember['block_comment'] == 0) {
-                echo 'Commentaires autorisés : oui';
+                echo 'Commentaires autorisés : oui' . '<br>';  
             } else {
-                echo 'Commentaires autorisés : non';
+                echo 'Commentaires autorisés : non' . '<br>';  
+            }; 
+            if($dataMember['group_id'] == 2) {
+                echo 'Ce membre est un modérateur';
             };  
         }
     ?>
 </form>
+<?php
+        if ($memberDetails) {
+    ?>
+
 <p>.......................................................</p>
-<form method="post" action="index.php?action=memberModif">
+<form id="modifMember" method="post" action="index.php?action=memberModif">
     <input type="hidden" name="member_modif" value="<?php echo $dataMember['id']; ?>" />
     <label>
-        <?php if($dataMember['block_comment'] == 0) {
+        <?php 
+            if($dataMember['block_comment'] == 0) {
                 echo 'Bloquer ses commentaires';
             } else {
                 echo 'Réautoriser ses commentaires';
             };
         ?>
     </label>
-    <input type="checkbox" name="bloquage" value="<?php if($dataMember['block_comment'] == 0){echo '1';}else{echo '0';};?>" /><br>
+    <input type="checkbox" name="block_comment" value="<?php if($dataMember['block_comment'] == 0){echo '1';}else{echo '0';};?>" /><br>
+    <label>
+        <?php 
+            if ($_SESSION['group_id'] == 1) {
+                if ($dataMember['group_id'] != 2) {
+                    echo 'Donner un pouvoir de modérateur de commentaires';
+                } else {
+                    echo 'Retirer son pouvoir de modérateur de commentaires';
+                }
+        ?>
+    </label>
+    <input type="checkbox" name="moderator" value="<?php if($dataMember['group_id'] == 3){echo '2';}else{echo '3';};?>" /><br>
+    <?php 
+            }
+    ?>
     <input type="submit" value="Appliquer" name="remplacer" />
 </form>
 
 <br />
 <p>===========================================================</p>
 
-<h3>
-    Pour supprimer ce compte, cliquez ici :
-</h3>
+<?php 
+    if ($_SESSION['group_id'] == 1) {
+?>
 
-<form name="delete">
+<form id="deleteMember" name="delete">
+    <label>Pour supprimer ce compte, cliquez ici :</label>
     <input type="hidden" name="member_modif" value="<?= $dataMember['id']; ?>" />
     <a href="#" onClick="var memberId = document.forms.delete.member_modif.value;
         function valid_confirm(member) {
@@ -105,7 +133,17 @@
         }
         valid_confirm(memberId);"> Désincrire ce membre </a>
 </form>
+<?php 
+    }
+    }
+?>
 
-<?php $backend = ob_get_clean(); ?>
+<?php 
+    if ($_SESSION['group_id'] == 1) {
+        $backend = ob_get_clean();
+    } else {
+        $frontend = ob_get_clean();
+    }
+?>
 
 <?php require('view/frontend/template.php'); ?>

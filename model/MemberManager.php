@@ -12,14 +12,14 @@ class MemberManager extends Manager { // se situe dans le namespace
  
     public function getMembersCount() {
         $db = $this->dbConnect();
-        $getMembersCount = $db->query('SELECT COUNT(*) AS nbre_members FROM members');
+        $getMembersCount = $db->query('SELECT COUNT(*) AS nbre_members FROM members WHERE group_id = 2 OR group_id = 3');
         $membersCount = $getMembersCount->fetch();
         return $membersCount;
     }
 
     public function getMembersByGroup() {
         $db = $this->dbConnect();
-        $getMembersByGroup = $db->query('SELECT c.name AS name_member, c.first_name AS first_name_member, g.grade AS grade_groupe FROM groups AS g INNER JOIN members AS c ON c.group_id = g.id ORDER BY group_id, name');        
+        $getMembersByGroup = $db->query('SELECT c.name AS name_member, c.first_name AS first_name_member, g.grade AS grade_groupe FROM groups AS g INNER JOIN members AS c ON c.group_id = g.id WHERE group_id = 2 OR group_id = 3 ORDER BY group_id, name');        
         $membersByGroup = array(); 
         while ($memberByGroup = $getMembersByGroup->fetch()) {
             $membersByGroup[] = $memberByGroup; // on créer un tableau regroupant les members
@@ -29,7 +29,7 @@ class MemberManager extends Manager { // se situe dans le namespace
 
     public function getMembersByName() {
         $db = $this->dbConnect();
-        $getMembersByName = $db->query('SELECT id, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM members ORDER BY name'); 
+        $getMembersByName = $db->query('SELECT id, UPPER(name) AS name_maj, LOWER(first_name) AS first_name_min FROM members WHERE group_id = 2 OR group_id = 3 ORDER BY name'); 
         $membersByName = array(); 
         while ($memberByName = $getMembersByName->fetch()) {
             $membersByName[] = $memberByName; // on créer un tableau regroupant les members
@@ -71,6 +71,15 @@ class MemberManager extends Manager { // se situe dans le namespace
         $changeMemberNoComment = $db->prepare('UPDATE members SET block_comment = :blockId WHERE id = :idnum');
         $changeMemberNoComment->execute(array(
             'blockId' => $blockId,
+            'idnum' => $memberId
+        )); 
+    }
+
+    public function changeMemberGroup($memberId, $moderatorId) {
+        $db = $this->dbConnect();
+        $changeMemberGroup = $db->prepare('UPDATE members SET group_id = :groupId WHERE id = :idnum');
+        $changeMemberGroup->execute(array(
+            'groupId' => $moderatorId,
             'idnum' => $memberId
         )); 
     }

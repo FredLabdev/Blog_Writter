@@ -93,8 +93,8 @@ try {
                 post($_POST['postId'], "",  utf8_encode('Erreur : Aucun billet sélectionné'), "");
             }
         }
-
-           // supprimer un billet,   
+        
+        // supprimer un billet,   
         else if ($_GET['action'] == 'postDelete') {
             if ($_GET['postId']) {
                 postErase($_GET['postId']);
@@ -111,7 +111,25 @@ try {
                 throw new Exception('Aucun identifiant de billet envoyé');
             }
         }
-
+        
+            // Modifier un commentaire,     
+        else if ($_GET['action'] == 'modifComment') {
+            if (isset($_GET['billet']) && $_GET['billet'] > 0) {
+                modifCommentRequest($_GET['billet'], $_SESSION['pseudo'], $_POST['modifCommentId'], $_POST['modifComment']);
+            } else {
+                throw new Exception('Aucun identifiant de billet envoyé');
+            }
+        }
+        
+                   // signaler un commentaire,   
+        else if ($_GET['action'] == 'signalComment') {
+           if (isset($_GET['billet']) && $_GET['billet'] > 0) {
+                commentSignal($_GET['billet'], $_POST['signal_comment'], $_POST['signal_commentId']);  
+            } else {
+                throw new Exception('Aucun identifiant de billet envoyé');
+            }
+        }
+        
             // Effacer un commentaire,     
         else if ($_GET['action'] == 'deleteComment') {
             if (isset($_GET['billet']) && $_GET['billet'] > 0) {
@@ -130,54 +148,63 @@ try {
         //                       de memberAdminView / membersAdminView          
         //**************************************************************************************
 
-            // Afficher un compte member,    
-        else if ($_GET['action'] == 'memberDetail') {
-            if ($_SESSION['group_id'] == 1) { // => demande detail d'un compte lambda depuis le backend
-                if (isset($_POST['valider'])) {
-                    if (!empty($_POST['member'])) {
-                        memberDetail("", "", $_POST['member']);
-                    } else {
-                        memberDetail("",  utf8_encode('Erreur : Veuillez sélectionner un member'), "");
-                    }
+            // Aficher detail d'un compte lambda depuis le backend   
+        else if ($_GET['action'] == 'membersDetail') {
+            if (isset($_POST['member'])) {
+                if (!empty($_POST['member'])) {
+                    memberDetail("", "", $_POST['member'], 'backend');
                 } else {
-                    memberDetail("", "", "");
-                }
-            } else { // => demande detail de son propre compte par un membre
-                memberDetail("", "", $_SESSION['id']);
-            }
-        }
-
-            // Modifier un compte member,   
-        else if ($_GET['action'] == 'memberModif') {  
-            if ($_POST['member_modif']) {
-                if(isset($_POST['bloquage'])) { // Backend : interdir/autoriser de commenter 
-                    memberBloqComment($_POST['member_modif'], $_POST['bloquage']);   
-                } else if(!empty($_POST['champ']) AND !empty($_POST['modif_champ']) AND !empty($_POST['modif_champ_confirm'])) {
-                    if ($_POST['champ'] == 1) { // Frontend : modification du mail
-                        newMail($_POST['member_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
-                    } else if ($_POST['champ'] == 2) { // Frontend : Modification du mot de passe     
-                        newPassword($_POST['member_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
-                    } else {
-                        throw new Exception('Erreur : Aucun champ à modifier');
-                    }
-                } else if (empty($_POST['champ'])) {
-                    memberDetail("",  utf8_encode('Erreur : Veuillez selectionner un champ'), $_SESSION['id']);
-                } else if (empty($_POST['modif_champ'])) {
-                    memberDetail("",  utf8_encode('Erreur : Veuillez rentrer une nouvelle valeure au champ'), $_SESSION['id']);
-                } else if (empty($_POST['modif_champ_confirm'])) {
-                    memberDetail("",  utf8_encode('Erreur : Veuillez confirmer cette nouvelle valeure'), $_SESSION['id']);
+                     memberDetail("",  'Veuillez sélectionner un membre', "", 'backend');
                 }
             } else {
-                memberDetail("",  utf8_encode('Erreur : Veuillez sélectionner un member'), "");
+                memberDetail("", "", "", 'backend');
+            }
+         }
+            
+            // Afficher detail de son propre compte par un membre   
+        else if ($_GET['action'] == 'memberDetail') {
+                memberDetail("", "", $_SESSION['id'], "");
+        }
+
+            // Modifier un compte membre  
+        else if ($_GET['action'] == 'memberModif') {  
+            
+                // Un compte tiers (BACKEND),
+            if ($_POST['member_modif']) {
+                if(isset($_POST['block_comment'])) { // Interdir/autoriser de commenter 
+                    memberBloqComment($_POST['member_modif'], $_POST['block_comment'], 'backend');   
+                } else if(isset($_POST['moderator'])) { // Interdir/autoriser à être modérateur 
+                    memberModerator($_POST['member_modif'], $_POST['moderator'], 'backend');   
+                } else {
+                    memberDetail("",  'Veuillez sélectionner une action', "", 'backend');
+                }
+                
+               // Son propre compte (FRONTEND),   
+            } else if ($_POST['personal_modif']) { 
+                if(!empty($_POST['champ']) AND !empty($_POST['modif_champ']) AND !empty($_POST['modif_champ_confirm'])) {
+                    if ($_POST['champ'] == 1) { // Modification du mail
+                        newMail($_POST['personal_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
+                    } else if ($_POST['champ'] == 2) { // Modification du mot de passe     
+                        newPassword($_POST['personal_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
+                    }
+                } else if(empty($_POST['champ']) AND empty($_POST['modif_champ']) AND empty($_POST['modif_champ_confirm'])) {
+                        memberDetail("",  'Veuillez sélectionner un champ et une action', $_SESSION['id'], "");
+                } else if (empty($_POST['champ'])) {
+                        memberDetail("",  utf8_encode('Veuillez selectionner un champ'), $_SESSION['id'], "");
+                } else if (empty($_POST['modif_champ'])) {
+                        memberDetail("",  utf8_encode('Veuillez rentrer une nouvelle valeure au champ'), $_SESSION['id'], "");
+                } else if (empty($_POST['modif_champ_confirm'])) {
+                        memberDetail("",  utf8_encode('Veuillez confirmer cette nouvelle valeure'), $_SESSION['id'], "");
+                } 
             }
         }
 
            // Supprimer un compte member, 
         else if ($_GET['action'] == 'memberDelete') {
             if ($_GET['memberErase']) {
-                memberDelete($_GET['memberErase']);
+                memberDelete($_GET['memberErase'], 'backend');
             } else {
-                throw new Exception('Erreur : aucun member selectionné');
+                throw new Exception('Aucun membre selectionné');
             }
         }
 

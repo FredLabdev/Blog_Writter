@@ -19,7 +19,7 @@ class CommentManager extends Manager { // se situe dans le namespace
 
     public function getComments($postId) {
         $db = $this->dbConnect();
-        $comments = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\')comment_date_fr FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');
+        $comments = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\')comment_date_fr, comment_signal FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');
         $comments->execute(array($postId));    
         return $comments;
     }
@@ -41,6 +41,26 @@ class CommentManager extends Manager { // se situe dans le namespace
             'author' => $author,
             'comment' => $comment
         ));
+        $req->closeCursor();
+    }
+    
+   public function replaceComment($commentId, $newComment) {            
+        $db = $this->dbConnect();
+        $req = $db->prepare('UPDATE comments SET comment = :comment, comment_date = NOW() WHERE id = :commentId');
+        $req->execute(array(
+            'comment' => $newComment,
+            'commentId' => $commentId
+        ));
+        $req->closeCursor();
+    }
+    
+    public function signalComment($commentId, $signalId) {  
+        $db = $this->dbConnect();
+        $req = $db->prepare('UPDATE comments SET comment_signal = :comment_signal WHERE id = :commentId');
+        $req->execute(array(
+            'comment_signal' => $signalId,
+            'commentId' => $commentId
+        ));  
         $req->closeCursor();
     }
     

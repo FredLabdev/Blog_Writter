@@ -205,17 +205,24 @@ try {
         $message_success;
         $message_error;
         $memberDetails;
-        if ($_SESSION['group_id'] == 1) {
-            require('view/backend/membersAdminView.php');
-        } else {
-            require('view/frontend/memberAdminView.php');
-        }      
+        require('view/backend/membersAdminView.php');      
     }
 
-    function memberDetail($message_success, $message_error, $memberId) {
+     function memberHome($message_success, $message_error, $memberDetails) {
+        $message_success;
+        $message_error;
+        $memberDetails;
+        require('view/frontend/memberAdminView.php');      
+    }
+    
+    function memberDetail($message_success, $message_error, $memberId, $template) {
         $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
         $memberDetails = $memberManager->getMemberDetail($memberId);
-        membersHome($message_success, $message_error, $memberDetails);
+        if ($template != "") {
+        membersHome($message_success, $message_error, $memberDetails);            
+        } else {
+        memberHome($message_success, $message_error, $memberDetails);
+        }
     }
 
     function newMail($memberId, $newMail, $mailConfirm) {
@@ -224,15 +231,15 @@ try {
         if ($message_error == '') { // Si tout ok on creer le nouveau membre,
             memberModifMail($memberId, $newMail); // et on démmarre sa session
         } else {
-            memberDetail("", $message_error, $memberId);
+            memberDetail("", $message_error, $memberId, $template);
         }
     }
 
     function memberModifMail($memberId, $newMail) {
         $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
         $memberManager->changeMemberMail($memberId, $newMail);
-        $message_success =  utf8_encode('La modification de l\'email du member a bien été enrégistrée !');
-        memberDetail($message_success, "", $memberId);
+        $message_success =  utf8_encode('La modification de l\'email a bien été enrégistrée !');
+        memberDetail($message_success, "", $memberId, "");
     }
 
     function newPassword($memberId, $newPassword, $passwordConfirm) {
@@ -241,18 +248,18 @@ try {
         if ($message_error == '') { // Si tout ok on creer le nouveau membre,
             memberModifPassword($memberId, $newPassword); // et on démmarre sa session
         } else {
-            memberDetail("", $message_error, $memberId);
+            memberDetail("", $message_error, $memberId, "");
         }
     }
 
     function memberModifPassword($memberId, $newPassword) {
         $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
         $memberManager->changeMemberPassword($memberId, $newPassword);
-        $message_success =  utf8_encode('La modification du mot de passe du member a bien été enrégistrée !');
-        memberDetail($message_success, "", $memberId);
+        $message_success =  utf8_encode('La modification du mot de passe a bien été enrégistrée !');
+        memberDetail($message_success, "", $memberId, "");
     }
 
-    function memberDelete($memberId) {
+    function memberDelete($memberId, $template) {
         $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
         $memberManager->deleteMember($memberId);
         if ($_SESSION['id'] == $memberId) {
@@ -261,7 +268,7 @@ try {
             $message_success =  utf8_encode('Ce compte a bien été supprimé...');
         }  
         if ($_SESSION['group_id'] == 1) {
-            memberDetail($message_success, "", $memberId);
+            memberDetail($message_success, "", $memberId, $template);
         } else {
             require('view/frontend/loginView.php');
         }   

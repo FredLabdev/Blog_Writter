@@ -18,6 +18,15 @@ document.getElementById("deconnexion").addEventListener('click', function (e) {
 });
 
 //**************************************************************************************
+//              Interactions pour l'affichage d'un nouveau commentaire           
+//**************************************************************************************
+
+function getNewComment() {
+    var getNewComment = document.getElementById("newComment");
+    getNewComment.className = 'appear';
+}
+
+//**************************************************************************************
 //                         Interactions pour la saisie WYSIWYG             
 //**************************************************************************************
 

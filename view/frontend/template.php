@@ -20,13 +20,18 @@
             <h3>Menu</h3>
             <ul>
                 <?php
-                    if($template == 'backend') {
+                    if($template == 'backend' && $_SESSION['group_id'] != 2) {
                         echo'<li><a href="index.php?action=listPosts">Administrer les billets</a></li>';
-                        echo '<li><a href="index.php?action=memberDetail">Administrer les members</a></li>';
+                        echo '<li><a href="index.php?action=memberDetail">Gérer son compte</a></li>';
+                        echo '<li><a href="index.php?action=membersDetail">Administrer les members</a></li>';
                         echo '<li><a href="index.php?action=publishing">Le roman</a></li>';
                     } else {
                         echo'<li><a href="index.php?action=listPosts">Accueil</a></li>';
-                        echo '<li><a href="index.php?action=memberDetail">Gérer son compte</a></li>';
+                        echo '<li><a href="index.php?action=memberDetail">Gérer son compte</a></li>'; 
+                        if($_SESSION['group_id'] == 2) {
+                            echo '<li><a href="index.php?action=membersDetail">Administrer les members</a></li>';
+                        };
+                        echo '<li><a href="index.php?action=publishing">Le roman</a></li>';
                     }
                 ?>
                 <li><a href="#" id="deconnexion">Deconnexion</a></li>
@@ -41,6 +46,9 @@
         echo $all1;
         if ($template == 'backend') {
             echo $backend;
+        }
+        if ($template == 'adminModerator') {
+            echo $adminModerator;
         }
         if ($template == 'frontend') {
             echo $frontend;

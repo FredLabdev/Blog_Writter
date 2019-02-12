@@ -65,7 +65,7 @@ try {
     }
 
     //**************************************************************************************
-    //        Controller backend CommentManager (+Controller frontend PostManager)                  
+    //           Controller CommentManager (+Controller frontend PostManager)                  
     //**************************************************************************************
 
     function addCommentRequest($postId, $member, $newComment) {
@@ -80,7 +80,31 @@ try {
         }
         post($postId, $message_success, $message_error);
     }
+    
+    function modifCommentRequest($postId, $member, $commentId, $modifComment) {
+        $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
+        $addCommentRight = $commentManager->getMemberNoComment($member);
+        $message_error = "";
+        if($addCommentRight['block_comment'] == 1) {
+            $message_error =  'Désolé vous n\'êtes pas autorisé à poster des comments';
+        } else {
+            $commentManager->replaceComment($commentId, $modifComment);     
+            $message_success =  'Votre commentaire a bien été modifié et publié ci-dessous';
+        }
+        post($postId, $message_success, $message_error);
+    }
 
+    function commentSignal($postId, $commentId, $signalId) {
+        $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
+        $commentManager->signalComment($commentId, $signalId);     
+        if ($signalId == 1) {
+            $message_error =  'Le comment '. $commentId . ' a bien été signalé à l\'administrateur!';
+        } else {
+            $message_success =  'Le comment '. $commentId . ' ne sera plus signalé à l\'administrateur!';
+        }
+        post($postId, $message_success, $message_error);
+    }
+    
     function commentErase($postId, $commentId) {
         $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
         $commentManager->deleteComment($commentId);     
@@ -92,7 +116,7 @@ try {
     //         Controller backend MemberManager (+Controller frontend PostManager)              
     //**************************************************************************************
 
-    function memberBloqComment($memberId, $blockId) {
+    function memberBloqComment($memberId, $blockId, $template) {
         $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
         $memberManager->changeMemberNoComment($memberId, $blockId);
         if ($blockId == 1) {
@@ -100,7 +124,22 @@ try {
         } else {
             $message_success =  'Le member a bien été débloqué et pourra de nouveau commenter !';
         }
-        memberDetail($message_success, "", $memberId);
+        memberDetail($message_success, "", $memberId, $template);
+    }
+
+    //**************************************************************************************
+    //         Controller backend MemberManager (+Controller frontend PostManager)              
+    //**************************************************************************************
+
+    function memberModerator($memberId, $moderatorId, $template) {
+        $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
+        $memberManager->changeMemberGroup($memberId, $moderatorId);
+        if ($moderatorId == 2) {
+            $message_success =  'Ce membre a bien été passé en modérateur !';
+        } else {
+            $message_success =  'Ce membre n\'aura plus le statut de modérateur !';
+        }
+        memberDetail($message_success, "", $memberId, $template);
     }
 
 //**************************************************************************************

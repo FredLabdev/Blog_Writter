@@ -1,7 +1,11 @@
 <?php 
     session_start();
     $title = 'Membres';
-    $template = 'frontend'; 
+    if ($_SESSION['group_id'] == 1) {
+        $template = 'backend';
+    } else {
+        $template = 'frontend';
+    }
     ob_start(); 
 ?>
 
@@ -38,7 +42,7 @@
 </h3>
 
 <form novalidate method="post" action="index.php?action=memberModif" id="form_modif" name="modif">
-    <input type="hidden" name="member_modif" value="<?php echo $dataMember['id']; ?>" />
+    <input type="hidden" name="personal_modif" value="<?php echo $dataMember['id']; ?>" />
     <label>Sélectionnez le champ à modifier : </label>
     <select id="champ" name="champ">
         <option value=""></option>
@@ -68,8 +72,8 @@
 </h3>
 
 <form name="delete">
-    <input type="hidden" name="member_modif" value="<?php echo $dataMember['id']; ?>" />
-    <a href="#" onClick="var memberId = document.forms.delete.member_modif.value;
+    <input type="hidden" name="personal_modif" value="<?php echo $dataMember['id']; ?>" />
+    <a href="#" onClick="var memberId = document.forms.delete.personal_modif.value;
         function valid_confirm(member) {
             if (confirm('Voulez-vous vraiment vous désinscrire définitivement ?')) {
                 var url = 'index.php?action=memberDelete&memberErase=' + member;
@@ -83,6 +87,12 @@
         valid_confirm(memberId);"> Désincription </a>
 </form>
 
-<?php $frontend = ob_get_clean(); ?>
+<?php 
+    if ($_SESSION['group_id'] == 1) {
+        $backend = ob_get_clean();
+    } else {
+        $frontend = ob_get_clean();
+    }
+?>
 
 <?php require('view/frontend/template.php'); ?>
