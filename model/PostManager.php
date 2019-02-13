@@ -25,7 +25,7 @@ class PostManager extends Manager { // se situe dans le namespace
 
     public function getPosts() {
         $db = $this->dbConnect();
-        $posts = $db->query('SELECT chapter_title, creation_date FROM posts ORDER BY creation_date DESC');
+        $posts = $db->query('SELECT chapter_title, creation_date FROM posts ORDER BY creation_date');
         $postsList = array(); 
         while ($post = $posts->fetch()) {
             $postsList[] = $post; // on créer un tableau regroupant les posts
@@ -35,7 +35,7 @@ class PostManager extends Manager { // se situe dans le namespace
 
     public function getPostsBy5($offset) {
         $db = $this->dbConnect();
-        $getPostsBy5 = $db->prepare('SELECT id, chapter_title, chapter_content, chapter_extract, DATE_FORMAT(creation_date, \'%d/%m/%Y à %Hh%imin%ss\') AS date FROM posts ORDER BY creation_date DESC LIMIT 5 OFFSET :idmax'); // OFFSET selon indice page
+        $getPostsBy5 = $db->prepare('SELECT id, chapter_title, chapter_content, chapter_extract, DATE_FORMAT(creation_date, \'%d/%m/%Y\') AS date FROM posts ORDER BY creation_date DESC LIMIT 5 OFFSET :idmax'); // OFFSET selon indice page
         $getPostsBy5->bindValue(':idmax', $offset, \PDO::PARAM_INT);
         $getPostsBy5->execute();
         $postsBy5 = array(); 

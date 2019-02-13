@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    $title = 'Commentaire';
+    $title = 'Forteroche/Billet';
     if ($_SESSION['group_id'] == 1) {
         $template = 'backend';
     } else {

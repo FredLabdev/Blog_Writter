@@ -160,10 +160,10 @@ try {
     }
 
     function getPagesMax($postsCount) {
-        if ($postsCount['nbre_posts']%5 == 0) { // 5 billets par page
-            $pages_max = $postsCount['nbre_posts']/5;
+        if (($postsCount['nbre_posts']%5) == 0) {
+            $pages_max = (int)($postsCount['nbre_posts']/5);    
         } else {
-            $pages_max = ($postsCount['nbre_posts']/5)+1;
+            $pages_max = ((int)($postsCount['nbre_posts']/5))+1;    
         }
         return $pages_max;
     }

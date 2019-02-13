@@ -1,11 +1,68 @@
 body {
-    background-color: #ddd;
+    font-family: 'Open Sans Condensed', sans-serif;
     color: black;
 }
 
+.header {
+    background: url("picture/picture11.jpg");
+    background-repeat: no-repeat;
+    background-position: 0px, 50px;
+}
+
 .backend {
-    background-color: lightyellow;
+    background-image: url('public/picture/picture1.jpg');
+}
+
+.bg-PostsView {
+    background-color: #0a0e19;
+}
+
+.navbar-brand,
+.title {
+    font-family: 'Miss Fajardose', cursive;
+    font-size: 3.2em;
+    font-weight: bold;
+}
+
+.nav-link {
+    font-family: 'Cinzel', serif;
     color: darkblue;
+}
+
+.news-title {
+    font-family: 'Cinzel', serif;
+    color: darkblue;
+}
+
+.news {
+    font-family: 'Inconsolata', monospace;
+}
+
+.index-title {
+    color: #fdf3ac;
+    height: 100px;
+}
+
+.index {
+    column-count: 4;
+    column-gap: 0.5em;
+    column-rule-color: #fdf3ac;
+    column-rule-width: 1px;
+    column-rule-style: solid;
+    height: 280px;
+    color: #fdf3ac;
+    font-size: 1.2em;
+    list-style-type: none;
+}
+
+.index li:hover {
+    background-color: #0a0e19;
+    color: #6c9bf3;
+}
+
+.extract {
+    background: url('picture/picture15.jpg');
+    margin-bottom: 20px;
 }
 
 .alert {
@@ -20,6 +77,14 @@ body {
 
 form {
     max-width: 200px;
+}
+
+h2 {
+    text-align: center;
+}
+
+.title {
+    height: 170px;
 }
 
 p * {

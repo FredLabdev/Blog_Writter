@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    $title = 'Membres';
+    $title = 'Forteroche/Compte';
     if ($_SESSION['group_id'] == 1) {
         $template = 'backend';
     } else {
@@ -9,6 +9,7 @@
     ob_start(); 
 ?>
 
+<br />
 <p>===========================================================</p>
 <!-- Confirm connect -->
 

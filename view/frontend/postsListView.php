@@ -1,47 +1,47 @@
 <?php 
     session_start();
-    $title = 'Accueil';
+    $title = 'Forteroche/Accueil';
     if ($_SESSION['group_id'] == 1) {
         $template = 'backend';
     } else {
         $template = 'frontend';
     }
+    $bg = 'postsView';
     ob_start(); 
 ?>
+<div class="container-fluid header">
+    <h5 class="col-lg-4 offset-7">
+        Bonjour <strong>
+            <?= $_SESSION['first_name']; ?>
+        </strong> , prenez donc
+    </h5>
+    <h3 class="title col-lg-6 offset-6">
+        Un billet simple pour l'Alaska !
+    </h3>
 
-<br />
-<p>===========================================================</p>
-<!-- Confirm connect -->
-<h3>
-    Bonjour
-    <?= ' ' . $_SESSION['first_name'];?>, nous sommes le :
-    <?= date('d/m/Y') . '.<br>';?>
-    Bienvenue dans l'administration de votre site !
-</h3>
-<p>===========================================================</p>
-<!-- Liste des posts -->
+    <h2 class="index-title">Index des
+        <?= $postsCount['nbre_posts'] ?> extraits publiés à ce jour
+    </h2>
 
-<p class="success">
-    <?= $message_success; ?>
-</p>
-<p class="alert">
-    <?= $message_error; ?>
-</p>
-<ul>
-    <?php
-        echo '<h3>' . 'Liste des ' . $postsCount['nbre_posts'] . ' posts publiés à ce jour :' . '</h3>';
-        $compteur = $postsCount['nbre_posts'];
+    <ul class="index offset-1 col-lg-10">
+        <?php
+        $compteur = $postsCount['nbre_posts']-($postsCount['nbre_posts']-1);
         foreach($postsList as $post) {
-            echo '<li style="color: red;">' . ' N° ' . $compteur . ' : ' . $post['chapter_title'] . '</li>';
-            $compteur--;
+            echo '<li>' . ' N° ' . $compteur . ' : ' . $post['chapter_title'] . '</li>';
+            $compteur++;
         }
     ?>
-</ul>
+    </ul>
 
+    <span class="success">
+        <?= $message_success; ?>
+    </span>
+    <span class="alert">
+        <?= $message_error; ?>
+    </span>
+</div>
 <?php $all1 = ob_get_clean(); ?>
 <?php ob_start();?>
-<p>===========================================================</p>
-<!-- Ajouter un post -->
 
 <h3>
     Saisissez et mettez en forme votre nouveau billet ici :
@@ -86,49 +86,56 @@
 
 <?php $backend = ob_get_clean(); ?>
 <?php ob_start();?>
-<p>===========================================================</p>
-<!-- Les pages par groupe de 5 posts -->
+<div class="container-fluid bg-PostsView">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="index.php?action=pagePosts&amp;page=<?php if($_GET['page'] < $pages_max){echo $_GET['page']+1;} else {echo $pages_max;} ?>">Prev</a>
+                <?php 
+                for ($index=1, $pages_max; $index <= $pages_max; $index++) {
+            ?>
+            <li class="page-item">
+                <a class="page-link" href="index.php?action=pagePosts&amp;page=<?= $pages_max+1-$index ?>">
+                    <?= $index ?></a>
+                <?php
+                }
+            ?>
+            <li class="page-item">
+                <a class="page-link" href="index.php?action=pagePosts&amp;page=<?php if($_GET['page'] > 1){echo $_GET['page']-1;} else {echo 1;} ?>">Next</a>
+        </ul>
+    </nav>
 
-<p>Page
-    <?php 
-        for ($page=1, $pages_max; $page<=$pages_max; $page++) {
-            echo '<a href="index.php?action=pagePosts&amp;page=' . $page .'">' . $page . '</a>' . ' ';
-        }
-    ?>
-</p>
-
-<h3>
-    <?php    // Récupération des indices de posts max et min de chaque page
+    <h3>
+        <?php    // Récupération des indices de posts max et min de chaque page
         if ($billet_max == $postsCount['nbre_posts']) {
             echo 'Les 5 derniers posts du n° ';
         } else {
-            echo 'posts du n° ';
+            echo 'Billets du n° ';
         }
         echo $billet_max . ' au n° ' . $billet_min;
     ?>
-</h3>
+    </h3>
 
-<p>===========================================================</p>
-<!-- Les détails de la page sélectionnée -->
-
-<?php    
+    <?php    
     foreach($postsBy5 as $postBy5) {
 ?>
 
-<h3 class="news">
-    <?= $postBy5['chapter_title'] . ' : ' . ' le '. $postBy5['date']; ?>
-</h3>
-<p>
-    <?= $postBy5['chapter_extract'] . ' : ' . ' le '. $postBy5['date']; ?>
-</p>
-<a href="index.php?action=post&amp;billet=<?= $postBy5['id']; ?>"> Voir le billet complet ! </a>
+    <div class="extract col-lg-6">
+        <h3 class="news">
+            <?= $postBy5['chapter_title'] . ' : '?>
+        </h3> le
+        <?= $postBy5['date']; ?>
 
-<p>===========================================================</p>
+        <p class="news">
+            <?= $postBy5['chapter_extract']; ?>
+        </p>
+        <a href="index.php?action=post&amp;billet=<?= $postBy5['id']; ?>"> Voir le billet complet ! </a>
+    </div>
 
-<?php
+    <?php
  }
 ?>
-
+</div>
 <?php $all2 = ob_get_clean(); ?>
 
 <?php require('view/frontend/template.php'); ?>

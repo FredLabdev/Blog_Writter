@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    $title = 'Publication';
+    $title = 'Forteroche/Publication';
     if ($_SESSION['group_id'] == 1) {
         $template = 'backend';
     } else {
@@ -37,7 +37,7 @@
     <?= $post['chapter_title']; ?>
 </h1>
 <input type="hidden" class="eachPostHTML" name="postAllHTML" value="<?= $post['chapter_content']; ?>" />
-<p class="eachPostPlace"></p>
+<p class="news eachPostPlace"></p>
 <?php
  }
 ?>

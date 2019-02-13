@@ -1,5 +1,5 @@
 <?php 
-$title = 'Login';
+$title = 'Forteroche/Login';
 $template = 'frontend';
 $noMenu = 'no_menu';
 ob_start(); 
