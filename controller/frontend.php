@@ -14,9 +14,9 @@ try {
 
     function loginControl($pseudo, $password) {
         if ($pseudo == "" || $password =="") {
-            $login_error =  utf8_encode('Erreur : tous les champs ne sont pas remplis !');
+            $login_error =  utf8_encode('Veuillez renseigner tous les champs svp.');
         } else {
-            $login_error = utf8_encode('Erreur : pseudo et/ou mot de passe erroné(s) !');
+            $login_error = utf8_encode('Erreur : pseudo et/ou mot de passe erroné(s).');
         }
         $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
         $dbPassword = ($loginManager->getPasswordFromPseudo($pseudo))['password']; 
@@ -116,7 +116,7 @@ try {
 
     function newMember($createName, $createFirstName, $createPseudo, $createMail, $mailConfirm, $createPassword, $passwordConfirm) {
         if ($createName == "" || $createFirstName =="" || $createPseudo =="" || $createMail =="" || $mailConfirm =="" || $createPassword =="" || $passwordConfirm =="") {
-            $message_error =  'Veuillez renseigner tous les champs !';
+            $message_error =  'Veuillez renseigner tous les champs svp.';
             require('view/frontend/loginView.php');
         } else {
             $message_error = '';
@@ -145,6 +145,12 @@ try {
         if ($page <= $pages_max) {
             $offset = ($page-1)*5;  
             $postsBy5 = $postManager->getPostsBy5($offset);
+            $commentsCountBy5 = array(); 
+            $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
+            foreach($postsBy5 as $postBy5) {
+                $commentsCount = $commentManager->getCommentsCount($postBy5['id']);                
+                $commentsCountBy5[] = $commentsCount;
+            } 
             $billet_max = $postsCount['nbre_posts']-($offset);
             $message_success;
             $message_error;
@@ -152,10 +158,16 @@ try {
                 $billet_min = 1;
             } else {
                 $billet_min = $billet_max-4;
-            }
+            };
+            $signalComments = $commentManager->getSignalComments();
             require('view/frontend/postsListView.php');
         } else {
-            throw new Exception('Mauvais indice de page envoyé');
+            if ($postsCount['nbre_posts'] == 0) {
+                $message_success = utf8_encode('Aucun billet n\'est encore de publié...');
+            } else {
+                $message_error = utf8_encode('Mauvais indice de page !');
+            };
+            require('view/frontend/postsListView.php');
         }
     }
 
@@ -175,6 +187,7 @@ try {
         $message_error;
         $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
         $comments = $commentManager->getComments($postId);
+        $commentsCount = $commentManager->getCommentsCount($postId);
         require('view/frontend/postView.php');
     }
     
@@ -182,15 +195,6 @@ try {
         $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
         $postsAll = $postManager->getAllPosts();
         require('view/frontend/publishingView.php');
-    }
-
-    //**************************************************************************************
-    //                        Controller frontend CommentManager           
-    //**************************************************************************************
-
-    function commentsByPost($page) {
-        $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
-        $commentsCount = $commentManager->getCommentsCount($postId);
     }
 
     //**************************************************************************************
@@ -279,8 +283,8 @@ try {
     //**************************************************************************************
 
     function sessionEnd() {
-        $message_success = utf8_encode('Vous êtes bien déconnecté. A bientôt ') . $_SESSION['first_name'];
-        require('view/frontend/loginView.php');
+        $message_success = utf8_encode('A très bientôt pour la suite de l\'aventure') . ' ' . $_SESSION['first_name'];
+        require('view/frontend/ExitView.php');
         $_SESSION = array(); // Suppression des variables de session et de la session
         session_destroy();
         setcookie('pseudo', ''); // Suppression des cookies de connexion automatique

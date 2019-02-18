@@ -25,7 +25,7 @@ class PostManager extends Manager { // se situe dans le namespace
 
     public function getPosts() {
         $db = $this->dbConnect();
-        $posts = $db->query('SELECT chapter_title, creation_date FROM posts ORDER BY creation_date');
+        $posts = $db->query('SELECT id, chapter_title, creation_date FROM posts ORDER BY creation_date');
         $postsList = array(); 
         while ($post = $posts->fetch()) {
             $postsList[] = $post; // on créer un tableau regroupant les posts
@@ -47,7 +47,7 @@ class PostManager extends Manager { // se situe dans le namespace
 
     public function getPost($postId) {
         $db = $this->dbConnect();
-        $getPostDetail = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%%Hh%imin%ss\') AS creation_date_fr FROM posts WHERE id = ?');
+        $getPostDetail = $db->prepare('SELECT id, chapter_title, chapter_content, DATE_FORMAT(creation_date, \'%d/%m/%Y\') AS creation_date_fr FROM posts WHERE id = ?');
         $getPostDetail->execute(array($postId));
         $postDetails = array(); 
         while ($postDetail = $getPostDetail->fetch()) {

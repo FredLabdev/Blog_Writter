@@ -9,50 +9,37 @@
     ob_start(); 
 ?>
 
-<br />
-<p>===========================================================</p>
-<!-- Confirm connect -->
-<h3>
-    Bonjour
-    <?= ' ' . $_SESSION['first_name'];?>, nous sommes le :
-    <?= date('d/m/Y') . '.<br>';?>
-    Bienvenue sur la publication du roman !
-</h3>
-<p>===========================================================</p>
-<!-- Tout le roman -->
+<!-- TOUTES LES PUBLICATIONS -->
 
-<p class="success">
-    <?= $message_success; ?>
-</p>
-<p class="alert">
-    <?= $message_error; ?>
-</p>
-
-<p id="roman"></p>
-<input id="AllPostsLength" value="<?= count($postsAll); ?>" type="hidden" />
-<?php   
+<div id="publishing" class="container-fluid">
+    <div class="row col-12 text-center">
+        <?php if($message_success) { ?>
+        <span class="alert alert-success col-4 offset-4">
+            <?= $message_success; ?>
+        </span>
+        <?php } else if($message_error) { ?>
+        <span class="alert alert-danger col-4 offset-4">
+            <?= $message_error; ?>
+        </span>
+        <?php } ?>
+    </div>
+    <div class="publishing-text">
+        <p id="roman"></p>
+        <input id="AllPostsLength" value="<?= count($postsAll); ?>" type="hidden" />
+        <?php   
     foreach($postsAll as $post) {
-?>
-<h1 class="news">
-    <?= $post['chapter_title']; ?>
-</h1>
-<input type="hidden" class="eachPostHTML" name="postAllHTML" value="<?= $post['chapter_content']; ?>" />
-<p class="news eachPostPlace"></p>
-<?php
- }
-?>
-<script>
-    var roman = document.getElementsByClassName("eachPostPlace");
-    var AllPostsLength = document.getElementById('AllPostsLength').value;
-    var AllPostsHTML = new Array;
-    AllPostsHTMLOrigin = document.getElementsByClassName('eachPostHTML');
-    for (var i = 0, c = AllPostsLength; i < c; i++) {
-        AllPostsHTML.push(AllPostsHTMLOrigin[i].value);
-        var newPostHTML = AllPostsHTML[i];
-        roman[i].insertAdjacentHTML('afterend', newPostHTML);
+    ?>
+        <h2>
+            <?= $post['chapter_title']; ?>
+        </h2>
+        <p>
+            <?= $post['chapter_content']; ?>
+        </p>
+        <?php
     }
-
-</script>
+    ?>
+    </div>
+</div>
 
 <?php $all1 = ob_get_clean(); ?>
 

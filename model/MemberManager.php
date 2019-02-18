@@ -19,7 +19,7 @@ class MemberManager extends Manager { // se situe dans le namespace
 
     public function getMembersByGroup() {
         $db = $this->dbConnect();
-        $getMembersByGroup = $db->query('SELECT c.name AS name_member, c.first_name AS first_name_member, g.grade AS grade_groupe FROM groups AS g INNER JOIN members AS c ON c.group_id = g.id WHERE group_id = 2 OR group_id = 3 ORDER BY group_id, name');        
+        $getMembersByGroup = $db->query('SELECT c.name AS name_member, c.first_name AS first_name_member, g.grade AS grade_groupe FROM groups AS g INNER JOIN members AS c ON c.group_id = g.id WHERE group_id = 1 OR group_id = 2 ORDER BY group_id, name');        
         $membersByGroup = array(); 
         while ($memberByGroup = $getMembersByGroup->fetch()) {
             $membersByGroup[] = $memberByGroup; // on créer un tableau regroupant les members
@@ -39,7 +39,7 @@ class MemberManager extends Manager { // se situe dans le namespace
 
     public function getMemberDetail($memberId) {
         $db = $this->dbConnect();
-        $getMemberDetail = $db->prepare('SELECT * FROM members WHERE id = ?');
+        $getMemberDetail = $db->prepare('SELECT *, DATE_FORMAT(creation_date, \'%d/%m/%Y\')creation_date_fr FROM members WHERE id = ?');
         $getMemberDetail->execute(array($memberId));          
         $memberDetails = array(); 
         while ($memberDetail = $getMemberDetail->fetch()) {

@@ -9,10 +9,12 @@
     ob_start();
 ?>
 
-<p class="alert">
-    <?php echo 'Erreur ! ' . $errorMessage; ?>
-</p>
+<div class="container error-view red">
+    <p class="alert">
+        <?php echo 'Erreur ! ' . $errorMessage; ?>
+    </p>
+</div>
 
-<?php $backend = ob_get_clean(); ?>
+<?php $all1 = ob_get_clean(); ?>
 
 <?php require('view/frontend/template.php'); ?>

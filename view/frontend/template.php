@@ -35,10 +35,10 @@
 
     <!-- Icones du site en raccourci écran Apple au format 114x114px -->
     <link rel="apple-touch-icon-precomposed" href="public/picture/ico/apple-touch-icon-57-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="public/picture/ico/apple-touch-icon-57-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="public/picture/ico/apple-touch-icon-72-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="public/picture/ico/apple-touch-icon-114-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="public/picture/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="public/picture/ico/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="public/picture/ico/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="public/picture/ico/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="public/picture/ico/apple-icon-144x144.png" />
 
     <!-- Liens Polices Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Cinzel|Dancing+Script|Inconsolata|Miss+Fajardose|Open+Sans+Condensed:300" rel="stylesheet">
@@ -67,13 +67,16 @@
                     <a class="nav-link" href="index.php?action=listPosts">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
+                    <a class="nav-link" href="index.php?action=publishing">Roman</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?action=membersDetail">Membres</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=publishing">Roman</a>
+                    <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?action=contact">Contact</a>
                 </li>
                 <?php
                 } else {
@@ -82,7 +85,7 @@
                     <a class="nav-link" href="index.php?action=listPosts">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
+                    <a class="nav-link" href="index.php?action=publishing">Roman</a>
                 </li>
                 <?php
                     if($_SESSION['group_id'] == 2) {
@@ -94,7 +97,7 @@
                     };
                     ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=publishing">Roman</a>
+                    <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
                 </li>
                 <?php
                 }
@@ -102,9 +105,30 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="deconnexion">Deconnexion</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?action=contact">Contact</a>
+                </li>
             </ul>
         </div>
+        <h5 class="bienvenue col-lg-4 offset-7">
+            Bonjour <strong>
+                <?= $_SESSION['first_name']; ?>
+            </strong>
+        </h5>
     </nav>
+
+    <?php ob_start(); ?>
+    <footer id="pied_de_page" class="row">
+        <p class="col-lg-3 offset-1">Copyright Fred Lab, tous droits réservés</p>
+        <p class="col-lg-4 offset-4">
+            <button class="btn btn-info social-link"><a href="https://www.facebook.com/pg/thierrygrandnord/posts/" target=_blank><span class="glyphicon glyphicon-facebook"><i class="fab fa-facebook-f fa-lg white"></i></span></a></button>
+            <button class="btn btn-info social-link"><a href="https://naalilodge.com" target=_blank><span class="glyphicon glyphicon-comment"><i class="fab fa-instagram fa-lg white"></i></span></a></button>
+            <button class="btn btn-info social-link"><a href="mailto: fred.labourel@wanadoo.fr"><span class="glyphicon glyphicon-calendar"><i class="fas fa-at fa-lg white"></i></span></a></button>
+            <button class="btn btn-info social-link"><a href="index.php?action=contact"><span class="glyphicon glyphicon-shopping-cart"><i class="fas fa-envelope fa-lg white"></i></span></a></button>
+            <button class="btn btn-info social-link"><a href="https://github.com/freddieLab" target=_blank><span class="glyphicon glyphicon-bullhorn fa-lg"><i class="fab fa-github white"></i></span></a></button>
+        </p>
+    </footer>
+    <?php $footer = ob_get_clean(); ?>
 
     <!-- Container Grille Bootstrap -->
     <main role="main" class="container-fluid" style="margin-top: 100px">
@@ -115,9 +139,6 @@
                 echo $menu;
             }
             echo $all1;
-            if ($template == 'backend') {
-                echo $backend;
-            }
             if ($template == 'adminModerator') {
                 echo $adminModerator;
             }
@@ -125,16 +146,19 @@
                 echo $frontend;
             }
             echo $all2;
+            if ($template == 'backend') {
+                echo $backend;
+            }    
+            if (!$noFooter == 'no_footer') {
+                echo $footer;
+            }
         ?>
-
-        <footer id="pied_de_page">
-            <p>Copyright Fred Lab, tous droits réservés</p>
-        </footer>
 
     </main>
     <!-- / Container Grille Bootstrap -->
 
-
+    <!-- jQuery Bibliothèque Production -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <!-- JavaScript Bootstrap-->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->

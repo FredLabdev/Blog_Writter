@@ -44,7 +44,7 @@ try {
 
             // Lister les billets (avec un indice de page),     
         else if ($_GET['action'] == 'pagePosts') {
-            if (isset($_GET['page']) > 0) {
+            if (isset($_GET['page']) && isset($_GET['page']) > 0) {
                 listPosts($_GET['page'], "", "");
             } else {
                 throw new Exception('Aucun identifiant de page de billets envoyé');
@@ -62,11 +62,11 @@ try {
 
             // Ajouter un billet,     
         else if ($_GET['action'] == 'addPost') {
-            if(!empty($_POST['titre']) AND !empty($_POST['newPostHTML'])) {
+            if(!empty($_POST['titre']) && !empty($_POST['newPostHTML'])) {
                 if (!empty($_POST['postBefore'])) {
-                    newPost(htmlspecialchars($_POST['titre']), htmlspecialchars($_POST['newPostHTML']), htmlspecialchars($_POST['newPostPlainText']), htmlspecialchars($_POST['postBefore']));
+                    newPost($_POST['titre'], $_POST['newPostHTML'], $_POST['newPostPlainText'], $_POST['postBefore']);
                 } else {
-                    newPost(htmlspecialchars($_POST['titre']), htmlspecialchars($_POST['newPostHTML']), htmlspecialchars($_POST['newPostPlainText']), "");
+                    newPost($_POST['titre'], $_POST['newPostHTML'], $_POST['newPostPlainText'], "");
                 }
             } else {
                 newPost("","","","");
@@ -76,18 +76,12 @@ try {
             // modifier un billet   
         else if ($_GET['action'] == 'postModif') {  
             if ($_POST['postId']) {
-                if(!empty($_POST['champ']) AND !empty($_POST['modifPostHTML']) AND !empty($_POST['modifPostPlainText'])) {
-                    if ($_POST['champ'] == 1) {
-                        newPostTitle($_POST['postId'], htmlspecialchars($_POST['modifPostPlainText']));
-                    } else if ($_POST['champ'] == 2) {
-                        newPostContent($_POST['postId'], htmlspecialchars($_POST['modifPostHTML']), htmlspecialchars($_POST['modifPostPlainText']));
-                    } else {
-                        throw new Exception('Erreur : Aucun champ à modifier');
-                    }
-                } else if (empty($_POST['champ'])) {
-                    post($_POST['postId'], "",  utf8_encode('Erreur : Veuillez selectionner un champ'));
-                } else if (empty($_POST['modifPostHTML']) AND empty($_POST['modifPostPlainText'])) {
-                    post($_POST['postId'], "",  utf8_encode('Erreur : Veuillez rentrer une nouvelle valeure au champ'));
+                if(!empty($_POST['titre']) && !empty($_POST['modifPostHTML'])) {
+                    modifPost($_POST['postId'], $_POST['titre'], $_POST['modifPostHTML'], $_POST['modifPostPlainText']);
+                } else if (empty($_POST['titre'])) {
+                    post($_POST['postId'], "",  utf8_encode('Attention : Titre vide !'));
+                } else if (empty($_POST['modifPostHTML']) && empty($_POST['modifPostPlainText'])) {
+                    post($_POST['postId'], "",  utf8_encode('Attention : Billet vide !'));
                 } 
             } else {
                 post($_POST['postId'], "",  utf8_encode('Erreur : Aucun billet sélectionné'), "");
@@ -105,8 +99,8 @@ try {
 
             // Ajouter un commentaire,     
         else if ($_GET['action'] == 'addComment') {
-            if (isset($_GET['billet']) && $_GET['billet'] > 0) {
-                addCommentRequest($_GET['billet'], $_SESSION['pseudo'], $_POST['nv_comment']);
+            if ($_POST['postId']) {
+                addCommentRequest($_POST['postId'], $_SESSION['pseudo'], $_POST['nv_comment']);
             } else {
                 throw new Exception('Aucun identifiant de billet envoyé');
             }
@@ -114,8 +108,8 @@ try {
         
             // Modifier un commentaire,     
         else if ($_GET['action'] == 'modifComment') {
-            if (isset($_GET['billet']) && $_GET['billet'] > 0) {
-                modifCommentRequest($_GET['billet'], $_SESSION['pseudo'], $_POST['modifCommentId'], $_POST['modifComment']);
+            if ($_POST['postId']) {
+                modifCommentRequest($_POST['postId'], $_SESSION['pseudo'], $_POST['modifCommentId'], $_POST['modifComment']);
             } else {
                 throw new Exception('Aucun identifiant de billet envoyé');
             }
@@ -123,8 +117,8 @@ try {
         
                    // signaler un commentaire,   
         else if ($_GET['action'] == 'signalComment') {
-           if (isset($_GET['billet']) && $_GET['billet'] > 0) {
-                commentSignal($_GET['billet'], $_POST['signal_comment'], $_POST['signal_commentId']);  
+           if ($_POST['postId']) {
+                commentSignal($_POST['postId'], $_POST['signal_comment'], $_POST['signal_commentId'], $_SESSION['pseudo']);  
             } else {
                 throw new Exception('Aucun identifiant de billet envoyé');
             }
@@ -132,10 +126,10 @@ try {
         
             // Effacer un commentaire,     
         else if ($_GET['action'] == 'deleteComment') {
-            if (isset($_GET['billet']) && $_GET['billet'] > 0) {
-                commentErase($_GET['billet'], $_POST['delete_comment']);  
+            if ($_POST['postId']) {
+                commentErase($_POST['postId'], $_POST['delete_comment']);  
             } else {
-                throw new Exception('Aucun identifiant de billet envoyé');
+                commentErase("", $_POST['delete_comment']); 
             }
         }
         
@@ -181,13 +175,13 @@ try {
                 
                // Son propre compte (FRONTEND),   
             } else if ($_POST['personal_modif']) { 
-                if(!empty($_POST['champ']) AND !empty($_POST['modif_champ']) AND !empty($_POST['modif_champ_confirm'])) {
+                if(!empty($_POST['champ']) && !empty($_POST['modif_champ']) && !empty($_POST['modif_champ_confirm'])) {
                     if ($_POST['champ'] == 1) { // Modification du mail
                         newMail($_POST['personal_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
                     } else if ($_POST['champ'] == 2) { // Modification du mot de passe     
                         newPassword($_POST['personal_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
                     }
-                } else if(empty($_POST['champ']) AND empty($_POST['modif_champ']) AND empty($_POST['modif_champ_confirm'])) {
+                } else if(empty($_POST['champ']) && empty($_POST['modif_champ']) && empty($_POST['modif_champ_confirm'])) {
                         memberDetail("",  'Veuillez sélectionner un champ et une action', $_SESSION['id'], "");
                 } else if (empty($_POST['champ'])) {
                         memberDetail("",  utf8_encode('Veuillez selectionner un champ'), $_SESSION['id'], "");
@@ -207,6 +201,16 @@ try {
                 throw new Exception('Aucun membre selectionné');
             }
         }
+        
+
+        //**************************************************************************************
+        //                           de la deconnexion (javascript)            
+        //**************************************************************************************
+        
+           // Supprimer un compte member, 
+        else if ($_GET['action'] == 'contact') {
+            require('view/frontend/contactView.php');
+        }        
 
         //**************************************************************************************
         //                           de la deconnexion (javascript)            
@@ -214,7 +218,7 @@ try {
 
             // Deconnecter une session   
         else if ($_GET['action'] == 'deconnexion') {
-                sessionEnd();
+            sessionEnd();
         } 
     }
 

@@ -24,7 +24,7 @@ try {
     }
 
     function newPost($postTitle, $postContentHTML, $postContentText, $postBefore) {
-        if ($postTitle == "" || $postContentHTML =="") {
+        if ($postTitle == "" || $postContentHTML == "") {
             $message_error =  utf8_encode('Erreur : Veuillez renseigner tous les champs');
             listPosts(1, $message_success, $message_error);
         } else {
@@ -35,24 +35,18 @@ try {
             } else {
                 $postManager->addPost($postTitle, $postContentHTML, $postExtract, "");     
             }
-            $message_success =  'Votre billet "' . $postTitle . '" a bien été publié ci-dessus';
+            $message_success =  'Votre billet "' . $postTitle . '" a bien été publié !';
             listPosts(1, $message_success, "");
         }
     }
-
-    function newPostTitle($postId, $newPostTitle) {
+    
+    function modifPost($postId, $newPostTitle, $newPostContentHTML, $newPostContentText) {
         $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
         $postManager->changePostTitle($postId, $newPostTitle);
-        $message_success =  'Le titre de l\'épisode ' . $postId . ' a bien été modifié ci-dessous !';
-        post($postId, $message_success, "");
-    }
-
-    function newPostContent($postId, $newPostContentHTML, $newPostContentText) {
         $postExtract = postExtract($newPostContentText);
-        $postManager = new \FredLab\tp4_blog_ecrivain\Model\PostManager();
         $postManager->changePostContent($postId, $newPostContentHTML, $postExtract);
-        $message_success =  'Le contenu de l\'épisode ' . $postId . ' a bien été modifié ci-dessous !';
-        post($postId, $message_success, "");
+        $message_success =  'L\'épisode a bien été modifié ci-dessous !';
+        post($postId, $message_success, "");        
     }
 
     function postErase($postId) {
@@ -74,6 +68,8 @@ try {
         $message_error = "";
         if($addCommentRight['block_comment'] == 1) {
             $message_error =  'Désolé vous n\'êtes pas autorisé à poster des comments';
+        } else if($newComment == "") {
+            $message_error =  'Désolé votre message est vide';
         } else {
             $commentManager->addComment($postId, $member, $newComment);     
             $message_success =  'Votre commentaire a bien été publié ci-dessous';
@@ -87,6 +83,8 @@ try {
         $message_error = "";
         if($addCommentRight['block_comment'] == 1) {
             $message_error =  'Désolé vous n\'êtes pas autorisé à poster des comments';
+        } else if ($modifComment == "") {
+            $message_error =  'Désolé votre message est vide';
         } else {
             $commentManager->replaceComment($commentId, $modifComment);     
             $message_success =  'Votre commentaire a bien été modifié et publié ci-dessous';
@@ -94,22 +92,27 @@ try {
         post($postId, $message_success, $message_error);
     }
 
-    function commentSignal($postId, $commentId, $signalId) {
+    function commentSignal($postId, $commentId, $signalId, $member) {
         $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
-        $commentManager->signalComment($commentId, $signalId);     
+        $commentManager->signalComment($commentId, $signalId, $member);     
         if ($signalId == 1) {
-            $message_error =  'Le comment '. $commentId . ' a bien été signalé à l\'administrateur!';
+            $message_error =  'Ce commentaire a bien été signalé à l\'administrateur!';
         } else {
-            $message_success =  'Le comment '. $commentId . ' ne sera plus signalé à l\'administrateur!';
+            $message_success =  'Ce commentaire ne sera plus signalé à l\'administrateur!';
         }
         post($postId, $message_success, $message_error);
     }
     
     function commentErase($postId, $commentId) {
         $commentManager = new \FredLab\tp4_blog_ecrivain\Model\CommentManager();
-        $commentManager->deleteComment($commentId);     
-        $message_success =  'Le comment '. $commentId . ' a bien été Supprimé !';
-        post($postId, $message_success, "");
+        $commentManager->deleteComment($commentId); 
+        if ($postId != "") {
+            $message_success =  'Ce commentaire a bien été Supprimé !';
+            post($postId, $message_success, "");
+        } else {
+            $message_success =  'Ce commentaire a bien été Supprimé !';
+            listPosts(1, $message_success, "");
+        }
     }
 
     //**************************************************************************************
@@ -120,9 +123,9 @@ try {
         $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
         $memberManager->changeMemberNoComment($memberId, $blockId);
         if ($blockId == 1) {
-            $message_success =  'Le member a bien été bloqué et ne pourra plus commenter !';
+            $message_success =  'Le membre a bien été bloqué et ne pourra plus commenter !';
         } else {
-            $message_success =  'Le member a bien été débloqué et pourra de nouveau commenter !';
+            $message_success =  'Le membre a bien été débloqué et pourra de nouveau commenter !';
         }
         memberDetail($message_success, "", $memberId, $template);
     }

@@ -9,72 +9,71 @@
     ob_start(); 
 ?>
 
-<br />
-<p>===========================================================</p>
-<!-- Confirm connect -->
+<div id="member" class="container-fluid white">
 
-<h3>
-    Bienvenue sur l' administration de votre compte !
-</h3>
-<br />
-<p>===========================================================</p>
+    <!-- DETAIL DU COMPTE PERSO -->
 
-<h3>
-    Détail de votre compte :
-</h3>
-<p class="success">
-    <?= $message_success; ?>
-</p>
-<?php
+    <div class="row col-12 text-center">
+        <?php if($message_success) { ?>
+        <span class="alert alert-success col-4 offset-4">
+            <?= $message_success; ?>
+        </span>
+        <?php } ?>
+    </div>
+    <div class="member-text offset-3">
+        <?php
         foreach($memberDetails as $dataMember) { // Détail du member sélectionné
-            echo 'Date de création : ' . $dataMember['creation_date'] . '<br>';
+            echo 'Date de création : ' . $dataMember['creation_date_fr'] . '<br>';
             echo 'Nom : ' . $dataMember['name'] . '<br>';
             echo 'Prénom : ' . $dataMember['first_name'] . '<br>';  
             echo 'Pseudo : ' . $dataMember['pseudo'] . '<br>';  
             echo 'Mail : ' . $dataMember['email'] . '<br>';  
         }
-    ?>
+        ?>
+    </div>
 
-<br />
-<p>===========================================================</p>
+    <!-- MODIFICATIONS POSSIBLES -->
 
-<h3>
-    Modifier votre adresse mail, votre mot de passe :
-</h3>
+    <div class="white">
 
-<form novalidate method="post" action="index.php?action=memberModif" id="form_modif" name="modif">
-    <input type="hidden" name="personal_modif" value="<?php echo $dataMember['id']; ?>" />
-    <label>Sélectionnez le champ à modifier : </label>
-    <select id="champ" name="champ">
-        <option value=""></option>
-        <option value="1">e-mail</option>
-        <option value="2">Mot de passe</option>
-    </select><br>
-    <label for="modif_champ">Nouveau contenu du champ : </label>
-    <input id="modif_champ" type="email" name="modif_champ" />
-    <span class="error" id="error1" aria-live="polite">
-        <?= $message_error; ?>
-    </span><br>
-    <label for="modif_champ_confirm">Confirmez ce nouveau contenu : </label>
-    <input id="modif_champ_confirm" type="email" name="modif_champ_confirm" />
-    <span class="error" id="error2" aria-live="polite">
-        <?= $message_error; ?>
-    </span><br>
-    <input id="bouton_envoi" type="submit" value="Appliquer" name="remplacer" />
+        <form novalidate method="post" action="index.php?action=memberModif" id="form_modif" name="modif">
+            <input type="hidden" name="personal_modif" value="<?php echo $dataMember['id']; ?>" />
+            <label class="member-text2">Sélectionnez le champ à modifier :
+                <select id="champ" class="member-input" name="champ">
+                    <option value=""></option>
+                    <option value="1">e-mail</option>
+                    <option value="2">Mot de passe</option>
+                </select></label><br>
+            <label class="member-text2" for="modif_champ">Nouveau contenu du champ :
+                <fieldset>
+                    <input id="modif_champ" class="member-input" name="modif_champ" /><br>
+                    <span class="error" id="error1" aria-live="polite">
+                        <?= $message_error; ?>
+                    </span>
+                </fieldset>
+            </label><br>
+            <label class="member-text2" for="modif_champ_confirm">Confirmez ce nouveau contenu :
+                <fieldset>
+                    <input id="modif_champ_confirm" class="member-input" name="modif_champ_confirm" /><br>
+                    <span class="error" id="error2" aria-live="polite">
+                        <?= $message_error; ?>
+                    </span>
+                </fieldset>
+            </label><br>
+            <button id="bouton_envoi" class="btn btn-light btn-lg blue offset-4" type="submit" name="remplacer">Appliquer</button>
+        </form>
+    </div>
 
-</form>
+</div>
 
-<br />
-<p>===========================================================</p>
+<!-- SUPPRESSION DU COMPTE -->
 
+<div class="delete-member" class="container-fluid white">
 
-<h3>
-    Pour supprimer votre compte, cliquez ici :
-</h3>
-
-<form name="delete">
-    <input type="hidden" name="personal_modif" value="<?php echo $dataMember['id']; ?>" />
-    <a href="#" onClick="var memberId = document.forms.delete.personal_modif.value;
+    <form class="deleteMember" name="delete">
+        <label>Pour supprimer ce compte, cliquez ici :</label>
+        <input type="hidden" name="personal_modif" value="<?php echo $dataMember['id']; ?>" />
+        <a href="#" class="delete offset-2" onClick="var memberId = document.forms.delete.personal_modif.value;
         function valid_confirm(member) {
             if (confirm('Voulez-vous vraiment vous désinscrire définitivement ?')) {
                 var url = 'index.php?action=memberDelete&memberErase=' + member;
@@ -86,7 +85,9 @@
             }
         }
         valid_confirm(memberId);"> Désincription </a>
-</form>
+    </form>
+
+</div>
 
 <?php 
     if ($_SESSION['group_id'] == 1) {

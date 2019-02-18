@@ -18,15 +18,6 @@ document.getElementById("deconnexion").addEventListener('click', function (e) {
 });
 
 //**************************************************************************************
-//              Interactions pour l'affichage d'un nouveau commentaire           
-//**************************************************************************************
-
-function getNewComment() {
-    var getNewComment = document.getElementById("newComment");
-    getNewComment.className = 'appear';
-}
-
-//**************************************************************************************
 //                         Interactions pour la saisie WYSIWYG             
 //**************************************************************************************
 
@@ -63,12 +54,6 @@ function getModifPostInForm() {
     modifPostHTML.value = modifPostInForm.innerHTML; // pour nouvelle publication complète mise en forme
 }
 
-// Affichage complet d'un billet
-if (document.getElementById('postContentHTML').value) {
-    var postContentHTML = document.getElementById('postContentHTML').value; // récupération de son contenu HTML
-    var postInForm = document.getElementById('postInForm'); // qui sera placé dans le DOM
-    postInForm.insertAdjacentHTML('afterend', postContentHTML); // par insertion de son code complet
-}
 //**************************************************************************************
 //                    Interactions pour la modification d'un compte             
 //**************************************************************************************

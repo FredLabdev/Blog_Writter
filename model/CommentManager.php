@@ -12,14 +12,16 @@ class CommentManager extends Manager { // se situe dans le namespace
 
     public function getCommentsCount($postId) {
         $db = $this->dbConnect();
-        $commentsCount = $db->prepare('SELECT COUNT(post_id) AS nbre_comment FROM comments WHERE post_id = ?');
-        $commentsCount->execute(array($postId));    
+        $req = $db->prepare('SELECT COUNT(post_id) AS nbre_comment FROM comments WHERE post_id = ?');
+        $req->execute(array($postId));
+        $commentsCount = $req->fetch();
+        $req->closeCursor();
         return $commentsCount;
     }
 
     public function getComments($postId) {
         $db = $this->dbConnect();
-        $comments = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\')comment_date_fr, comment_signal FROM comments WHERE post_id = ? ORDER BY comment_date LIMIT 0, 5');
+        $comments = $db->prepare('SELECT id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin%ss\')comment_date_fr, comment_signal FROM comments WHERE post_id = ? ORDER BY comment_date');
         $comments->execute(array($postId));    
         return $comments;
     }
@@ -54,14 +56,25 @@ class CommentManager extends Manager { // se situe dans le namespace
         $req->closeCursor();
     }
     
-    public function signalComment($commentId, $signalId) {  
+    public function signalComment($commentId, $signalId, $member) {  
         $db = $this->dbConnect();
-        $req = $db->prepare('UPDATE comments SET comment_signal = :comment_signal WHERE id = :commentId');
+        $req = $db->prepare('UPDATE comments SET comment_signal = :comment_signal, signal_author = :member, signal_date = NOW() WHERE id = :commentId');
         $req->execute(array(
             'comment_signal' => $signalId,
+            'member' => $member,
             'commentId' => $commentId
         ));  
         $req->closeCursor();
+    }
+    
+    public function getSignalComments() {
+        $db = $this->dbConnect();
+        $getSignalComments = $db->query('SELECT id, post_id, author, comment, DATE_FORMAT(comment_date, \'%d/%m/%Y à %Hh%imin\')comment_date_fr, signal_author, DATE_FORMAT(signal_date, \'%d/%m/%Y à %Hh%imin\')signal_date_fr FROM comments WHERE comment_signal = 1 ORDER BY comment_date');
+        $signalComments = array(); 
+        while ($signalComment = $getSignalComments->fetch()) {
+            $signalComments[] = $signalComment; // on créer un tableau regroupant les members
+        }
+        return $signalComments;
     }
     
     public function deleteComment($commentId) {  

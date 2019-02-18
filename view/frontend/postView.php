@@ -9,89 +9,199 @@
     ob_start();
 ?>
 
-<br />
-<p>===========================================================</p>
-<!-- Confirm connect -->
-<h3>
-    Détail d'un billet
-</h3>
-<p>=======================================================================================</p>
-<p class="success">
-    <?= $message_success; ?>
-</p>
-<p class="alert">
-    <?= $message_error; ?>
-</p>
-<!-- Détail du billet -->
+<div class="container-fluid post-view">
 
-<div class="news">
-    <h3>
+    <div class="row col-12 text-center">
+        <?php if($message_success) { ?>
+        <span class="alert alert-success col-4 offset-4">
+            <?= $message_success; ?>
+        </span>
+        <?php } else if($message_error) { ?>
+        <span class="alert alert-danger col-4 offset-4">
+            <?= $message_error; ?>
+        </span>
+        <?php } ?>
+    </div>
+
+    <!-- AFFICHER UN POST -->
+
+    <h3 class="news-title white">
         <?php 
-            foreach($postDetails as $dataPost) { // Détail du member sélectionné
+        foreach($postDetails as $dataPost) {
             echo $dataPost['chapter_title'];  
         ?>
-        <em> publié le
-            <?php 
-            echo $dataPost['creation_date_fr']; 
-        ?>
-        </em>
     </h3>
+    <span class="green">le
+        <?= $dataPost['creation_date_fr']; ?>
+    </span>
 
-    <input id="postContentHTML" value="<?= $dataPost['chapter_content']; ?>" type="hidden" />
-    <p id="postInForm"></p>
+    <div class="post-content">
+        <div class="post white">
+            <p id="postInForm">
+                <?= $dataPost['chapter_content']; ?>
+            </p>
+        </div>
+        <?php } ?>
 
-    <?php 
+    </div>
+
+    <?php $all1 = ob_get_clean(); ?>
+    <?php ob_start();?>
+
+    <!-- LISTE DES COMMENTAIRES -->
+
+    <h3 class="posts-title green">commentaires</h3>
+
+    <div class="comments-content">
+
+        <?php
+        while ($comment = $comments->fetch()) {
+        ?>
+        <span class="row col-12">
+            <strong class="col-6 white">
+                <?= $comment['author']; ?>
+            </strong>
+            <span class="col-6 green">
+                le
+                <?= $comment['comment_date_fr']; ?>
+            </span>
+        </span>
+        <p class="alert alert-info row col-12">
+            <?= nl2br(htmlspecialchars($comment['comment'])); ?>
+        </p>
+
+        <div class="boutons row offset-7">
+
+            <!-- BOUTON MODIFIER UN COMMENTAIRE (uniquement si sois-meme)-->
+
+            <?php
+            if ($comment['author'] == $_SESSION['pseudo']) {
+            ?>
+
+            <a class="btn btn-outline-light btn-sm" data-toggle="collapse" href="#modifComment<?= $comment['id'] ?>" role="button" aria-expanded="false" aria-controls="modifComment"><i class="fas fa-eraser"></i> Modifier
+            </a>
+            <?php
+            } 
+            ?>
+
+            <!-- BOUTON SUPPRIMER UN COMMENTAIRE (uniquement si admin, modérateur, ou posté par sois-meme)-->
+
+            <?php
+            if ($_SESSION['group_id'] == 1 || $_SESSION['group_id'] == 2 || $comment['author'] == $_SESSION['pseudo']) {
+            ?>
+            <form action="index.php?action=deleteComment" method="post">
+                <input type="hidden" name="postId" value="<?= $dataPost['id']; ?>" />
+                <input type="hidden" name="delete_comment" value="<?= $comment['id'] ?>" />
+                <button class="btn btn-danger btn-sm" type="submit"><i class="fas fa-trash-alt"></i> Retirer</button>
+            </form>
+            <?php
+            } 
+            ?>
+
+            <?php if($comment['comment_signal'] == 0) { ?>
+
+            <!-- BOUTON SIGNALER UN COMMENTAIRE -->
+
+            <form action="index.php?action=signalComment" method="post">
+                <input type="hidden" name="postId" value="<?= $dataPost['id']; ?>" />
+                <input type="hidden" name="signal_commentId" value="<?= 1 ?>" />
+                <input type="hidden" name="signal_comment" value="<?= $comment['id'] ?>" />
+                <button class="btn btn-warning btn-sm" type="submit" name="messageSignal"><i class="fas fa-exclamation-circle"></i> Signaler</button>
+            </form>
+            <?php } ?>
+
+        </div>
+
+        <!-- TEXTAREA POUR MODIFIER COMMENTAIRE -->
+
+        <div class="collapse col-12" id="modifComment<?= $comment['id'] ?>">
+            <form name="getCommentModif<?= $comment['id'] ?>" action="index.php?action=modifComment" method="post">
+                <input type="hidden" name="postId" value="<?php echo $dataPost['id']; ?>" />
+                <input type="hidden" name="modifCommentId" value="<?= $comment['id'] ?>" />
+                <p>
+                    <textarea id="modifComment<?= $comment['id'] ?>" class="alert alert-info col-12" name="modifComment" rows="8">
+                </textarea>
+                </p>
+                <button class="btn btn-success btn-sm col-2 offset-10" type="submit" name="messageSignal"><i class="fas fa-share-square"></i> Publier</button>
+                <p></p>
+            </form>
+        </div>
+
+        <?php     
         }
         ?>
 
-</div>
+    </div>
 
-<?php $all1 = ob_get_clean(); ?>
-<?php ob_start();?>
-<!-- Modifier ce billet -->
 
-<h3>
-    Modifiez et mettez en forme ce billet ici :
-</h3>
-<input type="button" value="G" style="font-weight:bold;" onclick="commande('bold');" />
-<input type="button" value="I" style="font-style:italic;" onclick="commande('italic');" />
-<input type="button" value="S" style="text-decoration:underline;" onclick="commande('underline');" />
-<input type="button" value="Lien" onclick="commande('createLink');" />
-<input type="button" value="Retirer lien" onclick="commande('unlink');" />
-<input type="button" value="Image" onclick="commande('insertImage');" />
-<select onchange="commande('heading', this.value); this.selectedIndex = 0;">
-    <option value="">Titre</option>
-    <option value="h1">Titre 1</option>
-    <option value="h2">Titre 2</option>
-    <option value="h3">Titre 3</option>
-    <option value="h4">Titre 4</option>
-    <option value="h5">Titre 5</option>
-    <option value="h6">Titre 6</option>
-</select>
-<input type="button" value="effacer" onclick="commande('delete');" />
-<div id="modifPostInForm" contentEditable></div>
+    <!-- BOUTON ET TEXTAREA POUR AJOUTER UN COMMENTAIRE -->
 
-<form method="post" action="index.php?action=postModif">
-    <input type="hidden" name="postId" value="<?php echo $dataPost['id']; ?>" />
-    <label>Sinon sélectionnez le champ à modifier : </label><select name="champ">
-        <option value=""></option>
-        <option value="1">Titre de l'épisode</option>
-        <option value="2">Contenu de l'épisode</option>
-    </select>
-    <textarea id="modifPostPlainText" name="modifPostPlainText"></textarea>
-    <textarea id="modifPostHTML" name="modifPostHTML"></textarea>
+    <p>
+        <a class="btn btn-primary col-5 offset-6" data-toggle="collapse" href="#newComment" role="button" aria-expanded="false" aria-controls="newComment"><i class="far fa-comment-alt"></i> Ajouter un commentaire
+        </a>
+    </p>
+    <div class="collapse col-12" id="newComment">
+        <form id="newComment" action="index.php?action=addComment" method="post">
+            <input type="hidden" name="postId" value="<?php echo $dataPost['id']; ?>" />
+            <p>
+                <textarea id="newComment" class="alert alert-info col-12" name="nv_comment" rows="8">
+            </textarea>
+            </p>
+            <button class="btn btn-success btn-sm col-2 offset-10" type="submit"><i class="fas fa-share-square"></i> Publier</button>
+        </form>
+    </div>
 
-    <input type="submit" value="Valider" name="remplacer" onclick="getModifPostInForm();" />
-</form>
 
-<br />
-<p>===========================================================</p>
-<h3>
-    Pour supprimer ce billet, cliquez ici :
-</h3>
-<form name="delete">
-    <input type="hidden" name="deletePost" value="<?php echo $dataPost['id']; ?>" />
-    <a href="#" onClick="var postId = document.forms.delete.deletePost.value;
+    <?php $all2 = ob_get_clean(); ?>
+    <?php ob_start();?>
+
+    <!-- MODIFIER UN POST -->
+
+    <div class="container-fluid post-view white">
+
+        <h3 class="posts-title green">
+            Modifiez et mettez en forme ce billet ici :
+        </h3>
+
+        <form method="post" action="index.php?action=postModif">
+            <input type="hidden" name="postId" value="<?php echo $dataPost['id']; ?>" />
+            <label>Titre du nouveau billet : </label>
+            <input type="text" name="titre" class="col-7 news-title" value="<?= $dataPost['chapter_title'] ?>" /><br>
+            <p></p>
+            <input type="button" value="G" style="font-weight:bold;" onclick="commande('bold');" />
+            <input type="button" value="I" style="font-style:italic;" onclick="commande('italic');" />
+            <input type="button" value="S" style="text-decoration:underline;" onclick="commande('underline');" />
+            <input type="button" value="Lien" onclick="commande('createLink');" />
+            <input type="button" value="Retirer lien" onclick="commande('unlink');" />
+            <input type="button" value="Image" onclick="commande('insertImage');" />
+            <select onchange="commande('heading', this.value); this.selectedIndex = 0;">
+                <option value="">Titre</option>
+                <option value="h1">Titre 1</option>
+                <option value="h2">Titre 2</option>
+                <option value="h3">Titre 3</option>
+                <option value="h4">Titre 4</option>
+                <option value="h5">Titre 5</option>
+                <option value="h6">Titre 6</option>
+            </select>
+            <input type="button" value="effacer" onclick="commande('delete');" />
+
+            <div id="modifPostInForm" class="black news" contentEditable>
+                <?= $dataPost['chapter_content'] ?>
+            </div>
+            <textarea id="modifPostPlainText" name="modifPostPlainText"></textarea>
+            <textarea id="modifPostHTML" name="modifPostHTML"></textarea>
+            <p></p>
+            <button type="button submit" class="btn btn-outline-light btn-sm offset-10" onclick="getModifPostInForm();"><i class="fas fa-share-square"></i> Modifier votre billet</button>
+        </form>
+
+        <!-- SUPPRIMER UN POST -->
+
+        <h3 class="posts-title green">
+            Pour supprimer ce billet, cliquez ici :
+        </h3>
+        <form name="delete" class="text-center">
+            <input type="hidden" name="deletePost" value="<?php echo $dataPost['id']; ?>" />
+            <a href="#" class="delete" onClick="var postId = document.forms.delete.deletePost.value;
         function valid_confirm(postId) {
             if (confirm('Voulez-vous vraiment supprimer ce billet et ses commentaires ?')) {
                 var url = 'index.php?action=postDelete&postId=' + postId;
@@ -102,93 +212,12 @@
                 return false;
             }
         }
-        valid_confirm(postId);"> Effacer ce billet </a>
-</form>
+        valid_confirm(postId);"><i class="fas fa-trash-alt"></i> Effacer ce billet </a>
+        </form>
+    </div>
+
+</div>
 
 <?php $backend = ob_get_clean(); ?>
-<?php ob_start();?>
-<!-- Liste des commentaires -->
-
-<h2>commentaires</h2>
-
-<?php
-    while ($comment = $comments->fetch()) {
-?>
-<p>le
-    <?= $comment['comment_date_fr'] . ' '; ?>
-    <strong>
-        <?= htmlspecialchars($comment['author']); ?>
-    </strong>
-    à écrit
-</p>
-<p style="font-style: italic;">
-    <?= nl2br(htmlspecialchars($comment['comment'])); ?>
-</p>
-
-<!-- Bouton de Suppression pour un commentaire (uniquement si admin, modérateur, ou poste par sois-meme)-->
-<?php
-        if ($_SESSION['group_id'] == 1 || $_SESSION['group_id'] == 2 || $comment['author'] == $_SESSION['pseudo']) {
-    ?>
-<form action="index.php?action=deleteComment&amp;billet=<?= $_GET['billet']; ?>" method="post">
-    <input type="hidden" name="delete_comment" value="<?= $comment['id'] ?>" />
-    <input type="submit" value="Supprimer" />
-</form>
-
-<!-- Bouton de Signalement d'un commentaire comme indésirable (uniquement si modérateur ou admin)-->
-<?php
-        } if ($_SESSION['group_id'] == 1 || $_SESSION['group_id'] == 2) {
-    ?>
-<form action="index.php?action=signalComment&amp;billet=<?= $_GET['billet']; ?>" method="post">
-    <input type="hidden" name="signal_commentId" value="<?php if($comment['comment_signal'] == 0){echo '1';}else{echo '0';};?>" />
-    <input type="hidden" name="signal_comment" value="<?= $comment['id'] ?>" />
-    <input type="submit" name="messageSignal" value="Signaler" />
-</form>
-
-<!-- Bouton de Modification d'un commentaire (uniquement si sois-meme)-->
-<?php
-        } if ($comment['author'] == $_SESSION['pseudo']) {
-    ?>
-<form name="getCommentModif<?= $comment['id'] ?>" action="index.php?action=modifComment&amp;billet=<?= $_GET['billet']; ?>" method="post">
-    <input type="hidden" name="modifCommentId" value="<?= $comment['id'] ?>" />
-    <a href="#<?= $comment['id'] ?>" class="button" onclick="
-    function getModifComment() {
-        var getModifComment = document.getElementById('modifComment<?= $comment['id'] ?>');
-        var modifCommentSubmit = document.getElementById('modifCommentSubmit<?= $comment['id'] ?>');
-        if (getModifComment.className == 'hidden') {
-            getModifComment.className = 'appear';   
-            modifCommentSubmit.className = 'appear';                                    
-        } else {
-            getModifComment.className = 'hidden';  
-            modifCommentSubmit.className = 'hidden';        
-        }
-    }
-    getModifComment();"> Modifier</a>
-    <p id=modifComment<?=$comment['id'] ?> class="hidden">
-        <label>Votre nouveau commentaire :</label><br>
-        <textarea name="modifComment" rows="8" cols="45">
-            </textarea>
-    </p>
-    <input id=modifCommentSubmit<?=$comment['id'] ?> class="hidden" type="submit" value="Valider ce commenatire" />
-</form>
-<?php
-    }
-
-}
-?>
-<p>===========================================================</p>
-<!-- Ajout d'un commentaire -->
-
-<a href="#" class="button" onclick="
-    getNewComment();"> Ajouter un commentaire </a>
-<form id="newComment" class="hidden" action="index.php?action=addComment&amp;billet=<?= $_GET['billet']; ?>" method="post">
-    <p>
-        <label>Votre commentaire :</label><br>
-        <textarea name="nv_comment" rows="8" cols="45">
-            </textarea>
-    </p>
-    <input type="submit" value="Envoyer votre comment" />
-</form>
-
-<?php $all2 = ob_get_clean(); ?>
 
 <?php require('view/frontend/template.php'); ?>
