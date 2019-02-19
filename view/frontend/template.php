@@ -33,7 +33,7 @@
     <!-- Twitter Summary card images must be at least 200x200px -->
     <meta name="twitter:image" content="public/picture/ico/logo.png">
 
-    <!-- Icones du site en raccourci écran Apple au format 114x114px -->
+    <!-- Icones du site en raccourci écran Apple -->
     <link rel="apple-touch-icon-precomposed" href="public/picture/ico/apple-touch-icon-57-precomposed.png" />
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="public/picture/ico/apple-icon-57x57.png" />
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="public/picture/ico/apple-icon-72x72.png" />
@@ -47,77 +47,105 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="public/style.css" rel="stylesheet" />
-
 </head>
 
-<body class="<?= $template ?>">
+<body class="<?= $template ?> black">
 
+    <!-- LISTES DU MENU (COMMUN TOUS RESPONSIVES) -->
+
+    <?php ob_start(); 
+        
+        if($template == 'backend' && $_SESSION['group_id'] != 2) {
+    ?>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=listPosts">Accueil</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=publishing">Roman</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=membersDetail">Membres</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=contact">Contact</a>
+    </li>
+    <?php
+        } else {
+    ?>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=listPosts">Accueil</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=publishing">Roman</a>
+    </li>
+    <?php
+        if($_SESSION['group_id'] == 2) {
+    ?>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=membersDetail">Membres</a>
+    </li>
+    <?php
+        }
+    ?>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=contact">Contact</a>
+    </li>
+    <?php
+        }
+    ?>
+    <li class="nav-item">
+        <a class="nav-link" href="#" id="deconnexion">Deconnexion</a>
+    </li>
+
+    <?php $ul = ob_get_clean(); ?>
     <?php ob_start(); ?>
+
+    <!-- MENU SMARTPHONES -->
+
+    <div class="pos-f-t fixed-top">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class="bg-light p-4">
+                <div class="container-fluid">
+                    <div class="navbar-header col-3">
+                        <a class="navbar-brand" href="#">Jean Forteroche</a>
+                    </div>
+                    <ul class="nav flex-column">
+                        <?= $ul ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar navbar-light bg-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- MENU ECRANS -->
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container-fluid">
             <div class="navbar-header col-3">
                 <a class="navbar-brand" href="#">Jean Forteroche</a>
             </div>
             <ul class="nav nav-pills nav-stacked">
-
-                <?php
-                    if($template == 'backend' && $_SESSION['group_id'] != 2) {
-                ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=listPosts">Accueil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=publishing">Roman</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=membersDetail">Membres</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=contact">Contact</a>
-                </li>
-                <?php
-                } else {
-                ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=listPosts">Accueil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=publishing">Roman</a>
-                </li>
-                <?php
-                    if($_SESSION['group_id'] == 2) {
-                    ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=membersDetail">Membres</a>
-                </li>
-                <?php
-                    };
-                    ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
-                </li>
-                <?php
-                }
-                ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="deconnexion">Deconnexion</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?action=contact">Contact</a>
-                </li>
+                <?= $ul ?>
             </ul>
         </div>
-        <h5 class="bienvenue col-lg-4 offset-7">
-            Bonjour <strong>
-                <?= $_SESSION['first_name']; ?>
-            </strong>
-        </h5>
     </nav>
 
+    <?php $menu = ob_get_clean(); ?>
     <?php ob_start(); ?>
+
+    <!-- FOOTER -->
+
     <footer id="pied_de_page" class="row">
         <p class="col-lg-3 offset-1">Copyright Fred Lab, tous droits réservés</p>
         <p class="col-lg-4 offset-4">
@@ -128,13 +156,14 @@
             <button class="btn btn-info social-link"><a href="https://github.com/freddieLab" target=_blank><span class="glyphicon glyphicon-bullhorn fa-lg"><i class="fab fa-github white"></i></span></a></button>
         </p>
     </footer>
+
     <?php $footer = ob_get_clean(); ?>
 
-    <!-- Container Grille Bootstrap -->
+    <!-- CONTAINER BOOTSRTAP -->
+
     <main role="main" class="container-fluid" style="margin-top: 100px">
 
         <?php 
-            $menu = ob_get_clean();
             if (!$noMenu == 'no_menu') {
                 echo $menu;
             }
@@ -155,7 +184,6 @@
         ?>
 
     </main>
-    <!-- / Container Grille Bootstrap -->
 
     <!-- jQuery Bibliothèque Production -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

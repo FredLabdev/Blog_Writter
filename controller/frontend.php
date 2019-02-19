@@ -284,11 +284,11 @@ try {
 
     function sessionEnd() {
         $message_success = utf8_encode('A très bientôt pour la suite de l\'aventure') . ' ' . $_SESSION['first_name'];
-        require('view/frontend/ExitView.php');
         $_SESSION = array(); // Suppression des variables de session et de la session
         session_destroy();
         setcookie('pseudo', ''); // Suppression des cookies de connexion automatique
         setcookie('password', '');
+        require('view/frontend/exitView.php');
     }
 
 //**************************************************************************************

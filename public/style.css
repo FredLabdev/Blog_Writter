@@ -1,9 +1,8 @@
 /***********************************************************************/
-/* Général */
+/* Généralités */
 
 body {
     font-family: 'Open Sans Condensed', sans-serif;
-    color: black;
 }
 
 p * {
@@ -16,17 +15,6 @@ h2 {
 
 h3 {
     margin-bottom: 20px;
-}
-
-.delete,
-input[type='submit'],
-.red {
-    color: red;
-    font-weight: bold;
-}
-
-.delete:hover {
-    color: darkred;
 }
 
 label {
@@ -49,6 +37,20 @@ label {
 .message {
     display: flex;
     height: 60px;
+}
+
+/***********************************************************************/
+/* Généralités couleurs */
+
+.delete,
+input[type='submit'],
+.red {
+    color: red;
+    font-weight: bold;
+}
+
+.delete:hover {
+    color: darkred;
 }
 
 .black {
@@ -86,7 +88,58 @@ label {
 }
 
 /***********************************************************************/
+/* Login View */
+
+.loginView {
+    max-width: 1080px;
+    background-repeat: no-repeat;
+}
+
+.login,
+.newMember {
+    min-height: 600px;
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
+
+.login {
+    background: url("picture/picture6.jpg");
+    color: #B5C9CA;
+}
+
+.newMember {
+    background: url("picture/picture3.jpg");
+    color: #B6B6B6;
+}
+
+.login-brand {
+    font-family: 'Miss Fajardose', cursive;
+    font-size: 5em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.login-title,
+.member-title {
+    padding-top: 30px;
+    text-align: center;
+}
+
+.login-form {
+    width: 20%;
+    margin-left: 10%;
+}
+
+.login-form input {
+    width: 70%;
+}
+
+/***********************************************************************/
 /* Navbar */
+
+.pos-f-t {
+    display: none;
+}
 
 .navbar-brand,
 .title-slider1,
@@ -101,81 +154,19 @@ label {
     color: darkblue;
 }
 
-.bienvenue {
-    position: absolute;
-    top: 70px;
-    right: 30px;
-    width: 250px;
-    text-align: right;
-}
-
 /***********************************************************************/
-/* Login View */
+/* Footer */
 
-.login {
-    background: url("picture/picture6.jpg");
-    background-repeat: no-repeat;
-    color: snow;
-    padding-top: 20px;
-    height: 600px;
-    color: #B5C9CA;
-}
-
-.login-brand {
-    font-family: 'Miss Fajardose', cursive;
-    font-size: 5em;
-    font-weight: bold;
-    text-align: center;
-    width: 1050px;
-}
-
-.login-title {
-    margin-top: 100px;
-    text-align: center;
-    width: 1050px;
-}
-
-.newMember {
-    background: url("picture/picture3.jpg");
-    background-repeat: no-repeat;
-    color: snow;
-    padding-top: 20px;
-    height: 630px;
-    color: #B6B6B6;
-}
-
-.member-title {
-    text-align: center;
-    width: 1050px;
-}
-
-.login-form {
-    max-width: 220px;
-    margin-left: 100px;
-}
-
-.login-form input {
-    width: 220px;
-}
-
-/***********************************************************************/
-/* Exit View */
-
-.exit {
-    background: url("picture/picture13.jpg");
-    background-repeat: no-repeat;
-    text-align: center;
-    width: 1050px;
-    height: 700px;
-    color: #FAFCEE;
+footer {
     display: flex;
+    align-items: flex-end;
+    margin-top: 20px;
 }
 
-.exit-text {
-    position: relative;
-    margin: auto;
-    left: -20px;
-    top: -60px;
+.social-link {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
 }
 
 /***********************************************************************/
@@ -408,41 +399,7 @@ label {
 }
 
 /***********************************************************************/
-/* Contact view */
-
-.contact-view {
-    padding: 30px;
-    background: url('picture/picture12.jpg');
-    background-position: 300px, 0px;
-    height: 750px;
-}
-
-.contact {
-    background-color: black;
-    opacity: 0.7;
-    border: 2px solid white;
-    font-family: 'Inconsolata', monospace;
-    color: #FBA363;
-}
-
-.contact:focus {
-    background-color: white;
-    opacity: 1;
-    border: 2px solid white;
-    color: black;
-}
-
-/***********************************************************************/
-/* Error view */
-
-.error-view {
-    padding: 30px;
-    background: url('picture/picture14.jpg');
-    height: 500px;
-}
-
-/***********************************************************************/
-/* Composition pour les champs invalides */
+/* Composition pour les champs invalides formulaire */
 
 input:invalid {
     border-color: #900;
@@ -467,8 +424,6 @@ input[type=email] {
     box-sizing: border-box;
 }
 
-/***********************************************************************/
-/* Les erreurs */
 .error {
     width: 100%;
     padding: 0;
@@ -505,16 +460,95 @@ input[type=email] {
 }
 
 /***********************************************************************/
-/* Footer */
+/* Contact view */
 
-footer {
-    display: flex;
-    align-items: flex-end;
-    margin-top: 20px;
+.contact-view {
+    padding: 30px;
+    background: url('picture/picture12.jpg');
+    background-position: 300px, 0px;
+    height: 750px;
 }
 
-.social-link {
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
+.contact {
+    background-color: black;
+    opacity: 0.7;
+    border: 2px solid white;
+    font-family: 'Inconsolata', monospace;
+    color: #FBA363;
+}
+
+.contact:focus {
+    background-color: white;
+    opacity: 1;
+    border: 2px solid white;
+    color: black;
+}
+
+/***********************************************************************/
+/* Exit View */
+
+.exit {
+    background: url("picture/picture13.jpg");
+    background-repeat: no-repeat;
+    text-align: center;
+    width: 1050px;
+    height: 700px;
+    color: #FAFCEE;
+    display: flex;
+}
+
+.exit-text {
+    position: relative;
+    margin: auto;
+    left: -20px;
+    top: -60px;
+}
+
+/***********************************************************************/
+/* Error view */
+
+.error-view {
+    padding: 30px;
+    background: url('picture/picture14.jpg');
+    height: 500px;
+}
+
+/* ==================================================================== */
+/*                          Medias Quereies                             */
+
+@media all and (max-width: 768px) {
+
+    /* ==================================================================== */
+    /* Login View */
+
+    .login,
+    .newMember {
+        min-height: 0px;
+        background-position: right 200px top -100px;
+    }
+
+    .login,
+    .newMember {
+        background-position: right -200px top -50px;
+    }
+
+    .newMember {
+        background-position: right -350px top -50px;
+    }
+
+    .login-brand {
+        font-size: 3em;
+    }
+
+    /***********************************************************************/
+    /* Navbar */
+
+    .pos-f-t {
+        display: block;
+    }
+
+    .navbar-expand-lg {
+        display: none;
+    }
+
 }
