@@ -9,7 +9,7 @@
     ob_start(); 
 ?>
 
-<div id="member" class="container-fluid white">
+<div id="member" class="white">
 
     <!-- DETAIL DU COMPTE PERSO -->
 
@@ -20,7 +20,7 @@
         </span>
         <?php } ?>
     </div>
-    <div class="member-text offset-3">
+    <div class="member-text offset-lg-3">
         <?php
         foreach($memberDetails as $dataMember) { // Détail du member sélectionné
             echo 'Date de création : ' . $dataMember['creation_date_fr'] . '<br>';
@@ -38,28 +38,30 @@
 
         <form novalidate method="post" action="index.php?action=memberModif" id="form_modif" name="modif">
             <input type="hidden" name="personal_modif" value="<?php echo $dataMember['id']; ?>" />
-            <label class="member-text2">Sélectionnez le champ à modifier :
+            <label class="member-text2 d-flex flex-lg-row flex-sm-column">Sélectionnez le champ à modifier :</label>
+            <fieldset>
                 <select id="champ" class="member-input" name="champ">
                     <option value=""></option>
                     <option value="1">e-mail</option>
                     <option value="2">Mot de passe</option>
-                </select></label><br>
-            <label class="member-text2" for="modif_champ">Nouveau contenu du champ :
-                <fieldset>
-                    <input id="modif_champ" class="member-input" name="modif_champ" /><br>
-                    <span class="error" id="error1" aria-live="polite">
-                        <?= $message_error; ?>
-                    </span>
-                </fieldset>
-            </label><br>
-            <label class="member-text2" for="modif_champ_confirm">Confirmez ce nouveau contenu :
-                <fieldset>
-                    <input id="modif_champ_confirm" class="member-input" name="modif_champ_confirm" /><br>
-                    <span class="error" id="error2" aria-live="polite">
-                        <?= $message_error; ?>
-                    </span>
-                </fieldset>
-            </label><br>
+                </select>
+            </fieldset><br>
+            <label class="member-text2" for="modif_champ">Nouveau contenu du champ :</label>
+            <fieldset>
+                <input id="modif_champ" class="member-input" name="modif_champ" /><br>
+                <span class="error" id="error1" aria-live="polite">
+                    <?= $message_error; ?>
+                </span>
+            </fieldset>
+            <br>
+            <label class="member-text2" for="modif_champ_confirm">Confirmez ce nouveau contenu :</label>
+            <fieldset>
+                <input id="modif_champ_confirm" class="member-input" name="modif_champ_confirm" /><br>
+                <span class="error" id="error2" aria-live="polite">
+                    <?= $message_error; ?>
+                </span>
+            </fieldset>
+            <br>
             <button id="bouton_envoi" class="btn btn-light btn-lg blue offset-4" type="submit" name="remplacer">Appliquer</button>
         </form>
     </div>

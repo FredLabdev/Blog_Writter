@@ -11,8 +11,8 @@
 
 <!-- TOUTES LES PUBLICATIONS -->
 
-<div id="publishing" class="container-fluid">
-    <div class="row col-12 text-center">
+<div id="publishing">
+    <div class="text-center">
         <?php if($message_success) { ?>
         <span class="alert alert-success col-4 offset-4">
             <?= $message_success; ?>

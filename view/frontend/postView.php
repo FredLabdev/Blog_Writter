@@ -57,20 +57,20 @@
         <?php
         while ($comment = $comments->fetch()) {
         ?>
-        <span class="row col-12">
-            <strong class="col-6 white">
+        <span class="row justify-content-around">
+            <strong class="white">
                 <?= $comment['author']; ?>
             </strong>
-            <span class="col-6 green">
+            <span class="green">
                 le
                 <?= $comment['comment_date_fr']; ?>
             </span>
         </span>
-        <p class="alert alert-info row col-12">
+        <p class="alert alert-info">
             <?= nl2br(htmlspecialchars($comment['comment'])); ?>
         </p>
 
-        <div class="boutons row offset-7">
+        <div class="boutons row justify-content-end">
 
             <!-- BOUTON MODIFIER UN COMMENTAIRE (uniquement si sois-meme)-->
 
@@ -133,11 +133,10 @@
 
     </div>
 
-
     <!-- BOUTON ET TEXTAREA POUR AJOUTER UN COMMENTAIRE -->
 
     <p>
-        <a class="btn btn-primary col-5 offset-6" data-toggle="collapse" href="#newComment" role="button" aria-expanded="false" aria-controls="newComment"><i class="far fa-comment-alt"></i> Ajouter un commentaire
+        <a class="btn btn-primary col-5 offset-6" data-toggle="collapse" href="#newComment" role="button" aria-expanded="false" aria-controls="newComment"><i class="far fa-comment-alt"></i>Commenter
         </a>
     </p>
     <div class="collapse col-12" id="newComment">
@@ -157,47 +156,49 @@
 
     <!-- MODIFIER UN POST -->
 
-    <div class="container-fluid post-view white">
+    <div class="post-view white">
 
         <h3 class="posts-title green">
-            Modifiez et mettez en forme ce billet ici :
+            Modifiez ce billet ici :
         </h3>
 
         <form method="post" action="index.php?action=postModif">
             <input type="hidden" name="postId" value="<?php echo $dataPost['id']; ?>" />
-            <label>Titre du nouveau billet : </label>
+            <label>Modifier le Titre : </label>
             <input type="text" name="titre" class="col-7 news-title" value="<?= $dataPost['chapter_title'] ?>" /><br>
             <p></p>
-            <input type="button" value="G" style="font-weight:bold;" onclick="commande('bold');" />
-            <input type="button" value="I" style="font-style:italic;" onclick="commande('italic');" />
-            <input type="button" value="S" style="text-decoration:underline;" onclick="commande('underline');" />
-            <input type="button" value="Lien" onclick="commande('createLink');" />
-            <input type="button" value="Retirer lien" onclick="commande('unlink');" />
-            <input type="button" value="Image" onclick="commande('insertImage');" />
-            <select onchange="commande('heading', this.value); this.selectedIndex = 0;">
-                <option value="">Titre</option>
-                <option value="h1">Titre 1</option>
-                <option value="h2">Titre 2</option>
-                <option value="h3">Titre 3</option>
-                <option value="h4">Titre 4</option>
-                <option value="h5">Titre 5</option>
-                <option value="h6">Titre 6</option>
-            </select>
-            <input type="button" value="effacer" onclick="commande('delete');" />
-
+            <fieldset>
+                <input type="button" value="G" style="font-weight:bold;" onclick="commande('bold');" />
+                <input type="button" value="I" style="font-style:italic;" onclick="commande('italic');" />
+                <input type="button" value="S" style="text-decoration:underline;" onclick="commande('underline');" />
+                <input type="button" value="Lien" onclick="commande('createLink');" />
+                <input type="button" value="Retirer lien" onclick="commande('unlink');" />
+                <input type="button" value="Image" onclick="commande('insertImage');" />
+                <select onchange="commande('heading', this.value); this.selectedIndex = 0;">
+                    <option value="">Titre</option>
+                    <option value="h1">Titre 1</option>
+                    <option value="h2">Titre 2</option>
+                    <option value="h3">Titre 3</option>
+                    <option value="h4">Titre 4</option>
+                    <option value="h5">Titre 5</option>
+                    <option value="h6">Titre 6</option>
+                </select>
+                <input type="button" value="effacer" onclick="commande('delete');" />
+            </fieldset>
             <div id="modifPostInForm" class="black news" contentEditable>
                 <?= $dataPost['chapter_content'] ?>
             </div>
             <textarea id="modifPostPlainText" name="modifPostPlainText"></textarea>
             <textarea id="modifPostHTML" name="modifPostHTML"></textarea>
             <p></p>
-            <button type="button submit" class="btn btn-outline-light btn-sm offset-10" onclick="getModifPostInForm();"><i class="fas fa-share-square"></i> Modifier votre billet</button>
+            <button type="button submit" class="btn btn-outline-light btn-sm offset-lg-10" onclick="getModifPostInForm();"><i class="fas fa-share-square"></i> Modifier votre billet</button>
+            <p></p>
         </form>
 
         <!-- SUPPRIMER UN POST -->
 
         <h3 class="posts-title green">
-            Pour supprimer ce billet, cliquez ici :
+            Supprimer ce billet, cliquez ici :
         </h3>
         <form name="delete" class="text-center">
             <input type="hidden" name="deletePost" value="<?php echo $dataPost['id']; ?>" />

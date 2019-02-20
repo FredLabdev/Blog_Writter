@@ -204,13 +204,18 @@ try {
         
 
         //**************************************************************************************
-        //                           de la deconnexion (javascript)            
+        //                                  de contactView            
         //**************************************************************************************
         
-           // Supprimer un compte member, 
+            // Acces à la page du formulaire de Contact, 
         else if ($_GET['action'] == 'contact') {
             require('view/frontend/contactView.php');
-        }        
+        }   
+            // Réception d'un formulaire de Contact,     
+        else if($_GET['action'] == 'contactForm') {
+            $errorMessage = 'Désolé, cette fonction est encore en travaux...';  
+            require('view/errorView.php');
+        }
 
         //**************************************************************************************
         //                           de la deconnexion (javascript)            

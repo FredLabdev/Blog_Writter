@@ -51,6 +51,20 @@
 
 <body class="<?= $template ?> black">
 
+    <noscript>
+        <div class="noscript">
+            <input type="checkbox" class="modal-closing-trick" id="modal-closing-trick">
+            <div class="overlay noscript-overlay" style="display: block;"></div>
+            <div class="noscript-title white">
+                <h3>"Forteroche" nécessite l'activation de JavaScript pour fonctionner complétement.</h3>
+                <h3>"Forteroche" requires JavaScript to render all the views and actions.</h3>
+            </div>
+            <p grey>Need to know how to enable JavaScript? <a href="http://enable-javascript.com/" target="_blank" rel="noopener">Go here.</a>
+            </p>
+            <label class="noscript-button" for="modal-closing-trick">Close this, use anyway.</label>
+        </div>
+    </noscript>
+
     <!-- LISTES DU MENU (COMMUN TOUS RESPONSIVES) -->
 
     <?php ob_start(); 
@@ -99,9 +113,6 @@
     <?php
         }
     ?>
-    <li class="nav-item">
-        <a class="nav-link" href="#" id="deconnexion">Deconnexion</a>
-    </li>
 
     <?php $ul = ob_get_clean(); ?>
     <?php ob_start(); ?>
@@ -117,13 +128,16 @@
                     </div>
                     <ul class="nav flex-column">
                         <?= $ul ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="deconnexion_xs">Deconnexion</a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
         <nav class="navbar navbar-light bg-light">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span><span class="white"> Dernier roman de Jean Forteroche</span>
             </button>
         </nav>
     </div>
@@ -137,6 +151,9 @@
             </div>
             <ul class="nav nav-pills nav-stacked">
                 <?= $ul ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="deconnexion">Deconnexion</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -147,21 +164,21 @@
     <!-- FOOTER -->
 
     <footer id="pied_de_page" class="row">
-        <p class="col-lg-3 offset-1">Copyright Fred Lab, tous droits réservés</p>
-        <p class="col-lg-4 offset-4">
+        <p class="col-xs-4 offset-lg-1">
             <button class="btn btn-info social-link"><a href="https://www.facebook.com/pg/thierrygrandnord/posts/" target=_blank><span class="glyphicon glyphicon-facebook"><i class="fab fa-facebook-f fa-lg white"></i></span></a></button>
             <button class="btn btn-info social-link"><a href="https://naalilodge.com" target=_blank><span class="glyphicon glyphicon-comment"><i class="fab fa-instagram fa-lg white"></i></span></a></button>
             <button class="btn btn-info social-link"><a href="mailto: fred.labourel@wanadoo.fr"><span class="glyphicon glyphicon-calendar"><i class="fas fa-at fa-lg white"></i></span></a></button>
             <button class="btn btn-info social-link"><a href="index.php?action=contact"><span class="glyphicon glyphicon-shopping-cart"><i class="fas fa-envelope fa-lg white"></i></span></a></button>
             <button class="btn btn-info social-link"><a href="https://github.com/freddieLab" target=_blank><span class="glyphicon glyphicon-bullhorn fa-lg"><i class="fab fa-github white"></i></span></a></button>
         </p>
+        <p class="col-xs-3 offset-lg-4">Copyright Fred Lab, tous droits réservés</p>
     </footer>
 
     <?php $footer = ob_get_clean(); ?>
 
     <!-- CONTAINER BOOTSRTAP -->
 
-    <main role="main" class="container-fluid" style="margin-top: 100px">
+    <main role="main" class="container-fluid">
 
         <?php 
             if (!$noMenu == 'no_menu') {
@@ -178,12 +195,15 @@
             if ($template == 'backend') {
                 echo $backend;
             }    
+        ?>
+
+    </main>
+
+    <?php 
             if (!$noFooter == 'no_footer') {
                 echo $footer;
             }
         ?>
-
-    </main>
 
     <!-- jQuery Bibliothèque Production -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

@@ -17,6 +17,11 @@ document.getElementById("deconnexion").addEventListener('click', function (e) {
     deconnect_confirm();
 });
 
+document.getElementById("deconnexion_xs").addEventListener('click', function (e) {
+    e.preventDefault();
+    deconnect_confirm();
+});
+
 //**************************************************************************************
 //                         Interactions pour la saisie WYSIWYG             
 //**************************************************************************************

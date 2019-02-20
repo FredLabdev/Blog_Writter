@@ -9,16 +9,18 @@
     ob_start(); 
 ?>
 
-<!-- SLIDER -->
+<!-- SLIDER SUR ECRAN SEULEMENT -->
 
+<div id="carouselExampleIndicators" class="carousel slide d-none d-sm-block" data-ride="carousel">
 
-<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
     </ol>
+
     <div class="carousel-inner">
+        <!-- SLIDE 1 -->
         <div class="carousel-item active">
             <img class="d-block w-100" src="public/picture/picture11.jpg" alt="First slide">
             <h3 class="title-slider d-none d-md-block offset-lg-1">
@@ -29,14 +31,14 @@
             <h3 class="title-slider col-xs-12 col-lg-6 offset-lg-6">
                 Un billet simple pour l'Alaska
             </h3>
-            <h2 class="text-slider yellow ">Index des
+            <h2 class="text-slider yellow d-none d-md-block">Index des
                 <?= $postsCount['nbre_posts'] ?> extraits publiés à ce jour
             </h2>
-            <ul class="index col-xs-10 offset-1 list-unstyled yellow">
+            <ul class="index offset-1 list-unstyled yellow d-none d-md-block ">
                 <?php
-                        $compteur = $postsCount['nbre_posts']-($postsCount['nbre_posts']-1);
-                        foreach($postsList as $post) {        
-                    ?>
+                    $compteur = $postsCount['nbre_posts']-($postsCount['nbre_posts']-1);
+                    foreach($postsList as $post) {        
+                ?>
                 <li>
                     <a href="index.php?action=post&amp;billet=<?= $post['id']; ?>" class="yellow">
                         N°
@@ -45,15 +47,16 @@
                     </a>
                 </li>
                 <?php
-                        $compteur++;
-                        }
-                    ?>
+                    $compteur++;
+                    }
+                ?>
             </ul>
             <div class="carousel-caption d-none d-md-block">
                 <h5>Un billet simple pour l'Alaska</h5>
                 <p>Jean Forteroche</p>
             </div>
         </div>
+        <!-- SLIDE 2 -->
         <div class="carousel-item">
             <img class="d-block w-100" src="public/picture/picture7.jpg" alt="Second slide">
             <h3 class="title-slider col-xs-12 col-lg-6 offset-lg-6">
@@ -66,6 +69,7 @@
                 <p>Jean Forteroche</p>
             </div>
         </div>
+        <!-- SLIDE 3 -->
         <div class="carousel-item">
             <img class="d-block w-100" src="public/picture/picture15.jpg" alt="Third slide">
             <h3 class="title-slider col-xs-12 col-lg-6 offset-lg-6">
@@ -79,6 +83,7 @@
             </div>
         </div>
     </div>
+    <!-- SLIDER CONTROLS -->
     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
@@ -87,26 +92,39 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
     </a>
+
 </div>
 
+<!-- SANS SLIDER SUR SMARTPHONE -->
+<div class="carousel-item d-block d-sm-none">
+    <img class="d-block w-100" src="public/picture/picture15.jpg" alt="Third slide">
+    <h3 class="title-slider col-xs-12 col-lg-6 offset-lg-6">
+        Un billet simple pour l'Alaska
+    </h3>
+    <h2 class="text-slider">Le roman couve...
+    </h2>
+    <div class="carousel-caption d-none d-md-block black">
+        <h5>Un billet simple pour l'Alaska</h5>
+        <p>Jean Forteroche</p>
+    </div>
+</div>
 
 <?php $all1 = ob_get_clean(); ?>
 <?php ob_start();?>
 
-
-
 <!-- EXTRAITS DES POSTS -->
+
 <div class="posts-view">
 
     <h3 class="posts-title green">
         <?php
-                if ($billet_max == $postsCount['nbre_posts']) {
-                    echo 'Les 5 derniers posts du n° ';
-                } else {
-                    echo 'Billets du n° ';
-                }
-                echo $billet_max . ' au n° ' . $billet_min;
-            ?>
+            if ($billet_max == $postsCount['nbre_posts']) {
+                echo 'Les 5 derniers posts du n° ';
+            } else {
+                echo 'Billets du n° ';
+            }
+            echo $billet_max . ' au n° ' . $billet_min;
+         ?>
     </h3>
 
     <nav aria-label="Page navigation example">
@@ -129,9 +147,9 @@
 
     <div class="posts-extracts col-xs-12 white">
         <?php    
-                for ($i=0; $i<5; $i++) {
-                    if ($postsBy5[$i] != "") {
-            ?>
+            for ($i=0; $i<5; $i++) {
+                if ($postsBy5[$i] != "") {
+        ?>
         <div class="extract">
             <h3 class="news-title">
                 <?= $postsBy5[$i]['chapter_title'] ?>
@@ -142,55 +160,57 @@
             <p class="news">
                 <?= $postsBy5[$i]['chapter_extract']; ?>
             </p>
-            <a href="index.php?action=post&amp;billet=<?= $postsBy5[$i]['id']; ?>" class="btn btn-primary offset-9"><span class="badge badge-light">
-                    <?= $commentsCountBy5[$i]['nbre_comment']; ?></span> commentaires - Billet complet <i class="fab fa-readme"></i></a>
-
+            <p class="row">
+                <a href="index.php?action=post&amp;billet=<?= $postsBy5[$i]['id']; ?>" class="btn btn-primary"><span class="badge badge-light">
+                        <?= $commentsCountBy5[$i]['nbre_comment']; ?></span> commentaires - Billet complet <i class="fab fa-readme"></i>
+                </a>
+            </p>
         </div>
         <?php
                 }
-                }
-            ?>
+            }
+        ?>
     </div>
+
 </div>
 
 <!-- LISTE DES COMMENTAIRES SIGNALES -->
 
 <?php
-        if ($_SESSION['group_id'] == 1 || $_SESSION['group_id'] == 2) {
-    ?>
+    if ($_SESSION['group_id'] == 1 || $_SESSION['group_id'] == 2) {
+?>
 
-<div id="comments-signaled" class="container-fluid posts-view white">
-
+<div id="comments-signaled" class="posts-view white">
     <h3 class="posts-title orange"><i class="fas fa-exclamation-circle"></i> Commentaires signalés</h3>
-
-    <div class="comments-content col-xs-10 offset-1">
-
+    <div class="comments-content-signaled col-xs-10">
         <?php
-            if ($signalComments) {
-                foreach($signalComments as $signalComment) {
-            ?>
-        <span class="row col-xs-12">
-            <strong class="col-xs-3 white">
-                <?= $signalComment['author']; ?>
-            </strong>
-            <span class="col-xs-3 green">
-                le
-                <?= $signalComment['comment_date_fr']; ?>
-            </span>
-            <span class="col-xs-6 orange text-right"><i class="fas fa-exclamation-circle"></i> signalé le
+        if ($signalComments) {
+            foreach($signalComments as $signalComment) {
+        ?>
+        <div class="row justify-content-around">
+            <span class="col-md-auto orange"><i class="fas fa-exclamation-circle"></i> signalé le
                 <?= $signalComment['signal_date_fr']; ?> par
                 <strong>
                     <?= $signalComment['signal_author']; ?></strong>
             </span>
-        </span>
+            <span class="col-md-auto">
+                <strong class="white">
+                    <?= $signalComment['author']; ?>
+                </strong>
+                <span class="green">
+                    le
+                    <?= $signalComment['comment_date_fr']; ?>
+                </span>
+            </span>
+        </div>
         <p class="alert alert-info row col-xs-12">
             <?= nl2br(htmlspecialchars($signalComment['comment'])); ?>
         </p>
 
         <!-- BOUTON SUPPRIMER UN COMMENTAIRE (uniquement si admin, modérateur, ou posté par sois-meme)-->
 
-        <div class="boutons row col-xs-12">
-            <form class="offset-7" action="index.php?action=deleteComment" method="post">
+        <div class="boutons row">
+            <form class="offset-lg-7" action="index.php?action=deleteComment" method="post">
                 <input type="hidden" name="delete_comment" value="<?= $signalComment['id'] ?>" />
                 <button class="btn btn-danger btn-sm" type="submit"><i class="fas fa-trash-alt"></i> Supprimer</button>
             </form>
@@ -198,24 +218,23 @@
 
         </div>
         <?php
-                }
+            }
                 
-            } else {
-            ?>
+        } else {
+        ?>
         <div class="row col-xs-12 text-center">
             <span class="alert alert-success col-xs-4 offset-4">
                 Aucun commentaires n'a été signalé
             </span>
         </div>
     </div>
-
     <?php
-            }
-        ?>
-</div>
-<?php
         }
     ?>
+</div>
+<?php
+    }
+?>
 
 <?php $all2 = ob_get_clean(); ?>
 <?php ob_start();?>
@@ -225,7 +244,7 @@
 <div class="post-view white">
     <div class=title-container>
         <h3 class="posts-title green">
-            Saisissez et mettez en forme un nouveau billet ici :
+            Votre nouveau billet ici :
         </h3>
         <div class="row col-xs-12 text-center">
             <?php if($message_success) { ?>
@@ -242,16 +261,17 @@
     <form method="post" action="index.php?action=addPost">
         <label>Titre du nouveau billet : </label>
         <input type="text" name="titre" class="col-xs-7 news-title" /><br>
+        <!-- Option a rajouter 
         <label>L'insérer après un billet particulier : </label>
         <select name="postBefore" class="col-xs-7 news-title">
             <option value=""></option>
-            <?php
-                foreach($postsList as $postBefore) {
-                    echo '<option value="' . $postBefore['id'] . '">' . $postBefore['chapter_title'] . '</option>';
-                }
+           <?php
+               // foreach($postsList as $postBefore) {
+               //    echo '<option value="' . $postBefore['id'] . '">' . $postBefore['chapter_title'] . '</option>';
+               // } 
             ?>
-        </select>
-        <p></p>
+        </select> 
+        <p></p> -->
         <input type="button" value="G" style="font-weight:bold;" onclick="commande('bold');" />
         <input type="button" value="I" style="font-style:italic;" onclick="commande('italic');" />
         <input type="button" value="S" style="text-decoration:underline;" onclick="commande('underline');" />
@@ -273,11 +293,9 @@
         <textarea id="newPostPlainText" name="newPostPlainText"></textarea>
         <textarea id="newPostHTML" name="newPostHTML"></textarea>
         <p></p>
-        <button type="button submit" class="btn btn-outline-light btn-sm col-xs-1 offset-10" onclick="getNewPostInForm();"><i class="fas fa-share-square"></i> Publier votre billet</button>
+        <button type="button submit" class="btn btn-outline-light btn-sm col-xs-1 offset-lg-10" onclick="getNewPostInForm();"><i class="fas fa-share-square"></i> Publier votre billet</button>
     </form>
 </div>
-
-
 
 <?php $backend = ob_get_clean(); ?>
 

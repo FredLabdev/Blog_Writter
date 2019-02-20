@@ -13,14 +13,14 @@ ob_start();
         <h2 class="member-title">
             Demandez-nous ce que vous voulez !
         </h2>
-        <form method="post" action="index.php?action=newMember">
-<div class="form-group">
+        <form method="post" action="index.php?action=contactForm">
+            <div class="form-group">
                 <label>Votre nom : </label>
-                <input class="contact form-control col-3" type="text" name="name" value="<?= $_SESSION['name'] ?>" />
+                <input class="contact form-control col-lg-3" type="text" name="name" value="<?= $_SESSION['name'] ?>" />
                 <label>Votre prenom : </label>
-                <input class="contact form-control col-3" type="text" name="first_name" value="<?= $_SESSION['first_name'] ?>" />
+                <input class="contact form-control col-lg-3" type="text" name="first_name" value="<?= $_SESSION['first_name'] ?>" />
                 <label>Votre message : </label>
-                <textarea class="form-control col-6 contact" rows="15"></textarea>
+                <textarea class="form-control col-lg-6 contact" rows="8"></textarea>
             </div>
             <button type="button submit" class="btn btn-outline-light btn-lg" name="login">Envoyer <i class="fas fa-space-shuttle"></i></button>
         </form>
