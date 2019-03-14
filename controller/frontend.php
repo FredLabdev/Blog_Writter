@@ -14,9 +14,9 @@ try {
 
     function loginControl($pseudo, $password) {
         if ($pseudo == "" || $password =="") {
-            $login_error =  utf8_encode('Veuillez renseigner tous les champs svp.');
+            $login_error =  'Veuillez renseigner tous les champs svp.';
         } else {
-            $login_error = utf8_encode('Erreur : pseudo et/ou mot de passe erronÈ(s).');
+            $login_error = 'Erreur : pseudo et/ou mot de passe erron√©(s).';
         }
         $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
         $dbPassword = ($loginManager->getPasswordFromPseudo($pseudo))['password']; 
@@ -37,7 +37,7 @@ try {
     }
 
     function loginAvailable($pseudo, $password) {
-                    // 1 - RÈcupÈration de ses donnÈes   
+                    // 1 - R√©cup√©ration de ses donn√©es   
         $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
         $memberData = $loginManager->getMemberData($pseudo, $password);
                     // 2 - Ouverture de session   
@@ -70,7 +70,7 @@ try {
         $pseudoIdem = $loginManager->getPseudoIdem($pseudo);
         if ($pseudoIdem['pseudo_idem'] == 0) {
         } else {
-            $message_error .=  utf8_encode('Ce pseudo existe dÈj‡ !' . '<br>');
+            $message_error .=  'Ce pseudo existe d√©j√† !' . '<br>';
         }
         return $message_error;
     }
@@ -82,13 +82,13 @@ try {
             if ($mailIdem['email_idem'] == 0) {
                 if ($mailConfirm == $mail) {
                 } else {
-                    $message_error .=  utf8_encode('Vos 2 adresses mail sont diffÈrentes !' . '<br>');
+                    $message_error .=  'Vos 2 adresses mail sont diff√©rentes !' . '<br>';
                 } 
             } else {
-                $message_error .=  utf8_encode('Cette adresse mail existe dÈj‡ !' . '<br>');
+                $message_error .=  'Cette adresse mail existe d√©j√† !' . '<br>';
             }     
         } else {
-            $message_error .=  utf8_encode('Le format d\'adresse mail n\'est pas valide.' . '<br>');
+            $message_error .=  'Le format d\'adresse mail n\'est pas valide.' . '<br>';
         }    
         return $message_error;
     }
@@ -102,14 +102,14 @@ try {
                     $isPasswordExist = password_verify($password, $allPassword['password']);
                     if (!$isPasswordExist) {   
                     } else {
-                        $message_error .=  utf8_encode('Ce mot de passe existe dÈj‡ !' . '<br>');
+                        $message_error .=  'Ce mot de passe existe d√©j√† !' . '<br>';
                     }
                 }
             } else {
-                $message_error .=  utf8_encode('Vos mots de passes ne sont pas identiques !' . '<br>');
+                $message_error .=  'Vos mots de passes ne sont pas identiques !' . '<br>';
             }   
         } else {
-            $message_error .=  utf8_encode('Votre mot de passe doit Ítre composÈ de minimum 8 caractËres'  . '<br>' . 'dont 1 Majuscule, 1 minuscule, 1 chiffre et 1 caractËre spÈcial !' . '<br>');
+            $message_error .=  'Votre mot de passe doit √™tre compos√© de minimum 8 caract√®res'  . '<br>' . 'dont 1 Majuscule, 1 minuscule, 1 chiffre et 1 caract√®re sp√©cial !' . '<br>';
         }    
         return $message_error;
     }
@@ -126,7 +126,7 @@ try {
             if ($message_error == '') { // Si tout ok on creer le nouveau membre,
                 $loginManager = new \FredLab\tp4_blog_ecrivain\Model\LoginManager();
                 $loginManager->CreateMember($createName, $createFirstName, $createPseudo, $createMail, $createPassword);
-                loginControl($createPseudo, $createPassword); // et on dÈmmarre sa session
+                loginControl($createPseudo, $createPassword); // et on d√©mmarre sa session
             } else {
                 require('view/frontend/loginView.php'); // retour au login avec affichage des erreurs
             }
@@ -163,9 +163,9 @@ try {
             require('view/frontend/postsListView.php');
         } else {
             if ($postsCount['nbre_posts'] == 0) {
-                $message_success = utf8_encode('Aucun billet n\'est encore de publiÈ...');
+                $message_success = 'Aucun billet n\'est encore de publi√©...';
             } else {
-                $message_error = utf8_encode('Mauvais indice de page !');
+                $message_error = 'Mauvais indice de page !';
             };
             require('view/frontend/postsListView.php');
         }
@@ -233,7 +233,7 @@ try {
         $message_error = '';
         $message_error = mailControl($newMail, $mailConfirm, $message_error);
         if ($message_error == '') { // Si tout ok on creer le nouveau membre,
-            memberModifMail($memberId, $newMail); // et on dÈmmarre sa session
+            memberModifMail($memberId, $newMail); // et on d√©mmarre sa session
         } else {
             memberDetail("", $message_error, $memberId, $template);
         }
@@ -242,7 +242,7 @@ try {
     function memberModifMail($memberId, $newMail) {
         $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
         $memberManager->changeMemberMail($memberId, $newMail);
-        $message_success =  utf8_encode('La modification de l\'email a bien ÈtÈ enrÈgistrÈe !');
+        $message_success =  'La modification de l\'email a bien √©t√© enr√©gistr√©e !';
         memberDetail($message_success, "", $memberId, "");
     }
 
@@ -250,7 +250,7 @@ try {
         $message_error = '';
         $message_error = passwordControl($newPassword, $passwordConfirm, $message_error);
         if ($message_error == '') { // Si tout ok on creer le nouveau membre,
-            memberModifPassword($memberId, $newPassword); // et on dÈmmarre sa session
+            memberModifPassword($memberId, $newPassword); // et on d√©mmarre sa session
         } else {
             memberDetail("", $message_error, $memberId, "");
         }
@@ -259,7 +259,7 @@ try {
     function memberModifPassword($memberId, $newPassword) {
         $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
         $memberManager->changeMemberPassword($memberId, $newPassword);
-        $message_success =  utf8_encode('La modification du mot de passe a bien ÈtÈ enrÈgistrÈe !');
+        $message_success =  'La modification du mot de passe a bien √©t√© enr√©gistr√©e !';
         memberDetail($message_success, "", $memberId, "");
     }
 
@@ -267,9 +267,9 @@ try {
         $memberManager = new \FredLab\tp4_blog_ecrivain\Model\MemberManager();
         $memberManager->deleteMember($memberId);
         if ($_SESSION['id'] == $memberId) {
-            $message_success =  utf8_encode('Votre compte a bien ÈtÈ supprimÈ. DÈsolÈ de vous voir nous quitter...');
+            $message_success =  'Votre compte a bien √©t√© supprim√©. D√©sol√© de vous voir nous quitter...';
         } else {
-            $message_success =  utf8_encode('Ce compte a bien ÈtÈ supprimÈ...');
+            $message_success =  'Ce compte a bien √©t√© supprim√©...';
         }  
         if ($_SESSION['group_id'] == 1) {
             memberDetail($message_success, "", $memberId, $template);
@@ -283,7 +283,7 @@ try {
     //**************************************************************************************
 
     function sessionEnd() {
-        $message_success = utf8_encode('A trËs bientÙt pour la suite de l\'aventure') . ' ' . $_SESSION['first_name'];
+        $message_success = 'A tr√®s bient√¥t pour la suite de l\'aventure' . ' ' . $_SESSION['first_name'];
         $_SESSION = array(); // Suppression des variables de session et de la session
         session_destroy();
         setcookie('pseudo', ''); // Suppression des cookies de connexion automatique

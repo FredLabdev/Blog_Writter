@@ -25,7 +25,7 @@ try {
 
     function newPost($postTitle, $postContentHTML, $postContentText, $postBefore) {
         if ($postTitle == "" || $postContentHTML == "") {
-            $message_error =  utf8_encode('Erreur : Veuillez renseigner tous les champs');
+            $message_error =  'Erreur : Veuillez renseigner tous les champs';
             listPosts(1, $message_success, $message_error);
         } else {
             $postExtract = postExtract($postContentText);

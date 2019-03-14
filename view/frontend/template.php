@@ -67,28 +67,8 @@
 
     <!-- LISTES DU MENU (COMMUN TOUS RESPONSIVES) -->
 
-    <?php ob_start(); 
-        
-        if($template == 'backend' && $_SESSION['group_id'] != 2) {
-    ?>
-    <li class="nav-item">
-        <a class="nav-link" href="index.php?action=listPosts">Accueil</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="index.php?action=publishing">Roman</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="index.php?action=membersDetail">Membres</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="index.php?action=contact">Contact</a>
-    </li>
-    <?php
-        } else {
-    ?>
+    <?php ob_start(); ?>
+
     <li class="nav-item">
         <a class="nav-link" href="index.php?action=listPosts">Accueil</a>
     </li>
@@ -96,23 +76,24 @@
         <a class="nav-link" href="index.php?action=publishing">Roman</a>
     </li>
     <?php
-        if($_SESSION['group_id'] == 2) {
+        if($_SESSION['group_id']) {
+            if($_SESSION['group_id'] != 3) {
     ?>
     <li class="nav-item">
         <a class="nav-link" href="index.php?action=membersDetail">Membres</a>
     </li>
     <?php
-        }
+            }
     ?>
     <li class="nav-item">
         <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="index.php?action=contact">Contact</a>
-    </li>
     <?php
         }
     ?>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=contact">Contact</a>
+    </li>
 
     <?php $ul = ob_get_clean(); ?>
     <?php ob_start(); ?>
@@ -128,9 +109,14 @@
                     </div>
                     <ul class="nav flex-column">
                         <?= $ul ?>
+                        <?php 
+                            if ($_SESSION['pseudo']) { ?>
                         <li class="nav-item">
                             <a class="nav-link" href="#" id="deconnexion_xs">Deconnexion</a>
                         </li>
+                        <?php
+                            } 
+                        ?>
                     </ul>
                 </div>
             </div>
@@ -151,9 +137,14 @@
             </div>
             <ul class="nav nav-pills nav-stacked">
                 <?= $ul ?>
+                <?php 
+                    if ($_SESSION['pseudo']) { ?>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="deconnexion">Deconnexion</a>
                 </li>
+                <?php
+                    } 
+                ?>
             </ul>
         </div>
     </nav>
@@ -181,9 +172,7 @@
     <main role="main" class="container-fluid">
 
         <?php 
-            if (!$noMenu == 'no_menu') {
-                echo $menu;
-            }
+            echo $menu;
             echo $all1;
             if ($template == 'adminModerator') {
                 echo $adminModerator;

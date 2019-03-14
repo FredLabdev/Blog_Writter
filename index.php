@@ -11,15 +11,38 @@ try {
 
     if (isset($_GET['action'])) {
         
+        //**************************************************************************************
+        //                     Accessible sans ouverture de session 
+        //**************************************************************************************
+        //**************************************************************************************
+        //                         de postView / postsListView             
+        //**************************************************************************************
+
+            // Lister les billets (sans indice de page), 
+        if ($_GET['action'] == 'listPosts') {
+            listPosts(1, "", "");
+        }
+
+            // Lister les billets (avec un indice de page),     
+        else if ($_GET['action'] == 'pagePosts') {
+            if (isset($_GET['page']) && isset($_GET['page']) > 0) {
+                $page = getCleanParameter($_GET['page']);
+                listPosts($page, "", "");
+            } else {
+                throw new Exception('Aucun identifiant de page de billets envoyé');
+            }
+        }
 
         //**************************************************************************************
         //                                de loginView                
         //**************************************************************************************
 
             // Formulaire de connexion,
-        if ($_GET['action'] == 'login') {
-            if (!empty($_POST['pseudo_connect']) && !empty($_POST['password_connect'])) {
-                loginControl(htmlspecialchars($_POST['pseudo_connect']), htmlspecialchars($_POST['password_connect']));
+        else if ($_GET['action'] == 'login') {
+            $pseudo_connect = getCleanParameter($_POST['pseudo_connect']);
+            $password_connect = getCleanParameter($_POST['password_connect']);
+            if (!empty($pseudo_connect) && !empty($password_connect)) {
+                loginControl($pseudo_connect, $password_connect);
             } else { 
                 loginControl("","");
             }
@@ -27,41 +50,36 @@ try {
 
             // Formulaire de création de compte,
         else if ($_GET['action'] == 'newMember') {
-            if(!empty($_POST['name']) && !empty($_POST['first_name']) && !empty($_POST['pseudo']) && !empty($_POST['email']) && !empty($_POST['email_confirm']) && !empty($_POST['password']) && !empty($_POST['password_confirm'])) {
-                newMember(htmlspecialchars($_POST['name']), htmlspecialchars($_POST['first_name']), htmlspecialchars($_POST['pseudo']), htmlspecialchars($_POST['email']), htmlspecialchars($_POST['email_confirm']), htmlspecialchars($_POST['password']), htmlspecialchars($_POST['password_confirm']));
+            $name = getCleanParameter($_POST['name']);
+            $first_name = getCleanParameter($_POST['first_name']);
+            $pseudo = getCleanParameter($_POST['pseudo']);
+            $email = getCleanParameter($_POST['email']);
+            $email_confirm = getCleanParameter($_POST['email_confirm']);
+            $password = getCleanParameter($_POST['password']);
+            $password_confirm = getCleanParameter($_POST['password_confirm']);
+            if(!empty($name) && !empty($first_name) && !empty($pseudo) && !empty($email) && !empty($email_confirm) && !empty($password) && !empty($password_confirm)) {
+                newMember($name, $first_name, $pseudo, $email, $email_confirm, $password, $password_confirm);
             } else {
                 newMember("","","","","","","","");
             }
         } 
         
         //**************************************************************************************
-        //                           toute autre action au cours d'une session             
+        //             toute autre action accessible uniquement au cours d'une session             
         //**************************************************************************************
 
         else if (!empty($_SESSION['pseudo']) && !empty($_SESSION['password'])) {
             
             //**************************************************************************************
-            //                            de postView / postsListView             
+            //                          de postView / postsListView             
             //**************************************************************************************
 
-                // Lister les billets (sans indice de page), 
-            if ($_GET['action'] == 'listPosts') {
-                listPosts(1, "", "");
-            }
-
-                // Lister les billets (avec un indice de page),     
-            else if ($_GET['action'] == 'pagePosts') {
-                if (isset($_GET['page']) && isset($_GET['page']) > 0) {
-                    listPosts($_GET['page'], "", "");
-                } else {
-                    throw new Exception('Aucun identifiant de page de billets envoyé');
-                }
-            }
 
                 // Détailler un billet,    
-            else if ($_GET['action'] == 'post') {
+            if ($_GET['action'] == 'post') {
                 if (isset($_GET['billet']) && $_GET['billet'] > 0) {
-                    post($_GET['billet'], "", "");
+                    $billet = getCleanParameter($_GET['billet']);
+                    post($billet, "", "");
                 } else {
                     throw new Exception('Aucun identifiant de page de billets envoyé');
                 }
@@ -69,11 +87,15 @@ try {
 
                 // Ajouter un billet,     
             else if ($_GET['action'] == 'addPost') {
-                if(!empty($_POST['titre']) && !empty($_POST['newPostHTML'])) {
-                    if (!empty($_POST['postBefore'])) {
-                        newPost($_POST['titre'], $_POST['newPostHTML'], $_POST['newPostPlainText'], $_POST['postBefore']);
+                $titre = getCleanParameter($_POST['titre']);
+                $newPostHTML = $_POST['newPostHTML'];
+                $newPostPlainText = getCleanParameter($_POST['newPostPlainText']); 
+                $postBefore = getCleanParameter($_POST['postBefore']);               
+                if(!empty($titre) && !empty($newPostHTML)) {
+                    if (!empty($postBefore)) {
+                        newPost($titre, $newPostHTML, $newPostPlainText, $postBefore);
                     } else {
-                        newPost($_POST['titre'], $_POST['newPostHTML'], $_POST['newPostPlainText'], "");
+                        newPost($titre, $newPostHTML, $newPostPlainText, "");
                     }
                 } else {
                     newPost("","","","");
@@ -82,32 +104,39 @@ try {
 
                 // modifier un billet   
             else if ($_GET['action'] == 'postModif') {  
-                if ($_POST['postId']) {
-                    if(!empty($_POST['titre']) && !empty($_POST['modifPostHTML'])) {
-                        modifPost($_POST['postId'], $_POST['titre'], $_POST['modifPostHTML'], $_POST['modifPostPlainText']);
-                    } else if (empty($_POST['titre'])) {
-                        post($_POST['postId'], "",  utf8_encode('Attention : Titre vide !'));
-                    } else if (empty($_POST['modifPostHTML']) && empty($_POST['modifPostPlainText'])) {
-                        post($_POST['postId'], "",  utf8_encode('Attention : Billet vide !'));
+                $postId = getCleanParameter($_POST['postId']);
+                $titre = getCleanParameter($_POST['titre']);
+                $modifPostHTML = getCleanParameter($_POST['modifPostHTML']);
+                $modifPostPlainText = getCleanParameter($_POST['modifPostPlainText']);
+                if ($postId) {
+                    if(!empty($titre) && !empty($modifPostHTML)) {
+                        modifPost($postId, $titre, $modifPostHTML, $modifPostPlainText);
+                    } else if (empty($titre)) {
+                        post($postId, "",  'Attention : Titre vide !');
+                    } else if (empty($modifPostHTML) && empty($modifPostPlainText)) {
+                        post($postId, "",  'Attention : Billet vide !');
                     } 
                 } else {
-                    post($_POST['postId'], "",  utf8_encode('Erreur : Aucun billet sélectionné'), "");
+                    post($postId, "",  'Erreur : Aucun billet sélectionné', "");
                 }
             }
 
             // supprimer un billet,   
             else if ($_GET['action'] == 'postDelete') {
-                if ($_GET['postId']) {
-                    postErase($_GET['postId']);
+                $postId = getCleanParameter($_GET['postId']);
+                if ($postId) {
+                    postErase($postId);
                 } else {
-                    post($_GET['postId'], "",  utf8_encode('Erreur : Aucun billet sélectionné'), "");
+                    post($postId, "",  'Erreur : Aucun billet sélectionné', "");
                 }
             }
 
                 // Ajouter un commentaire,     
             else if ($_GET['action'] == 'addComment') {
-                if ($_POST['postId']) {
-                    addCommentRequest($_POST['postId'], $_SESSION['pseudo'], $_POST['nv_comment']);
+                $postId = getCleanParameter($_POST['postId']);
+                $nv_comment = getCleanParameter($_POST['nv_comment']);
+                if ($postId) {
+                    addCommentRequest($postId, $_SESSION['pseudo'], $nv_comment);
                 } else {
                     throw new Exception('Aucun identifiant de billet envoyé');
                 }
@@ -115,8 +144,11 @@ try {
 
                 // Modifier un commentaire,     
             else if ($_GET['action'] == 'modifComment') {
-                if ($_POST['postId']) {
-                    modifCommentRequest($_POST['postId'], $_SESSION['pseudo'], $_POST['modifCommentId'], $_POST['modifComment']);
+                $postId = getCleanParameter($_POST['postId']);
+                $modifCommentId = getCleanParameter($_POST['modifCommentId']);
+                $modifComment = getCleanParameter($_POST['modifComment']);
+                if ($postId) {
+                    modifCommentRequest($postId, $_SESSION['pseudo'], $modifCommentId, $modifComment);
                 } else {
                     throw new Exception('Aucun identifiant de billet envoyé');
                 }
@@ -124,8 +156,11 @@ try {
 
                        // signaler un commentaire,   
             else if ($_GET['action'] == 'signalComment') {
-               if ($_POST['postId']) {
-                    commentSignal($_POST['postId'], $_POST['signal_comment'], $_POST['signal_commentId'], $_SESSION['pseudo']);  
+                $postId = getCleanParameter($_POST['postId']);
+                $signal_comment = getCleanParameter($_POST['signal_comment']);
+                $signal_commentId = getCleanParameter($_POST['signal_commentId']);
+               if ($postId) {
+                    commentSignal($postId, $signal_comment, $signal_commentId, $_SESSION['pseudo']);  
                 } else {
                     throw new Exception('Aucun identifiant de billet envoyé');
                 }
@@ -133,10 +168,12 @@ try {
 
                 // Effacer un commentaire,     
             else if ($_GET['action'] == 'deleteComment') {
+                $postId = getCleanParameter($_POST['postId']);
+                $delete_comment = getCleanParameter($_POST['delete_comment']);
                 if ($_POST['postId']) {
-                    commentErase($_POST['postId'], $_POST['delete_comment']);  
+                    commentErase($_POST['postId'], $delete_comment);  
                 } else {
-                    commentErase("", $_POST['delete_comment']); 
+                    commentErase("", $delete_comment); 
                 }
             }
 
@@ -151,9 +188,11 @@ try {
 
                 // Aficher detail d'un compte lambda depuis le backend   
             else if ($_GET['action'] == 'membersDetail') {
-                if (isset($_POST['member'])) {
-                    if (!empty($_POST['member'])) {
-                        memberDetail("", "", $_POST['member'], 'backend');
+                $member = getCleanParameter($_POST['member']);
+                $delete_comment = getCleanParameter($_POST['delete_comment']);
+                if (isset($member)) {
+                    if (!empty($member)) {
+                        memberDetail("", "", $member, 'backend');
                     } else {
                          memberDetail("",  'Veuillez sélectionner un membre', "", 'backend');
                     }
@@ -172,38 +211,47 @@ try {
 
                     // Un compte tiers (BACKEND),
                 if ($_POST['member_modif']) {
+                    $member_modif = getCleanParameter($_POST['member_modif']);
                     if(isset($_POST['block_comment'])) { // Interdir/autoriser de commenter 
-                        memberBloqComment($_POST['member_modif'], $_POST['block_comment'], 'backend');   
+                        $block_comment = getCleanParameter($_POST['block_comment']);
+                        memberBloqComment($member_modif, $block_comment, 'backend');   
                     } else if(isset($_POST['moderator'])) { // Interdir/autoriser à être modérateur 
-                        memberModerator($_POST['member_modif'], $_POST['moderator'], 'backend');   
+                        $moderator = getCleanParameter($_POST['moderator']);                       
+                        memberModerator($member_modif, $moderator, 'backend');   
                     } else {
                         memberDetail("",  'Veuillez sélectionner une action', "", 'backend');
                     }
 
                    // Son propre compte (FRONTEND),   
                 } else if ($_POST['personal_modif']) { 
-                    if(!empty($_POST['champ']) && !empty($_POST['modif_champ']) && !empty($_POST['modif_champ_confirm'])) {
-                        if ($_POST['champ'] == 1) { // Modification du mail
-                            newMail($_POST['personal_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
-                        } else if ($_POST['champ'] == 2) { // Modification du mot de passe     
-                            newPassword($_POST['personal_modif'], htmlspecialchars($_POST['modif_champ']), htmlspecialchars($_POST['modif_champ_confirm']));
+                    $personal_modif = getCleanParameter($_POST['personal_modif']);
+                    $champ = getCleanParameter($_POST['champ']);
+                    $modif_champ = getCleanParameter($_POST['modif_champ']);
+                    $modif_champ_confirm = getCleanParameter($_POST['modif_champ_confirm']);
+                    if(!empty($champ) && !empty($modif_champ) && !empty($modif_champ_confirm)) {
+                        if ($champ == 1) { // Modification du mail
+                            newMail($personal_modif, $modif_champ, $modif_champ_confirm);
+                        } else if ($champ == 2) { // Modification du mot de passe     
+                            newPassword($personal_modif, $modif_champ, $modif_champ_confirm);
                         }
-                    } else if(empty($_POST['champ']) && empty($_POST['modif_champ']) && empty($_POST['modif_champ_confirm'])) {
+                    } else if(empty($champ) && empty($modif_champ) && empty($modif_champ_confirm)) {
                             memberDetail("",  'Veuillez sélectionner un champ et une action', $_SESSION['id'], "");
-                    } else if (empty($_POST['champ'])) {
-                            memberDetail("",  utf8_encode('Veuillez selectionner un champ'), $_SESSION['id'], "");
-                    } else if (empty($_POST['modif_champ'])) {
-                            memberDetail("",  utf8_encode('Veuillez rentrer une nouvelle valeure au champ'), $_SESSION['id'], "");
-                    } else if (empty($_POST['modif_champ_confirm'])) {
-                            memberDetail("",  utf8_encode('Veuillez confirmer cette nouvelle valeure'), $_SESSION['id'], "");
+                    } else if (empty($champ)) {
+                            memberDetail("",  'Veuillez selectionner un champ', $_SESSION['id'], "");
+                    } else if (empty($modif_champ)) {
+                            memberDetail("",  'Veuillez rentrer une nouvelle valeure au champ', $_SESSION['id'], "");
+                    } else if (empty($modif_champ_confirm)) {
+                            memberDetail("",  'Veuillez confirmer cette nouvelle valeure', $_SESSION['id'], "");
                     } 
                 }
             }
+            
 
                // Supprimer un compte member, 
             else if ($_GET['action'] == 'memberDelete') {
                 if ($_GET['memberErase']) {
-                    memberDelete($_GET['memberErase'], 'backend');
+                    $memberErase = getCleanParameter($_GET['memberErase']);
+                    memberDelete($memberErase, 'backend');
                 } else {
                     throw new Exception('Aucun membre selectionné');
                 }
@@ -238,7 +286,7 @@ try {
         //**************************************************************************************
 
         } else {
-            throw new Exception('Vous n\'êtes pas encore autorisé à accéder au site. Veuillez vous connecter');
+            require('view/frontend/loginView.php');
         }
         
     }
@@ -249,11 +297,13 @@ try {
 
             // Soit on récupère un cookie autorisé d'un précédent login_ok,    
     else if ($_COOKIE['password']) {
-        loginAvailable(htmlspecialchars($_COOKIE['pseudo']), htmlspecialchars($_COOKIE['password']));
+        $pseudo = getCleanParameter($_COOKIE['pseudo']);
+        $password = getCleanParameter($_COOKIE['password']);
+        loginAvailable($pseudo, $password);
     }
-            // Soit on dirige vers la page de connexion, 
+            // Soit on dirige vers la page d'accueil en libre accés, 
     else {
-        require('view/frontend/loginView.php');
+        header('Location: index.php?action=listPosts'); 
     }
 
 //**************************************************************************************
@@ -263,4 +313,14 @@ try {
 } catch(Exception $e) {
     $errorMessage = $e->getMessage();
     require('view/errorView.php');
+}
+
+//**************************************************************************************
+//                      Fonction d'évitement de la faille XSS             
+//**************************************************************************************
+
+function getCleanParameter($parameter){
+    $trimmedParameter = trim($parameter);
+    $cleanedParameter = nl2br(htmlspecialchars($trimmedParameter));
+    return $cleanedParameter;
 }

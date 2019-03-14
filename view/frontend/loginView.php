@@ -1,7 +1,6 @@
 <?php 
 $title = 'Forteroche/Login';
 $template = 'frontend';
-$noMenu = 'no_menu';
 $noFooter = 'no_footer';
 ob_start(); 
 ?>
@@ -9,8 +8,8 @@ ob_start();
 <div class="loginView">
     <div class="login">
         <h1 class="login-brand">
-            <div class="col-xs-12">Jean Forteroche ,</div>
-            <div class="col-xs-12">Un billet simple pour l'Alaska</div>
+            <div class="col-xs-12">Pour voyager sur l'ensemble du site,</div>
+            <div class="col-xs-12">Prenez votre billet pour l'Alaska !</div>
         </h1>
         <h2 class="login-title">
             Billet déjà prit ?<br>Embarquez :

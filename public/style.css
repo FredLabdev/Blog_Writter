@@ -2,7 +2,8 @@
 /* Généralités */
 
 main {
-    margin-top: 100px;
+    margin-top: 110px;
+    max-width: 1200px;
 }
 
 body {
@@ -97,6 +98,7 @@ input[type='submit'],
 .loginView {
     max-width: 1080px;
     background-repeat: no-repeat;
+    margin-top: 0px;
 }
 
 .login,
@@ -625,8 +627,6 @@ label[for] {
     container {
         width: auto;
     }
-
-    label {}
 
     /* ==================================================================== */
     /* Login View */
