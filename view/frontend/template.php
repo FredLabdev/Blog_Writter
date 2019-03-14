@@ -94,6 +94,9 @@
     <li class="nav-item">
         <a class="nav-link" href="index.php?action=contact">Contact</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=connexion">Connexion</a>
+    </li>
 
     <?php $ul = ob_get_clean(); ?>
     <?php ob_start(); ?>
@@ -131,7 +134,7 @@
     <!-- MENU ECRANS -->
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <div class="container-fluid">
+        <div class="container">
             <div class="navbar-header col-3">
                 <a class="navbar-brand" href="#">Jean Forteroche</a>
             </div>
@@ -154,15 +157,17 @@
 
     <!-- FOOTER -->
 
-    <footer id="pied_de_page" class="row">
-        <p class="col-xs-4 offset-lg-1">
-            <button class="btn btn-info social-link"><a href="https://www.facebook.com/pg/thierrygrandnord/posts/" target=_blank><span class="glyphicon glyphicon-facebook"><i class="fab fa-facebook-f fa-lg white"></i></span></a></button>
-            <button class="btn btn-info social-link"><a href="https://naalilodge.com" target=_blank><span class="glyphicon glyphicon-comment"><i class="fab fa-instagram fa-lg white"></i></span></a></button>
-            <button class="btn btn-info social-link"><a href="mailto: fred.labourel@wanadoo.fr"><span class="glyphicon glyphicon-calendar"><i class="fas fa-at fa-lg white"></i></span></a></button>
-            <button class="btn btn-info social-link"><a href="index.php?action=contact"><span class="glyphicon glyphicon-shopping-cart"><i class="fas fa-envelope fa-lg white"></i></span></a></button>
-            <button class="btn btn-info social-link"><a href="https://github.com/freddieLab" target=_blank><span class="glyphicon glyphicon-bullhorn fa-lg"><i class="fab fa-github white"></i></span></a></button>
-        </p>
-        <p class="col-xs-3 offset-lg-4">Copyright Fred Lab, tous droits réservés</p>
+    <footer class="container">
+        <div class="row pied-page align-items-center">
+            <p class="col-md-6 text-center">
+                <button class="btn btn-info social-link"><a href="https://www.facebook.com/pg/thierrygrandnord/posts/" target=_blank><span class="glyphicon glyphicon-facebook"><i class="fab fa-facebook-f fa-lg white"></i></span></a></button>
+                <button class="btn btn-info social-link"><a href="https://naalilodge.com" target=_blank><span class="glyphicon glyphicon-comment"><i class="fab fa-instagram fa-lg white"></i></span></a></button>
+                <button class="btn btn-info social-link"><a href="mailto: fred.labourel@wanadoo.fr"><span class="glyphicon glyphicon-calendar"><i class="fas fa-at fa-lg white"></i></span></a></button>
+                <button class="btn btn-info social-link"><a href="index.php?action=contact"><span class="glyphicon glyphicon-shopping-cart"><i class="fas fa-envelope fa-lg white"></i></span></a></button>
+                <button class="btn btn-info social-link"><a href="https://github.com/freddieLab" target=_blank><span class="glyphicon glyphicon-bullhorn fa-lg"><i class="fab fa-github white"></i></span></a></button>
+            </p>
+            <p class="col-md-6 text-center">Copyright Fred Lab, tous droits réservés</p>
+        </div>
     </footer>
 
     <?php $footer = ob_get_clean(); ?>
@@ -188,11 +193,7 @@
 
     </main>
 
-    <?php 
-            if (!$noFooter == 'no_footer') {
-                echo $footer;
-            }
-        ?>
+    <?= $footer ?>
 
     <!-- jQuery Bibliothèque Production -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

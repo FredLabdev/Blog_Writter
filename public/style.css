@@ -2,8 +2,7 @@
 /* Généralités */
 
 main {
-    margin-top: 110px;
-    max-width: 1200px;
+    margin-top: 115px;
 }
 
 body {
@@ -93,54 +92,6 @@ input[type='submit'],
 }
 
 /***********************************************************************/
-/* Login View */
-
-.loginView {
-    max-width: 1080px;
-    background-repeat: no-repeat;
-    margin-top: 0px;
-}
-
-.login,
-.newMember {
-    min-height: 600px;
-    padding-top: 20px;
-    padding-bottom: 50px;
-}
-
-.login {
-    background: url("picture/picture6.jpg");
-    color: #B5C9CA;
-}
-
-.newMember {
-    background: url("picture/picture3.jpg");
-    color: #B6B6B6;
-}
-
-.login-brand {
-    font-family: 'Miss Fajardose', cursive;
-    font-size: 5em;
-    font-weight: bold;
-    text-align: center;
-}
-
-.login-title,
-.member-title {
-    padding-top: 30px;
-    text-align: center;
-}
-
-.login-form {
-    width: 20%;
-    margin-left: 10%;
-}
-
-.login-form input {
-    width: 70%;
-}
-
-/***********************************************************************/
 /* Navbar */
 
 .pos-f-t {
@@ -168,13 +119,11 @@ input[type='submit'],
 /* Footer */
 
 footer {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
     margin-top: 20px;
-    margin-left: 0px;
-    margin-right: 0px;
+}
 
+.pied-page {
+    height: 100px;
 }
 
 .social-link {
@@ -219,6 +168,53 @@ footer {
 .index li:hover {
     background-color: #0a0e19;
     color: #6c9bf3;
+}
+
+/***********************************************************************/
+/* Login View */
+
+.loginView {
+    max-width: 1080px;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+}
+
+.login,
+.newMember {
+    min-height: 600px;
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
+
+.login {
+    background: url("picture/picture6.jpg");
+    color: #B5C9CA;
+}
+
+.newMember {
+    background: url("picture/picture3.jpg");
+    color: #B6B6B6;
+}
+
+.login-brand {
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.login-title,
+.member-title {
+    padding-top: 30px;
+    text-align: center;
+}
+
+.login-form {
+    width: 20%;
+    margin-left: 10%;
+}
+
+.login-form input {
+    width: 70%;
 }
 
 /***********************************************************************/
@@ -611,9 +607,11 @@ label[for] {
     clear: both;
 }
 
-
-/* ==================================================================== */
-/*                          Medias Quereies                             */
+/* ======================================================================= */
+/* ======================================================================= */
+/*                           Medias Quereies                               */
+/* ======================================================================= */
+/* ======================================================================= */
 
 @media all and (max-width: 768px) {
 

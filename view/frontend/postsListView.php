@@ -23,11 +23,13 @@
         <!-- SLIDE 1 -->
         <div class="carousel-item active">
             <img class="d-block w-100" src="public/picture/picture11.jpg" alt="First slide">
+            <?php if($_SESSION['first_name']) { ?>
             <h3 class="title-slider d-none d-md-block offset-lg-1">
                 Bonjour <strong>
                     <?= $_SESSION['first_name']; ?>
                 </strong>
             </h3>
+            <?php } ?>
             <h3 class="title-slider col-xs-12 col-lg-6 offset-lg-6">
                 Un billet simple pour l'Alaska
             </h3>

@@ -1,15 +1,14 @@
 <?php 
 $title = 'Forteroche/Login';
 $template = 'frontend';
-$noFooter = 'no_footer';
 ob_start(); 
 ?>
 
-<div class="loginView">
+<div class="loginView container">
     <div class="login">
         <h1 class="login-brand">
             <div class="col-xs-12">Pour voyager sur l'ensemble du site,</div>
-            <div class="col-xs-12">Prenez votre billet pour l'Alaska !</div>
+            <div class="col-xs-12">Validez votre billet pour l'Alaska !</div>
         </h1>
         <h2 class="login-title">
             Billet déjà prit ?<br>Embarquez :
