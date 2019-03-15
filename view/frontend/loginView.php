@@ -28,7 +28,7 @@ ob_start();
             </p>
             <button type="button submit" class="btn btn-outline-light btn-lg col-xs-12" name="login">Alaska</button>
         </form>
-        <div class="row justify-content-center align-items-center">
+        <div class="row justify-content-center align-items-center" id="member-link">
             <a href="#newMember" type="button submit" class="btn btn-outline-warning btn-lg" name="login-form">Nouveau membre ?</a>
         </div>
     </div>

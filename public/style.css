@@ -229,6 +229,10 @@ footer {
     width: 70%;
 }
 
+#member-link {
+    margin-top: 20px;
+}
+
 /***********************************************************************/
 /* Editeur de tetxe WYSIWYG */
 
