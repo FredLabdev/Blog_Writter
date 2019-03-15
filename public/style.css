@@ -111,8 +111,18 @@ input[type='submit'],
     color: darkblue;
 }
 
-.navbar-toggler {
-    background-color: #17a2b8;
+.nav > li > a.dropdown-toggle:focus {
+    color: darkblue;
+    background-color: white;
+}
+
+.nav > li > .dropdown-menu > a.dropdown-item {
+    color: darkblue;
+    background-color: white;
+}
+
+.nav > li > .dropdown-menu > a.dropdown-item:hover {
+    background-color: lightgrey;
 }
 
 /***********************************************************************/
@@ -652,10 +662,20 @@ label[for] {
 
     .pos-f-t {
         display: block;
+        margin: auto;
+    }
+
+    .navbar-toggler {
+        background-color: rgb(68, 150, 126);
     }
 
     .navbar-expand-lg {
         display: none;
+    }
+
+    .navbar-brand {
+        font-size: 1.5em;
+        color: aliceblue;
     }
 
     /***********************************************************************/

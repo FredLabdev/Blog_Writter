@@ -86,17 +86,18 @@
             }
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="index.php?action=memberDetail">Compte</a>
+        <a class="nav-link" href="index.php?action=contact">Contact</a>
+    </li>
+    <?php
+        }
+        if(!$_SESSION['group_id']) {
+        ?>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?action=connexion">Connexion</a>
     </li>
     <?php
         }
     ?>
-    <li class="nav-item">
-        <a class="nav-link" href="index.php?action=contact">Contact</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="index.php?action=connexion">Connexion</a>
-    </li>
 
     <?php $ul = ob_get_clean(); ?>
     <?php ob_start(); ?>
@@ -108,13 +109,16 @@
             <div class="bg-light p-4">
                 <div class="container-fluid">
                     <div class="navbar-header col-3">
-                        <a class="navbar-brand" href="#">Jean Forteroche</a>
                     </div>
                     <ul class="nav flex-column">
                         <?= $ul ?>
                         <?php 
-                            if ($_SESSION['pseudo']) { ?>
+                            if ($_SESSION['pseudo']) { 
+                        ?>
                         <li class="nav-item">
+                            <a class="nav-link" href="index.php?action=memberDetail">Profil</a>
+                        </li>
+                        <li>
                             <a class="nav-link" href="#" id="deconnexion_xs">Deconnexion</a>
                         </li>
                         <?php
@@ -124,9 +128,11 @@
                 </div>
             </div>
         </div>
-        <nav class="navbar navbar-light bg-light">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span><span class="white"> Dernier roman de Jean Forteroche</span>
+        <nav class="navbar navbar-light bg-ligth">
+            <button class="navbar-toggler container-fluid justify-content-between align-items-center" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <div class="navbar-toggler-icon col-2"></div>
+                <div class="navbar-brand">Jean Forteroche</div>
+                <div class="navbar-toggler-icon col-2"></div>
             </button>
         </nav>
     </div>
@@ -141,9 +147,14 @@
             <ul class="nav nav-pills nav-stacked">
                 <?= $ul ?>
                 <?php 
-                    if ($_SESSION['pseudo']) { ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="deconnexion">Deconnexion</a>
+                    if ($_SESSION['pseudo']) { 
+                ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Vos données</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item nav-link" href="index.php?action=memberDetail">Profil</a>
+                        <a class="dropdown-item nav-link" href="#" id="deconnexion">Deconnexion</a>
+                    </div>
                 </li>
                 <?php
                     } 

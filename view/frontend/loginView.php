@@ -4,7 +4,7 @@ $template = 'frontend';
 ob_start(); 
 ?>
 
-<div class="loginView container">
+<div class="loginView">
     <div class="login">
         <h1 class="login-brand">
             <div class="col-xs-12">Pour voyager sur l'ensemble du site,</div>
